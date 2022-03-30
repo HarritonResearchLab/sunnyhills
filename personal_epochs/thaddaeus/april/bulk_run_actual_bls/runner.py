@@ -65,21 +65,33 @@ for tic_id in tqdm(tic_ids):
 
         ax = ax_dict['c']
 
-        ax.scatter(stitched_raw['time'], stitched_raw['flux'])
+        ax.scatter(stitched_raw['time'], stitched_raw['flux'], c='black', s=3, label='Raw')
 
-        ax.scatter(stitched_trend['time'], stitched_trend['flux'])
+        ax.scatter(stitched_trend['time'], stitched_trend['flux'], c='red', s=3, label='Trend')
+
+        ax.legend()
+
+        ax.set(xlabel='Time (mjd)', ylabel='Flux')
+
+        ax = ax_dict['d']
+
+        ax.scatter(stitched_lc['time'], stitched_lc['flux'], c='black', s=3, label='Detrended LC')
+        ax.set(xlabel='Time (MJD)', ylabel='Flux')
+
+        ax.legend()
 
         plt.show()
         #plt.savefig(plot_dir+'/'+tic_id+'.png', dpi=150)
         plt.clf()
         plt.close()
 
-        break 
+     
             
-            
+        '''        
         out_dict = {'stitched_lc':stitched_lc, 'stitched_trend':stitched_trend, 'stitched_raw':stitched_raw}
         file_path = lc_out_dir+'/'+tic_id+'_lc.pickle' 
         with open(file_path, 'wb') as handle:
             pickle.dump(out_dict, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
         f.write(tic_id+'\n')
+        '''
