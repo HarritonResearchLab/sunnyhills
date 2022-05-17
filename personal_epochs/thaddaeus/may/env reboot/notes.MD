@@ -9,7 +9,7 @@
 3. install wsl on your computer
 4. link windows terminal with wsl 
 5. open a new wsl session in windows terminal
-6. execute the following command: ```pip install numpy pandas matplotlib seaborn sklearn scipy astropy transitleastsquares wotan, altaipony```
+6. execute the following command: ```pip install numpy pandas matplotlib seaborn sklearn scipy astropy transitleastsquares wotan altaipony```
 7. within wsl terminal session, navigate to 
 
 ## usage notes
