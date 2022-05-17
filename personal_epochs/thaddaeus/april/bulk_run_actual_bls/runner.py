@@ -1,8 +1,11 @@
+import sunnyhills
 from sunnyhills.pipeline_functions import run_bls, download, preprocess
 import pandas as pd
 import numpy as np 
 from tqdm import tqdm 
 import matplotlib.pyplot as plt 
+import pickle 
+import os 
 
 key_df = pd.read_csv('./data/current/current_key.csv')
 
@@ -13,11 +16,35 @@ lc_out_dir = './data/current/processed/two_min_lightcurves'
 plot_dir = './personal_epochs/thaddaeus/april/bulk_run_actual_bls/first_results/plots'
 for tic_id in tqdm(tic_ids): 
     tic_id = 'TIC_'+str(tic_id)
-    raw_lc, data_found = download(ticstr=tic_id)
-                
-    if data_found: 
-        stitched_lc, stitched_trend, stitched_raw = preprocess(raw_list=raw_lc, ticstr=tic_id, outdir=lc_out_dir)
 
+    run_analysis = False 
+    already_downloaded = False
+    for file in os.listdir(lc_out_dir): 
+        if tic_id in file: 
+            already_downloaded = True 
+            run_analysis = True 
+            break 
+    
+    lc_dict = {}
+    if already_downloaded: 
+        file_path = lc_out_dir+'/'+tic_id+'_lc.pickle' 
+        with open(file_path, 'rb') as handle:
+            lc_dict = pickle.load(handle)
+
+        stitched_lc = lc_dict['stitched_lc']
+        stitched_trend = lc_dict['stitched_trend']
+        stitched_raw = lc_dict['stitched_raw']
+        
+
+    else: 
+
+        raw_lc, data_found = download(ticstr=tic_id)
+                    
+        if data_found: 
+            run_analysis = True 
+            stitched_lc, stitched_trend, stitched_raw = preprocess(raw_list=raw_lc, ticstr=tic_id, outdir=lc_out_dir)
+
+    if run_analysis: 
         results, bls_model, in_transit, stats = run_bls(stitched_lc)
 
         time = stitched_lc['time']
@@ -85,13 +112,10 @@ for tic_id in tqdm(tic_ids):
         plt.clf()
         plt.close()
 
-     
-            
-        '''        
+    
+        
+    if not already_found: 
         out_dict = {'stitched_lc':stitched_lc, 'stitched_trend':stitched_trend, 'stitched_raw':stitched_raw}
         file_path = lc_out_dir+'/'+tic_id+'_lc.pickle' 
         with open(file_path, 'wb') as handle:
             pickle.dump(out_dict, handle, protocol=pickle.HIGHEST_PROTOCOL)
-
-        f.write(tic_id+'\n')
-        '''
