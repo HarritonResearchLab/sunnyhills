@@ -12,6 +12,9 @@
 6. execute the following command: ```pip install numpy pandas matplotlib seaborn sklearn scipy astropy transitleastsquares wotan altaipony```
 7. within wsl terminal session, navigate to 
 
+* Note: it would probably behoove you to do all of this (and pip installing) within a new python virtual environment. 
+    * The top answer to this [question](https://stackoverflow.com/questions/21240653/how-to-install-a-package-inside-virtualenv) is extremely helpful. 
+
 ## usage notes
 
 * Whenever you want to edit your files, edit them in vscode *outside* wsl, and then run them within wsl by navigating to their directory within wsl and then running them like ```python file_name.py``` (this would run the file ```file_name.py``` in the current directory)
