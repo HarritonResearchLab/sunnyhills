@@ -14,6 +14,8 @@
 
 * Note: it would probably behoove you to do all of this (and pip installing) within a new python virtual environment. 
     * The top answer to this [question](https://stackoverflow.com/questions/21240653/how-to-install-a-package-inside-virtualenv) is extremely helpful. 
+* 🚨INTERESTING🚨
+   * there's an official vscode extension for running vscode but inside wsl???? see this [link](https://code.visualstudio.com/docs/remote/wsl-tutorial)
 
 ## usage notes
 
