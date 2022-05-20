@@ -22,10 +22,13 @@ def download(
     import lightkurve as lk 
     import os 
     import pickle 
+    import warnings
 
     # get the light curve
     data_found = False
     
+    warnings.warn('WARNING: THIS SHOULD NO LONGER BE USED BY ITSELF! NEEDS TO BE FIXED...USE download_preprocess INSTEAD')
+
     '''
     lcset = lk.search_lightcurve(ticstr) # otherwise it'll fail for TIC IDs without 120 second cadence data.
     if len(lcset) > 0:
@@ -34,7 +37,7 @@ def download(
     '''
 
     lcc = lk.search_lightcurve(ticstr.replace('_', ' ')).download_all() # FIX THIS! 
-    if len(lcc)>0: 
+    if lcc != None: 
         data_found = True 
 
     # select only the two-minute cadence SPOC-reduced data; convert to a list.
@@ -95,9 +98,11 @@ def download(
             with open(outfile, 'wb') as handle:
                 pickle.dump(joined, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
+            warnings.warn("FIX THIS TO CSV!!!")
+            warnings.warn('idea for the future: just only use download and preprocess together')
 
     if not data_found: 
-        raw_list = []
+        raw_list = None
 
     '''
     if logdir != 'none': 
@@ -144,79 +149,129 @@ def preprocess(
     """
 
     import numpy as np 
-    from wotan import flatten, slide_clip
-    from astropy.stats import sigma_clip
-    import pickle
+    import wotan 
+    import pandas as pd
+    import warnings
+    from sunnyhills.pipeline_functions import remove_flares
 
-    lc_times = np.array([])
-    lc_fluxes = np.array([])
-    trend_times = np.array([])
-    trend_fluxes = np.array([])
-    raw_times = np.array([])
-    raw_fluxes = np.array([])
+    cleaned_time = np.array([])
+    detrended_flux = np.array([])
+    trend_time = np.array([])
+    trend_flux = np.array([])
+    raw_time = np.array([])
+    raw_flux = np.array([])
 
     for lc in raw_list:
 
         time = lc['time']
         flux = lc['flux']
 
-        #print(type(time), type(flux))
+        def old_detrend_method(time, flux): 
 
-        # remove outliers before local window detrending-- wotan does this before detrend, and sigma clip after detrend 
-        clipped_flux = slide_clip(time, flux, window_length=0.5, low=3,
-                                  high=2, method='mad', center='median')
+            # remove outliers before local window detrending-- wotan does this before detrend, and sigma clip after detrend 
+            clipped_flux = wotan.slide_clip(time, flux, window_length=0.5, low=3,
+                                    high=2, method='mad', center='median')
 
-        clipped_mask = ~np.isnan(clipped_flux)
+            clipped_mask = ~np.isnan(clipped_flux)
 
-        clipped_time = time[clipped_mask]
-        clipped_flux = clipped_flux[clipped_mask]
+            clipped_time = time[clipped_mask]
+            clipped_flux = clipped_flux[clipped_mask]
 
-        # see https://wotan.readthedocs.io/en/latest/Usage.html for other
-        # possible options.
-        flat_flux, trend_flux = flatten(
-            clipped_time, clipped_flux, return_trend=True,
+            # see https://wotan.readthedocs.io/en/latest/Usage.html for other
+            # possible options.
+            flat_flux, trend_flux = wotan.flatten(
+                clipped_time, clipped_flux, return_trend=True,
+                method=dtrdict['method'],
+                break_tolerance=dtrdict['break_tolerance'],
+                window_length=dtrdict['window_length'],
+                cval=dtrdict['cval']
+            )
+
+            flat_mean, flat_sigma = (np.nanmean(flat_flux), np.nanstd(flat_flux))
+
+            #_, *bounds = sigma_clip(flat_flux, sigma_lower=10, sigma_upper=1, maxiters=1, masked=False, return_bounds=True) # okay flex LOL
+
+            bounds = [flat_mean-sigma_bounds[0]*flat_sigma, flat_mean+sigma_bounds[1]*flat_sigma] # save these bounds to log file? 
+
+            flat_mask = np.logical_and(flat_flux<bounds[1], flat_flux>bounds[0])
+
+            flat_time = clipped_time[flat_mask]
+            flat_flux = flat_flux[flat_mask]
+
+            lc_times = np.concatenate((lc_times, flat_time))
+            lc_fluxes = np.concatenate((lc_fluxes, flat_flux))
+
+            trend_times = np.concatenate((trend_times, clipped_time))
+            trend_fluxes = np.concatenate((trend_fluxes, trend_flux))
+
+            raw_time = np.concatenate((raw_times, time))
+            raw_fluxe = np.concatenate((raw_fluxes, flux))
+             
+        # remove stuff below 
+
+        continue_lower_cut = True 
+        while continue_lower_cut: 
+            below_lower_cut = np.where(flux<(np.median(flux)-3*np.std(flux)))[0]
+            if len(below_lower_cut)>0: 
+                time = np.delete(time, below_lower_cut)
+                flux = np.delete(flux, below_lower_cut)
+
+            else: 
+                continue_lower_cut=False
+
+        warnings.warn('how low should we remove from below?')
+
+        (cleaned_time_temp, cleaned_flux_temp), (_, _) = remove_flares(time, flux)
+
+        detrended_flux_temp, trend_flux_temp = wotan.flatten(
+            cleaned_time_temp, cleaned_flux_temp, return_trend=True,
             method=dtrdict['method'],
             break_tolerance=dtrdict['break_tolerance'],
             window_length=dtrdict['window_length'],
             cval=dtrdict['cval']
         )
 
-        flat_mean, flat_sigma = (np.nanmean(flat_flux), np.nanstd(flat_flux))
+        (cleaned_time_temp, detrended_flux_temp), (_, _) = remove_flares(cleaned_time_temp, detrended_flux_temp)
+        warnings.warn('ask bouma if this is okay...wotan did clips before and after?')
+        warnings.warn('should we do slide clip before and this sigma clip after?')
 
-        #_, *bounds = sigma_clip(flat_flux, sigma_lower=10, sigma_upper=1, maxiters=1, masked=False, return_bounds=True) # okay flex LOL
+        cleaned_time = np.concatenate((cleaned_time, cleaned_time_temp))
+        detrended_flux = np.concatenate((detrended_flux, detrended_flux_temp))
+        trend_time = np.concatenate((trend_time, cleaned_time_temp))
+        trend_flux = np.concatenate((trend_flux, trend_flux_temp))
 
-        bounds = [flat_mean-sigma_bounds[0]*flat_sigma, flat_mean+sigma_bounds[1]*flat_sigma] # save these bounds to log file? 
+        raw_time = np.concatenate((raw_time, time))
+        raw_flux = np.concatenate((raw_flux, flux))
 
-        flat_mask = np.logical_and(flat_flux<bounds[1], flat_flux>bounds[0])
-
-        flat_time = clipped_time[flat_mask]
-        flat_flux = flat_flux[flat_mask]
-
-        lc_times = np.concatenate((lc_times, flat_time))
-        lc_fluxes = np.concatenate((lc_fluxes, flat_flux))
-
-        trend_times = np.concatenate((trend_times, clipped_time))
-        trend_fluxes = np.concatenate((trend_fluxes, trend_flux))
-
-        raw_times = np.concatenate((raw_times, time))
-        raw_fluxes = np.concatenate((raw_fluxes, flux))
-    
-    stitched_lc = {'time':lc_times, 'flux':lc_fluxes}
-    stitched_trend = {'time':trend_times, 'flux':trend_fluxes}
-    stitched_raw = {'time':raw_times, 'flux':raw_fluxes}
+        warnings.warn('does this work for dates?????')
 
     if outdir != 'none': 
-        outfile = outdir+'/'+ticstr.replace(' ','_')+'_lc.pickle'
-        joined = {'stitched_lc':stitched_lc, 'stitched_trend':stitched_trend, 'stitched_raw':stitched_raw}
-                
-        with open(outfile, 'wb') as handle:
-            pickle.dump(joined, handle, protocol=pickle.HIGHEST_PROTOCOL)
+        if outdir[-1]!='/':
+            outdir+='/'
+        
+        outfile = outdir+ticstr.replace(' ','_')+'.csv'
+        
+        cols = [cleaned_time, detrended_flux, trend_time, trend_flux, raw_time, raw_flux]
+        cols = [pd.Series(i) for i in cols]
 
-    return stitched_lc, stitched_trend, stitched_raw   
+        col_names = ['cleaned_time', 'detrended_flux', 'trend_time', 'trend_flux', 'raw_time', 'raw_flux']
+    
+        dictionary = {}
+        for i in range(len(cols)):
+            dictionary.update({col_names[i]:cols[i]})
+
+        out_df = pd.DataFrame(dictionary)
+
+        out_df.to_csv(outfile, index=False)
+
+        # cleaned as in flares have been removed 
+        # detrended has had flares removed and trend removed as well  
+
+    return (cleaned_time, detrended_flux), (cleaned_time, trend_flux), (raw_time, raw_flux) 
 
 def download_and_preprocess(
     ticstr: str = '',
-    outdir: str = "none", 
+    outdir: str = 'none', 
     logdir: str = 'none', 
     dtrdict: dict = {'method':'biweight',
                      'window_length':0.5,
@@ -227,7 +282,7 @@ def download_and_preprocess(
     
     '''
     Args: 
-        ticstr: 
+        ticstr: e.g. 'TIC 441420236'
         outdir: dir to save light curve to. default is none
         logdir: dir to save log file to. default is none
         dtrdict: detrending dictionary 
@@ -237,20 +292,23 @@ def download_and_preprocess(
         lc_list: list of light curve ojects that have met all criteria, been removed of outliers, normalized, and flattened. 
         trend_list: list of light curve objects with x = time, y = trend
         raw_list: list of the raw light curve objects 
-        data_found: if data was not found during download, returns empty lists for the above three and false for this
+        data_found: if data was not found during download, returns tuple of None objects
     '''
 
     from sunnyhills.pipeline_functions import download, preprocess # lol troll
     import numpy as np
+    import warnings 
 
-    raw_list, data_found = download(ticstr=ticstr, logdir=logdir, outdir=outdir) 
+    raw_list, data_found = download(ticstr=ticstr, logdir=logdir) 
 
     if data_found: 
         stitched_lc, stitched_trend, stitched_raw = preprocess(raw_list=raw_list, ticstr=ticstr, outdir=outdir, dtrdict=dtrdict, sigma_bounds=sigma_bounds)
 
     else: 
-        stitched_lc, stitched_trend, stitched_raw = (np.array([]), np.array([]), np.array([]))
+        stitched_lc, stitched_trend, stitched_raw = (None, None, None)
     
+    warnings.warn('need to FIX/reimplement LOGGING!')
+
     return stitched_lc, stitched_trend, stitched_raw, data_found
 
 def remove_flares(time, flux, flux_err=None, sigma:int=3): 
@@ -481,3 +539,18 @@ def iterative_bls_runner(stitched_lc,
 
     else: 
         return results_dict, models_dict, in_transits_dict
+
+import warnings
+from tqdm import tqdm 
+import pandas as pd
+import numpy as np 
+
+import numpy as np
+
+warnings.filterwarnings("ignore")
+
+ids = np.array(pd.read_csv('./data/current/current_key.csv')['TIC_ID'])
+
+for id in tqdm(ids): 
+    tic_id = 'TIC '+str(id)
+    download_and_preprocess(tic_id, './data/current/processed/two_min_lightcurves')
