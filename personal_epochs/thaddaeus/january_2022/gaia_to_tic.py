@@ -2,7 +2,6 @@ import numpy as np
 import pandas as pd 
 from astrobase.services.identifiers import gaiadr2_to_tic
 
-
 #
 df = pd.read_csv('Dataset_nospaces.csv')
 #thirty_gaia = np.array(df['Distance'])

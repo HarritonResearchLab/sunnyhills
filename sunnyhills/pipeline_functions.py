@@ -540,30 +540,3 @@ def iterative_bls_runner(stitched_lc,
     else: 
         return results_dict, models_dict, in_transits_dict
 
-import warnings
-from sklearn.utils import compute_sample_weight
-from tqdm import tqdm 
-import pandas as pd
-import numpy as np 
-
-import numpy as np
-
-warnings.filterwarnings("ignore")
-
-ids = np.array(pd.read_csv('./data/current/current_key.csv')['TIC_ID'])
-
-import os 
-
-completed_ids = np.array([i.replace('.csv', '') for i in os.listdir('./data/current/processed/two_min_lightcurves') if i!='.gitkeep'])
-completed_ids = np.array([int(i.split('_')[-1]) for i in completed_ids])
-
-ids = np.setdiff1d(ids, completed_ids)
-
-for id in tqdm(ids): 
-    try: 
-        tic_id = 'TIC '+str(id).replace('_', " ")
-        download_and_preprocess(tic_id, './data/current/processed/two_min_lightcurves')
-
-    except Exception as e: 
-        print(e)
-        continue
