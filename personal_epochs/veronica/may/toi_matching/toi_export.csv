@@ -1,22 +1,3 @@
-# This file was produced by the NASA Exoplanet Archive  http://exoplanetarchive.ipac.caltech.edu
-# Sun May 22 08:16:01 2022
-#
-# User preference: *
-#
-# COLUMN toi:            TESS Object of Interest
-# COLUMN tid:            TESS Input Catalog ID
-# COLUMN tfopwg_disp:    TFOPWG Dispostion (CP | FP | KP | PC)
-# COLUMN pl_tranmid:     Planet Transit Midpoint Value [BJD]
-# COLUMN pl_orbper:      Planet Orbital Period Value [days]
-# COLUMN pl_trandurh:    Planet Transit Duration Value [hours]
-# COLUMN pl_trandep:     Planet Transit Depth Value [ppm]
-# COLUMN pl_rade:        Planet Radius Value [R_Earth]
-# COLUMN st_tmag:        TESS Magnitude
-# COLUMN st_dist:        Stellar Distance [pc]
-# COLUMN st_teff:        Stellar Effective Temperature Value [K]
-# COLUMN st_logg:        Stellar log(g) Value [cm/s**2]
-# COLUMN st_rad:         Stellar Radius Value [R_Sun]
-#
 loc_rowid,toi,tid,tfopwg_disp,pl_tranmid,pl_orbper,pl_trandurh,pl_trandep,pl_rade,st_tmag,st_dist,st_teff,st_logg,st_rad
 1,1000.01,50365310,FP,2459229.6300460,2.1713484,2.0172196,656.8860989,5.8181633,9.6040000,485.7350000,10249.0000000,4.1900000,2.1698600
 2,1001.01,88863718,PC,2459250.0645490,1.9316710,3.1800000,1030.0000000,10.3168000,9.4234400,295.8620000,7070.0000000,4.0300000,2.0100000

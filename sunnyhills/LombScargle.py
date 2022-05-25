@@ -1,5 +1,8 @@
 
-def lomb_scargle(time,flux,flux_err:np.Array()=None,min_per:float=.1,max_per:int=15,calc_fap:boolean=True):
+from typing import List
+
+
+def lomb_scargle(time,flux,flux_err:np.Array()=None,min_per:float=.1,max_per:int=15,calc_fap:boolean=True,probilities:List=[.1,.05,.01]):
     import numpy as np
     from astropy.timeseries import LombScargle
     
@@ -13,11 +16,7 @@ def lomb_scargle(time,flux,flux_err:np.Array()=None,min_per:float=.1,max_per:int
     periods = 1/frequencies
 
     if calc_fap:
-        fap_levels = periodogram.false_alarm_probability(min_per,max_per)
-        fap_99 = fap_levels[0]
-        fap_mask = np.where(powers>fap_99)
-        periods = periods[fap_mask]
-        powers = powers[fap_mask]
+        fap_levels = periodogram.false_alarm_probability(probilities)
 
     sorted = np.argsort(powers)[::-1] #descending order
     powers = powers[sorted]
