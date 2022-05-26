@@ -402,7 +402,7 @@ def remove_flares(time, flux, flux_err=None, sigma:int=3):
 
 ## BLS ##
 
-def run_bls(stitched_lc, 
+def run_bls(time, flux, 
             bls_params: dict = {'min_per':0.5, 'max_per':15, 
                                 'minimum_n_transit':2, 
                                 'freq_factor':1,
@@ -430,9 +430,6 @@ def run_bls(stitched_lc,
 
     from astropy.timeseries import BoxLeastSquares
     import numpy as np
-
-    time = stitched_lc['time']
-    flux = stitched_lc['flux']
 
     durations = np.array(bls_params['durations'])
     bls_model = BoxLeastSquares(t=time, y=flux)
