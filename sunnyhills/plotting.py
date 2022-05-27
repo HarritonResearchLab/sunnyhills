@@ -253,3 +253,125 @@ def plot_star_detrending(
 
     fig.savefig(plotpath, bbox_inches='tight', dpi=400)
     print(f"Made {plotpath}")
+
+def bls_validation_mosaic(tic_id:str, clean_time:np.array, detrend_flux:np.array, 
+                          raw_time:np.array, raw_flux:np.array, 
+                          bls_results, bls_model, in_transit, bls_stats, 
+                          path:str=None, dpi:int=150): 
+
+    '''
+    arguments: 
+        tic_id: tic id 
+        clean_time: detrended and flare removed time array
+        detrend_flux: flux values corresponding to clean_time arg
+        raw_time: array of "raw" time values, i.e. not detrended and potentially with flares
+        raw_flux: flux array corresponding to raw_time arg
+        bls_results, bls_model, in_transit, bls_stats: the items returned by the run_bls function in pipeline_functions.py
+        path: if defined, plot will be saved as the provided path. Otherwise, it will be displayed
+        dpi: dpi of saved plot
+
+    returns: 
+    '''
+
+    import matplotlib.pyplot as plt
+    from matplotlib.gridspec import GridSpec
+    from  astropy import timeseries
+
+    plt.style.use('https://raw.githubusercontent.com/thissop/MAXI-J1535/main/code/misc/stolen_science.mplstyle?token=GHSAT0AAAAAABP54PQO2X2VXMNS256IWOBOYRNCFBA')
+    fig = plt.figure(constrained_layout=True, figsize=(12,12))
+
+    gs = GridSpec(4, 3, figure=fig)
+    ax1 = fig.add_subplot(gs[0, :])
+    ax2 = fig.add_subplot(gs[1, :])
+    ax3 = fig.add_subplot(gs[2, :-1])
+    ax4 = fig.add_subplot(gs[-1, 0])
+    ax5 = fig.add_subplot(gs[-1, -2])
+    ax6 = fig.add_subplot(gs[2:, -1])
+
+    # raw and trend light curve
+    ax1.scatter(raw_time, raw_flux, s=1)
+
+    # detrend light curve
+    ax2.scatter(clean_time, detrend_flux, s=1)
+    index = np.argmax(bls_results.power)
+    period = bls_results.period[index]
+    t0 = bls_results.transit_time[index]
+    duration = bls_results.duration[index]
+
+    x = (clean_time - t0 + 0.5*period) % period - 0.5*period
+    m = np.abs(x) < 0.2
+    f = bls_model.model(x + t0, period, duration, t0)
+
+    ax2.vlines(clean_time[in_transit], min(detrend_flux), max(detrend_flux), color='red', lw=0.05,alpha=0.4, zorder=0)
+
+    for ax in [ax1, ax2]: 
+        ax.set(xlabel='Time (days)')
+
+    # phase folded
+    ax3.scatter(x[m],detrend_flux[m], s=3, c='grey')
+
+    folded_x, folded_flux = (x[m], flux[m])
+    binned_x, binned_flux = ([], [])
+    step = int(len(folded_x)/30)
+    indices = list(range(0, len(folded_x), step))
+    for index, i in enumerate(indices): 
+        if index==len(indices)-1: 
+            binned_x.append(np.mean(folded_x[i:]))
+            binned_flux.append(np.mean(folded_flux[i:]))
+        else: 
+            binned_x.append(np.mean(folded_x[i:indices[index+1]]))
+            binned_flux.append(np.mean(folded_flux[i:indices[index+1]]))
+
+    ax3.plot(x, f, color='red', alpha=0.5)
+    ax3.scatter(binned_x, binned_flux, c='orange', s=40, edgecolor='black')
+
+    ax3.set(xlim=(-0.2, 0.2))
+
+    for ax in [ax3, ax4, ax5]: 
+        ax.set(xlabel='Time from mid-transit (days)', ylabel='Detrended Flux')
+
+    # transit depths (odd, even)
+
+    depth_odd = bls_stats['depth_odd']
+    depth_even = bls_stats['depth_even']
+    transits = [1-depth_odd[0], 1-depth_even[0]]
+    errs = [depth_odd[1], depth_even[1]]
+    times = [0,0.4]
+
+    ax4.errorbar(times,
+        transits,
+        yerr=errs,
+        fmt='o', color='red')
+
+    ax4.plot(
+        (0, 1),
+        (np.mean(transits), np.mean(transits)),
+        color='black', linestyle='dashed')
+
+    ax4.plot((0, 1), (1, 1), color='black')
+    ax4.set(xlabel='Time (days)', ylabel='Flux')
+
+    # periodogram 
+    ax5.plot(bls_results.period, bls_results.power)
+    ax5.set(xlabel='Period (d)', ylabel='Power')
+
+    #ax6.axis('off')
+    ax6.tick_params(labelbottom=False, labelleft=False, axis='both', which='both', length=0)
+
+    index = np.argmax(bls_results.power)
+    text_info = []
+    for key_name in bls_results.keys(): 
+        result = bls_results[key_name]
+        if type(result)!=str: 
+            result = str(round(result[index], 5))
+
+        text_info.append(key_name+': '+result)
+
+    ax6.text(x=0.1, y=0.5, s='\n'.join(str(i).replace('_','') for i in text_info), fontsize='large', va='center', transform=ax6.transAxes)
+
+    ax1.set_title('TIC: '+str(tic_id).replace('_','')+' PERIOD: '+str(round(period, 5)), size='xx-large')
+
+    if path==None:
+        plt.show()
+    else: 
+        plt.savefig(path, dpi=dpi)
