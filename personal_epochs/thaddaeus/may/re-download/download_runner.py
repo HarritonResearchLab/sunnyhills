@@ -22,7 +22,9 @@ for id in tqdm(ids):
     try: 
         tic_id = 'TIC '+str(id).replace('_', " ")
         download_and_preprocess(tic_id, './data/current/processed/two_min_lightcurves')
-
+        
     except Exception as e: 
         print(e)
         continue
+
+    break 

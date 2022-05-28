@@ -1,6 +1,8 @@
 # cSpell:ignore lightkurve, biweight, cval, dtrdict, detrended
 # cSpell: disable
 
+import numpy as np
+
 ## DATA PROCESSING RELATED ##
 
 def download(
@@ -166,6 +168,9 @@ def preprocess(
         time = lc['time']
         flux = lc['flux']
 
+        raw_time = np.concatenate((raw_time, time))
+        raw_flux = np.concatenate((raw_flux, flux))
+
         def old_detrend_method(time, flux): 
 
             # remove outliers before local window detrending-- wotan does this before detrend, and sigma clip after detrend 
@@ -231,7 +236,7 @@ def preprocess(
             cval=dtrdict['cval']
         )
 
-        (cleaned_time_temp, detrended_flux_temp), (_, _) = remove_flares(cleaned_time_temp, detrended_flux_temp)
+        (cleaned_time_temp, detrended_flux_temp, trend_flux_temp), (_, _, _) = remove_flares(cleaned_time_temp, detrended_flux_temp, trend_flux_temp)
         warnings.warn('ask bouma if this is okay...wotan did clips before and after?')
         warnings.warn('should we do slide clip before and this sigma clip after?')
 
@@ -239,10 +244,6 @@ def preprocess(
         detrended_flux = np.concatenate((detrended_flux, detrended_flux_temp))
         trend_time = np.concatenate((trend_time, cleaned_time_temp))
         trend_flux = np.concatenate((trend_flux, trend_flux_temp))
-
-        raw_time = np.concatenate((raw_time, time))
-        raw_flux = np.concatenate((raw_flux, flux))
-
         warnings.warn('does this work for dates?????')
 
     if outdir != 'none': 
@@ -307,11 +308,11 @@ def download_and_preprocess(
     else: 
         stitched_lc, stitched_trend, stitched_raw = (None, None, None)
     
-    warnings.warn('need to FIX/reimplement LOGGING!')
+    warnings.warn('need to FIX/reimplement LOGGING! and get rid of download returning stitched lc!')
 
     return stitched_lc, stitched_trend, stitched_raw, data_found
 
-def remove_flares(time, flux, flux_err=None, sigma:int=3): 
+def remove_flares(time, flux, flux_err=np.array([]), sigma:int=3): 
     ''' 
     Args:
         time: array-like (ideally Pandas.series) object of time values 
@@ -331,7 +332,7 @@ def remove_flares(time, flux, flux_err=None, sigma:int=3):
     else: 
         time = pd.Series(time)
         flux = pd.Series(flux)
-        if flux_err!=None: 
+        if len(flux_err)>0: 
             flux_err = pd.Series(flux_err)
             removed_flux_err = np.array([])
 
@@ -363,7 +364,7 @@ def remove_flares(time, flux, flux_err=None, sigma:int=3):
             time = time.drop(remove_indices)
             flux = flux.drop(remove_indices)
 
-            if flux_err!=None: 
+            if len(flux_err)>0: 
                 removed_flux_err = np.concatenate((removed_flux_err, flux_err[remove_indices]))
                 flux_err = flux_err.drop(remove_indices)
             
@@ -389,11 +390,11 @@ def remove_flares(time, flux, flux_err=None, sigma:int=3):
             time = time.drop(remove_indices)
             flux = flux.drop(remove_indices)
 
-            if flux_err!=None: 
+            if len(flux_err)>0: 
                 removed_flux_err = np.concatenate((removed_flux_err, flux_err[remove_indices]))
                 flux_err = flux_err.drop(remove_indices)
 
-    if flux_err!=None: 
+    if len(flux_err)>0: 
         return (time.to_numpy(), flux.to_numpy(), flux_err.to_numpy()), (removed_time, removed_flux, removed_flux_err)
     else: 
         return (time.to_numpy(), flux.to_numpy()), (removed_time, removed_flux)
@@ -443,6 +444,7 @@ def run_bls(time, flux,
     t0 = results.transit_time[index]
     duration = results.duration[index]
     in_transit = bls_model.transit_mask(time, period, 2*duration, t0)
+
     if compute_stats: 
         stats = bls_model.compute_stats(period, duration, t0)
         return results, bls_model, in_transit, stats
@@ -450,7 +452,7 @@ def run_bls(time, flux,
     else: 
         return results, bls_model, in_transit 
 
-def iterative_bls_runner(stitched_lc, 
+def iterative_bls_runner(time:np.array, flux:np.array,  
                      iterations: int=1, 
                      bls_params: dict = {'min_per':0.5, 'max_per':15, 
                                 'minimum_n_transit':2, 
@@ -482,9 +484,6 @@ def iterative_bls_runner(stitched_lc,
     from astropy.timeseries import BoxLeastSquares
     import numpy as np
     import matplotlib.pyplot as plt
-
-    time = stitched_lc['time']
-    flux = stitched_lc['flux']
 
     durations = np.array(bls_params['durations'])
 

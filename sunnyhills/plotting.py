@@ -19,7 +19,7 @@ from astropy import units as u, constants as const
 from astropy.coordinates import SkyCoord
 from astropy.table import Table
 
-from sunnyhills.paths import DATADIR, EPOCHSDIR
+#from sunnyhills.paths import DATADIR, EPOCHSDIR
 
 def plot_kerr21_XY(outdir, colorkey=None):
     """
@@ -290,6 +290,7 @@ def bls_validation_mosaic(tic_id:str, clean_time:np.array, detrend_flux:np.array
 
     # raw and trend light curve
     ax1.scatter(raw_time, raw_flux, s=1)
+    ax1.set(ylabel='Flux')
 
     # detrend light curve
     ax2.scatter(clean_time, detrend_flux, s=1)
@@ -303,6 +304,7 @@ def bls_validation_mosaic(tic_id:str, clean_time:np.array, detrend_flux:np.array
     f = bls_model.model(x + t0, period, duration, t0)
 
     ax2.vlines(clean_time[in_transit], min(detrend_flux), max(detrend_flux), color='red', lw=0.05,alpha=0.4, zorder=0)
+    ax2.set(ylabel='Detrended Flux')
 
     for ax in [ax1, ax2]: 
         ax.set(xlabel='Time (days)')
