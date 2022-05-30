@@ -132,7 +132,7 @@ def preprocess(
                      'window_length':0.5,
                      'cval':5.0,
                      "break_tolerance":1.0}, 
-    sigma_bounds: list = [10, 2]
+    lower_sigma: int = 10
     ):
     """
     Args:
@@ -143,7 +143,7 @@ def preprocess(
                  "break_tolerance", or anything else needed by wotan's `flatten`
                  call.  These are documented at
                  https://wotan.readthedocs.io/en/latest/Usage.html 
-        sigma_bounds: list of the lower and upper sigma bounds to use for post detrend sigma-clipping 
+        lower_sigma: sigma value for "lower" (non-Gunther) level sigma clip. Default is 10.  
     Returns: 
         lc_list: list of light curve ojects that have met all criteria, been removed of outliers, normalized, and flattened. 
         trend_list: list of light curve objects with x = time, y = trend
@@ -216,7 +216,7 @@ def preprocess(
 
         continue_lower_cut = True 
         while continue_lower_cut: 
-            below_lower_cut = np.where(flux<(np.median(flux)-3*np.std(flux)))[0]
+            below_lower_cut = np.where(flux<(np.median(flux)-lower_sigma*np.std(flux)))[0]
             if len(below_lower_cut)>0: 
                 time = np.delete(time, below_lower_cut)
                 flux = np.delete(flux, below_lower_cut)
@@ -237,14 +237,11 @@ def preprocess(
         )
 
         (cleaned_time_temp, detrended_flux_temp, trend_flux_temp), (_, _, _) = remove_flares(cleaned_time_temp, detrended_flux_temp, trend_flux_temp)
-        warnings.warn('ask bouma if this is okay...wotan did clips before and after?')
-        warnings.warn('should we do slide clip before and this sigma clip after?')
 
         cleaned_time = np.concatenate((cleaned_time, cleaned_time_temp))
         detrended_flux = np.concatenate((detrended_flux, detrended_flux_temp))
         trend_time = np.concatenate((trend_time, cleaned_time_temp))
         trend_flux = np.concatenate((trend_flux, trend_flux_temp))
-        warnings.warn('does this work for dates?????')
 
     if outdir != 'none': 
         if outdir[-1]!='/':

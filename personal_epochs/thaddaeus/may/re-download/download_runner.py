@@ -9,7 +9,7 @@ from sunnyhills.pipeline_functions import download_and_preprocess
 
 warnings.filterwarnings("ignore")
 
-ids = np.array(pd.read_csv('./data/current/current_key.csv')['TIC_ID'])
+ids = np.array(pd.read_csv('./data/current/current_key.csv')['tid'])
 
 import os 
 
