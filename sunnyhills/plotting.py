@@ -277,6 +277,7 @@ def bls_validation_mosaic(tic_id:str, clean_time:np.array, detrend_flux:np.array
     from matplotlib.gridspec import GridSpec
     from sunnyhills.borrowed import tls_intransit_stats
     from sunnyhills.misc import phase, rebin_lightcurve
+    from lightkurve.periodogram import Periodogram
 
     plt.style.use('https://raw.githubusercontent.com/thissop/MAXI-J1535/main/code/misc/stolen_science.mplstyle?token=GHSAT0AAAAAABP54PQO2X2VXMNS256IWOBOYRNCFBA')
     fig = plt.figure(constrained_layout=True, figsize=(12,12))
@@ -289,9 +290,15 @@ def bls_validation_mosaic(tic_id:str, clean_time:np.array, detrend_flux:np.array
     ax5 = fig.add_subplot(gs[-1, -2])
     ax6 = fig.add_subplot(gs[2:, -1])
 
+    
     # raw and trend light curve
+    p = Periodogram(bls_results.period,bls_model.power)
+    p.flatten()
+    p.plot(ax=ax1,xlabel='period',ylabel='power',style='https://raw.githubusercontent.com/thissop/MAXI-J1535/main/code/misc/stolen_science.mplstyle?token=GHSAT0AAAAAABP54PQO2X2VXMNS256IWOBOYRNCFBA')
+    '''
     ax1.scatter(raw_time, raw_flux, s=1)
     ax1.set(ylabel='Flux')
+    '''
 
     # detrend light curve
     ax2.scatter(clean_time, detrend_flux, s=1)
@@ -299,6 +306,7 @@ def bls_validation_mosaic(tic_id:str, clean_time:np.array, detrend_flux:np.array
     period = bls_results.period[index]
     t0 = bls_results.transit_time[index]
     duration = bls_results.duration[index]
+
 
     phased_time, phased_flux, x, f = phase(clean_time, detrend_flux, best_params, bls_model)
 
