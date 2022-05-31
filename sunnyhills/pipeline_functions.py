@@ -420,6 +420,7 @@ def run_bls(time, flux,
         bls_params: params for bls execution. see documentation
         compute_stats: compute statistics on best period/duration combination? default False
     returns: 
+        best_params: [index, period, t0, duration, sig_diff] for highest power period (sig_diff is sig_diff between left/right depths)
         results: the BLS results array 
         bls_model: the BLS model  
         in_transit_mask: mask for the in_transit points. to get not in transit, do ~in_transit_mask
@@ -431,7 +432,7 @@ def run_bls(time, flux,
 
     durations = np.array(bls_params['durations'])
     bls_model = BoxLeastSquares(t=time, y=flux)
-    bls_model.flatten()
+    #bls_model.flatten()
     results = bls_model.autopower(durations, frequency_factor=bls_params['freq_factor'], 
                             minimum_period=bls_params['min_per'], 
                             maximum_period=bls_params['max_per'],
@@ -443,13 +444,29 @@ def run_bls(time, flux,
     duration = results.duration[index]
     in_transit = bls_model.transit_mask(time, period, 2*duration, t0)
 
+    best_params = [index, period, t0, duration]
+
     if compute_stats: 
         stats = bls_model.compute_stats(period, duration, t0)
-        return results, bls_model, in_transit, stats
+
+        depth_odd = stats['depth_odd']
+        err_odd = depth_odd[1]
+        depth_odd = depth_odd[0]
+        depth_even = stats['depth_even']
+        err_even = depth_even[1]
+        depth_even = depth_even[0]
+
+        diff = np.abs(depth_odd-depth_even)
+        unc_diff = ((err_even/depth_even)**2+(err_odd/depth_odd)**2)**0.5
+        sig_diff = diff/unc_diff 
+
+        best_params.append(sig_diff)
+
+        return best_params, results, bls_model, in_transit, stats
 
     else: 
-        return results, bls_model, in_transit 
-
+        return best_params, results, bls_model, in_transit 
+        
 def iterative_bls_runner(time:np.array, flux:np.array,  
                      iterations: int=1, 
                      bls_params: dict = {'min_per':0.5, 'max_per':15, 
