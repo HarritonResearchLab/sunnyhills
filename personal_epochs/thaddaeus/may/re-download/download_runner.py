@@ -18,13 +18,13 @@ completed_ids = np.array([int(i.split('_')[-1]) for i in completed_ids])
 
 ids = np.setdiff1d(ids, completed_ids)
 
+np.random.shuffle(ids)
+
 for id in tqdm(ids): 
     try: 
         tic_id = 'TIC '+str(id).replace('_', " ")
         download_and_preprocess(tic_id, './data/current/processed/two_min_lightcurves')
-        
+    
     except Exception as e: 
         print(e)
         continue
-
-    break 

@@ -300,7 +300,7 @@ def download_and_preprocess(
     raw_list, data_found = download(ticstr=ticstr, logdir=logdir) 
 
     if data_found: 
-        stitched_lc, stitched_trend, stitched_raw = preprocess(raw_list=raw_list, ticstr=ticstr, outdir=outdir, dtrdict=dtrdict, sigma_bounds=sigma_bounds)
+        stitched_lc, stitched_trend, stitched_raw = preprocess(raw_list=raw_list, ticstr=ticstr, outdir=outdir, dtrdict=dtrdict)
 
     else: 
         stitched_lc, stitched_trend, stitched_raw = (None, None, None)
