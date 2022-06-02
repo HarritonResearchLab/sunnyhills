@@ -224,8 +224,6 @@ def preprocess(
             else: 
                 continue_lower_cut=False
 
-        warnings.warn('how low should we remove from below?')
-
         (cleaned_time_temp, cleaned_flux_temp), (_, _) = remove_flares(time, flux)
 
         detrended_flux_temp, trend_flux_temp = wotan.flatten(
@@ -404,19 +402,20 @@ def run_bls(time, flux,
             bls_params: dict = {'min_per':0.5, 'max_per':15, 
                                 'minimum_n_transit':2, 
                                 'freq_factor':1,
-                                'durations':[0.05, 0.06666666666666668, 
-                                             0.08333333333333334, 0.1,
-                                             0.11666666666666668, 
-                                             0.13333333333333336,
-                                             0.15000000000000002, 
-                                             0.16666666666666669, 
-                                             0.18333333333333335, 0.2], 
+                                'durations':[0.05, 0.0667, 
+                                             0.0834, 0.1,
+                                             0.1167, 
+                                             0.1334,
+                                             0.15, 
+                                             0.1667, 
+                                             0.1834, 0.2], 
                                 'objective':'snr'}, 
             compute_stats: bool = True): 
 
     '''
     args: 
-        stitched_lc: list of stitched light curve arrays [time, flux]
+        time: array of time values
+        flux: array of flux values
         bls_params: params for bls execution. see documentation
         compute_stats: compute statistics on best period/duration combination? default False
     returns: 

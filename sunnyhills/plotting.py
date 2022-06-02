@@ -122,7 +122,6 @@ def plot_kerr21_XY(outdir, colorkey=None):
     fig.savefig(outpath, bbox_inches='tight', dpi=400)
     print(f"Made {outpath}")
 
-
 def plot_star_detrending(
     outdir: str,
     ticstr: str,
@@ -276,7 +275,7 @@ def bls_validation_mosaic(tic_id:str, clean_time:np.array, detrend_flux:np.array
     import matplotlib.pyplot as plt
     from matplotlib.gridspec import GridSpec
     from sunnyhills.borrowed import tls_intransit_stats
-    from sunnyhills.misc import phase, rebin_lightcurve
+    from sunnyhills.misc import phase, rebin
 
     plt.style.use('https://raw.githubusercontent.com/thissop/MAXI-J1535/main/code/misc/stolen_science.mplstyle?token=GHSAT0AAAAAABP54PQO2X2VXMNS256IWOBOYRNCFBA')
     fig = plt.figure(constrained_layout=True, figsize=(12,12))
@@ -302,7 +301,7 @@ def bls_validation_mosaic(tic_id:str, clean_time:np.array, detrend_flux:np.array
 
     phased_time, phased_flux, x, f = phase(clean_time, detrend_flux, best_params, bls_model)
 
-    ax2.vlines(clean_time[in_transit], min(detrend_flux), max(detrend_flux), color='red', lw=0.05,alpha=0.4, zorder=0)
+    ax2.vlines(clean_time[in_transit], min(detrend_flux), max(detrend_flux), color='red', lw=0.05, alpha=0.4, zorder=0)
     ax2.set(ylabel='Detrended Flux')
 
     for ax in [ax1, ax2]: 
@@ -311,7 +310,7 @@ def bls_validation_mosaic(tic_id:str, clean_time:np.array, detrend_flux:np.array
     # phase folded
     ax3.scatter(phased_time, phased_flux, s=3, c='grey')
 
-    binned_x, binned_flux = rebin_lightcurve(phased_time, phased_flux)
+    binned_x, binned_flux = rebin(phased_time, phased_flux)
     
     ax3.plot(x, f, color='red', alpha=0.5)
     ax3.scatter(binned_x, binned_flux, c='orange', s=40, edgecolor='black')
@@ -334,7 +333,7 @@ def bls_validation_mosaic(tic_id:str, clean_time:np.array, detrend_flux:np.array
     odd_ = intransit_stats[4]
     odd_time, odd_flux = (odd_[0], odd_[1])
     odd_phased_time, odd_phased_flux, odd_x, odd_f = phase(odd_time, odd_flux, best_params, bls_model)
-    odd_binned_time, odd_binned_flux = rebin_lightcurve(odd_phased_time, odd_phased_flux, factor=20)
+    odd_binned_time, odd_binned_flux = rebin(odd_phased_time, odd_phased_flux)
 
     even_ = intransit_stats[5]
     even_time, even_flux = (even_[0], even_[1])
@@ -343,7 +342,7 @@ def bls_validation_mosaic(tic_id:str, clean_time:np.array, detrend_flux:np.array
     
     odd_even_median = (np.max(odd_phased_time)+np.min(even_phased_time))/2
 
-    even_binned_time, even_binned_flux = rebin_lightcurve(even_phased_time, even_phased_flux, factor=20)
+    even_binned_time, even_binned_flux = rebin(even_phased_time, even_phased_flux)
 
     ax4.scatter(odd_phased_time, odd_phased_flux, s=3, c='grey')
     ax4.scatter(even_phased_time, even_phased_flux, s=3, c='grey')

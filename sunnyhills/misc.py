@@ -35,30 +35,30 @@ def lomb_scargle(time,flux,flux_err:np.array=None,min_per:float=.1,max_per:int=1
 
     return powers,periods,best_period,best_period_power,fap_levels
 
-def rebin_lightcurve(folded_x, folded_flux, factor:int=30): 
-        '''
-        Arguments: 
-            folded_x: folded time values
-            folded_flux: corresponding flux values
-        Returns: 
-            binned_x: re-binned folded time values
-            binned_flux: re-binned flux
-        '''
+def rebin(x, y, num_bins:int=20): 
+    '''
+    arguments: 
+        x: time values 
+        y: corresponding flux values
+        num_bins: number of output points; default is 20
+    returns: 
+        x_rebinned: rebinned x 
+        y_rebinned: rebinned y 
+    '''
+    
+    step = int(len(x)/num_bins)
 
-        binned_x, binned_flux = ([], [])
-        step = int(len(folded_x)/factor)
-        indices = list(range(0, len(folded_x), step))
-        for index, i in enumerate(indices): 
-            if index==len(indices)-1: 
-                binned_x.append(np.mean(folded_x[i:]))
-                binned_flux.append(np.mean(folded_flux[i:]))
-            else: 
-                binned_x.append(np.mean(folded_x[i:indices[index+1]]))
-                binned_flux.append(np.mean(folded_flux[i:indices[index+1]]))
+    ranges = []
 
-        return binned_x, binned_flux 
+    for i in range(0, len(x)-step, step): 
+        ranges.append([i,i+step])
 
-def phase(time, flux, best_params, bls_model, fraction:int=0.2): 
+    x_rebinned = np.array([np.mean(x[range[0]:range[1]]) for range in ranges])
+    y_rebinned = np.array([np.mean(y[range[0]:range[1]]) for range in ranges])
+
+    return x_rebinned, y_rebinned 
+
+def phase(time, flux, best_params, model:None, model_name:None, fraction:int=0.2): 
         '''
         Arguments: 
             time: array of time values
@@ -68,13 +68,23 @@ def phase(time, flux, best_params, bls_model, fraction:int=0.2):
             bls_model: bls model (FIX FOR TLS!)
             fraction: how far from median time to go; default is 0.2
         Returns: 
-            folded time values, folded flux values, x and f (latter two for red bls model)
+            return_list: [folded x, folded flux, mask] additional things depending on model
         '''
+        
+        import numpy as np
+        import warnings
+
         period = best_params[1]
         t0 = best_params[2]
         duration = best_params[3]
         x = (time - t0 + 0.5*period) % period - 0.5*period
         m = np.abs(x) < 0.2
-        f = bls_model.model(x + t0, period, duration, t0)
+        
+        return_list = [x[m], flux[m], m]
 
-        return x[m], flux[m], x, f
+        if model_name=='BLS' and model!=None: 
+            f = model.model(x + t0, period, duration, t0) # for BLS
+            return_list.append(x)
+            return_list.append(f)
+
+        return return_list
