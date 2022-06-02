@@ -431,7 +431,6 @@ def run_bls(time, flux,
 
     durations = np.array(bls_params['durations'])
     bls_model = BoxLeastSquares(t=time, y=flux)
-    #bls_model.flatten()
     results = bls_model.autopower(durations, frequency_factor=bls_params['freq_factor'], 
                             minimum_period=bls_params['min_per'], 
                             maximum_period=bls_params['max_per'],
