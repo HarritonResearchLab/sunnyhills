@@ -9,6 +9,13 @@ def gaia_to_tic(gaia_ids):
             tic_ids.append(gaiadr2_to_tic(id))
     return np.array(tic_ids)
 
+def skycoord_to_tic(ra,dec):
+    from astropy.coordinates import SkyCoord
+    from eleanor import mast
+    
+    tic_id = mast.tic_from_coords((ra,dec))
+    return tic_id
+
 def lomb_scargle(time,flux,flux_err:np.array=None,min_per:float=.1,max_per:int=15,calc_fap:bool=True,probilities:list=[.1,.05,.01]):
     import numpy as np
     from astropy.timeseries import LombScargle
