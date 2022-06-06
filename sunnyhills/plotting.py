@@ -253,6 +253,7 @@ def plot_star_detrending(
     fig.savefig(plotpath, bbox_inches='tight', dpi=400)
     print(f"Made {plotpath}")
 
+import numpy as np
 def bls_validation_mosaic(tic_id:str, clean_time:np.array, detrend_flux:np.array, 
                           raw_time:np.array, raw_flux:np.array, 
                           best_params:list, bls_results, bls_model, in_transit, bls_stats, 
@@ -276,6 +277,8 @@ def bls_validation_mosaic(tic_id:str, clean_time:np.array, detrend_flux:np.array
     from matplotlib.gridspec import GridSpec
     from sunnyhills.borrowed import tls_intransit_stats
     from sunnyhills.misc import phase, rebin
+
+    import astropy.units as units
     from lightkurve.periodogram import Periodogram
 
     plt.style.use('https://raw.githubusercontent.com/thissop/MAXI-J1535/main/code/misc/stolen_science.mplstyle?token=GHSAT0AAAAAABP54PQO2X2VXMNS256IWOBOYRNCFBA')
@@ -291,14 +294,13 @@ def bls_validation_mosaic(tic_id:str, clean_time:np.array, detrend_flux:np.array
 
     
     # raw and trend light curve
-    p = Periodogram(bls_results.period,bls_model.power)
+    p = Periodogram(bls_results.period*units.microhertz,units.Quantity(bls_results.power))
     p.flatten()
     p.plot(ax=ax1,xlabel='period',ylabel='power',style='https://raw.githubusercontent.com/thissop/MAXI-J1535/main/code/misc/stolen_science.mplstyle?token=GHSAT0AAAAAABP54PQO2X2VXMNS256IWOBOYRNCFBA')
-    '''
+    '''    
     ax1.scatter(raw_time, raw_flux, s=1)
     ax1.set(ylabel='Flux')
     '''
-
     # detrend light curve
     ax2.scatter(clean_time, detrend_flux, s=1)
     index = np.argmax(bls_results.power)
