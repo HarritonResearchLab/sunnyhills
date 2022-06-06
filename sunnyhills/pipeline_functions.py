@@ -549,3 +549,56 @@ def iterative_bls_runner(time:np.array, flux:np.array,
     else: 
         return results_dict, models_dict, in_transits_dict
 
+# False Alarm Validation Stuff
+
+def validate(routine:str, routine_output:tuple):
+    '''
+    Parameters: 
+        - routine: either "BLS" or "TLS"
+        - routine_output: the tuple returned by run_tls() or run_bls()
+
+    Returns: 
+
+    Notes: 
+        - A significant portion of the following code was borrowed from EDI Vetter, so don't forget to cite them.
+        - Checks should return True if they're a false alarm, and false otherwise 
+    '''
+
+    import numpy as np
+    import warnings 
+
+    def left_right(routine=routine, routine_output=routine_output, 
+                   sigma:int=5):
+        
+        '''
+        notes
+            - TLS checks if left/right depths are > 5 sigma diff
+            - (for now) BLS checks if left/right are consistent within errors
+        '''
+
+        if routine=='TLS':
+            warnings.warn('fix below line') 
+            eoSig=routine_output.tlsOut.odd_even_mismatch
+            if eoSig>sigma:
+                return True       
+            else:
+                return False 
+
+        elif routine=='BLS': 
+            stats = routine_output[4]
+            odd = stats['depth_odd']
+            even = stats['depth_even']
+
+            odd_range = [odd[0]-odd[1], odd[0]+odd[1]]
+            even_range = [even[0]-even[1], even[0]+even[1]]
+
+            r = [odd_range, even_range].sort()
+
+            overlapping = max(r[0]) > min(r[1]) # checks if they overlap 
+
+            return not overlapping # false if they do overlap, because that means they are not sig. different
+
+    validation_dict = {}
+    validation_dict['left_right_transits'] = left_right() 
+
+    return validation_dict 
