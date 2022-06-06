@@ -4,10 +4,14 @@ def gaia_to_tic(gaia_ids):
     from astrobase.services.identifiers import gaiadr2_to_tic
     import numpy as np
     tic_ids = []
-    for id in np.array(gaia_ids):
+    for id in gaia_ids:
         if id !=None:
             tic_ids.append(gaiadr2_to_tic(id))
-    return np.array(tic_ids)
+
+        else: 
+            tic_ids.append(None)
+
+    return dict(zip(gaia_ids, tic_ids))
 
 def lomb_scargle(time,flux,flux_err:np.array=None,min_per:float=.1,max_per:int=15,calc_fap:bool=True,probilities:list=[.1,.05,.01]):
     import numpy as np
