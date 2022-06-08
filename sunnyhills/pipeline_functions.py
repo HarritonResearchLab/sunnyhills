@@ -488,7 +488,7 @@ def run_bls(time, flux,
 
     depth = results.depth
 
-    warnings.warn('note to future users: I (Thaddaeus) addded depth to bls best params, so this may mess up anything ur using rn that refs run_bls')
+    warnings.warn('note to future users: I (Thaddaeus) added depth to bls best params, so this may mess up anything ur using rn that refs run_bls')
 
     best_params = [index, period, t0, duration, depth]
 

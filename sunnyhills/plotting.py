@@ -18,6 +18,7 @@ from mpl_toolkits.axes_grid1.inset_locator import inset_axes
 from astropy import units as u, constants as const
 from astropy.coordinates import SkyCoord
 from astropy.table import Table
+import numpy as np
 
 #from sunnyhills.paths import DATADIR, EPOCHSDIR
 
@@ -253,7 +254,6 @@ def plot_star_detrending(
     fig.savefig(plotpath, bbox_inches='tight', dpi=400)
     print(f"Made {plotpath}")
 
-import numpy as np
 def bls_validation_mosaic(tic_id:str, clean_time:np.array, detrend_flux:np.array, 
                           raw_time:np.array, raw_flux:np.array, 
                           best_params:list, bls_results, bls_model, in_transit, bls_stats, 
@@ -307,7 +307,6 @@ def bls_validation_mosaic(tic_id:str, clean_time:np.array, detrend_flux:np.array
     period = bls_results.period[index]
     t0 = bls_results.transit_time[index]
     duration = bls_results.duration[index]
-
 
     phased_time, phased_flux, x, f = phase(clean_time, detrend_flux, best_params, bls_model)
 
