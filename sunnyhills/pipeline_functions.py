@@ -5,6 +5,14 @@ import numpy as np
 
 ## DATA PROCESSING RELATED ##
 
+
+# cSpell:ignore lightkurve, biweight, cval, dtrdict, detrended
+# cSpell: disable
+
+import numpy as np
+
+## DATA PROCESSING RELATED ##
+
 def download(
     ticstr: str, 
     outdir: str = 'none', 
@@ -154,7 +162,6 @@ def preprocess(
     import wotan 
     import pandas as pd
     import warnings
-    from sunnyhills.pipeline_functions import remove_flares
 
     cleaned_time = np.array([])
     detrended_flux = np.array([])
@@ -291,7 +298,6 @@ def download_and_preprocess(
         data_found: if data was not found during download, returns tuple of None objects
     '''
 
-    from sunnyhills.pipeline_functions import download, preprocess # lol troll
     import numpy as np
     import warnings 
 
@@ -305,8 +311,8 @@ def download_and_preprocess(
     
     warnings.warn('need to FIX/reimplement LOGGING! and get rid of download returning stitched lc!')
 
-    return stitched_lc, stitched_trend, stitched_raw, data_found
-
+    return stitched_lc, stitched_trend, stitched_raw
+import numpy as np
 def remove_flares(time, flux, flux_err=np.array([]), sigma:int=3): 
     ''' 
     Args:
@@ -393,7 +399,7 @@ def remove_flares(time, flux, flux_err=np.array([]), sigma:int=3):
         return (time.to_numpy(), flux.to_numpy(), flux_err.to_numpy()), (removed_time, removed_flux, removed_flux_err)
     else: 
         return (time.to_numpy(), flux.to_numpy()), (removed_time, removed_flux)
-
+        
 ## PERIOD SEARCH ROUTINES ##
 
 ## BLS ##
