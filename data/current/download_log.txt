@@ -1,0 +1,1 @@
+tic_id,clean_counts,no_flare_counts,raw_counts,ls_period,ls_sig

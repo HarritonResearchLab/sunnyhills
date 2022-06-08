@@ -5,11 +5,8 @@ import numpy as np
 
 ## DATA PROCESSING RELATED ##
 
-
 # cSpell:ignore lightkurve, biweight, cval, dtrdict, detrended
 # cSpell: disable
-
-import numpy as np
 
 ## DATA PROCESSING RELATED ##
 
@@ -142,6 +139,7 @@ def preprocess(
                      "break_tolerance":1.0}, 
     lower_sigma: int = 10
     ):
+
     """
     Args:
         raw_list: raw list of light curves; see download() 
@@ -163,63 +161,28 @@ def preprocess(
     import pandas as pd
     import warnings
 
-    cleaned_time = np.array([])
-    detrended_flux = np.array([])
+    clean_time = np.array([])
+    clean_flux = np.array([])
     trend_time = np.array([])
     trend_flux = np.array([])
+    no_flare_raw_time = np.array([])
+    no_flare_raw_flux = np.array([])
     raw_time = np.array([])
     raw_flux = np.array([])
+
+    raw_num_obs = 0
+    no_flare_num_obs = 0 # was not treated after detrending, just before! 
+    clean_num_obs = 0
 
     for lc in raw_list:
 
         time = lc['time']
         flux = lc['flux']
 
+        raw_num_obs+=len(time)
+
         raw_time = np.concatenate((raw_time, time))
         raw_flux = np.concatenate((raw_flux, flux))
-
-        def old_detrend_method(time, flux): 
-
-            # remove outliers before local window detrending-- wotan does this before detrend, and sigma clip after detrend 
-            clipped_flux = wotan.slide_clip(time, flux, window_length=0.5, low=3,
-                                    high=2, method='mad', center='median')
-
-            clipped_mask = ~np.isnan(clipped_flux)
-
-            clipped_time = time[clipped_mask]
-            clipped_flux = clipped_flux[clipped_mask]
-
-            # see https://wotan.readthedocs.io/en/latest/Usage.html for other
-            # possible options.
-            flat_flux, trend_flux = wotan.flatten(
-                clipped_time, clipped_flux, return_trend=True,
-                method=dtrdict['method'],
-                break_tolerance=dtrdict['break_tolerance'],
-                window_length=dtrdict['window_length'],
-                cval=dtrdict['cval']
-            )
-
-            flat_mean, flat_sigma = (np.nanmean(flat_flux), np.nanstd(flat_flux))
-
-            #_, *bounds = sigma_clip(flat_flux, sigma_lower=10, sigma_upper=1, maxiters=1, masked=False, return_bounds=True) # okay flex LOL
-
-            bounds = [flat_mean-sigma_bounds[0]*flat_sigma, flat_mean+sigma_bounds[1]*flat_sigma] # save these bounds to log file? 
-
-            flat_mask = np.logical_and(flat_flux<bounds[1], flat_flux>bounds[0])
-
-            flat_time = clipped_time[flat_mask]
-            flat_flux = flat_flux[flat_mask]
-
-            lc_times = np.concatenate((lc_times, flat_time))
-            lc_fluxes = np.concatenate((lc_fluxes, flat_flux))
-
-            trend_times = np.concatenate((trend_times, clipped_time))
-            trend_fluxes = np.concatenate((trend_fluxes, trend_flux))
-
-            raw_time = np.concatenate((raw_times, time))
-            raw_fluxe = np.concatenate((raw_fluxes, flux))
-             
-        # remove stuff below 
 
         continue_lower_cut = True 
         while continue_lower_cut: 
@@ -233,6 +196,11 @@ def preprocess(
 
         (cleaned_time_temp, cleaned_flux_temp), (_, _) = remove_flares(time, flux)
 
+        no_flare_raw_time = np.concatenate((no_flare_raw_time, cleaned_time_temp))
+        no_flare_raw_flux = np.concatenate((no_flare_raw_flux, cleaned_time_temp))
+        
+        no_flare_num_obs += len(no_flare_raw_time)
+
         detrended_flux_temp, trend_flux_temp = wotan.flatten(
             cleaned_time_temp, cleaned_flux_temp, return_trend=True,
             method=dtrdict['method'],
@@ -243,21 +211,23 @@ def preprocess(
 
         (cleaned_time_temp, detrended_flux_temp, trend_flux_temp), (_, _, _) = remove_flares(cleaned_time_temp, detrended_flux_temp, trend_flux_temp)
 
-        cleaned_time = np.concatenate((cleaned_time, cleaned_time_temp))
-        detrended_flux = np.concatenate((detrended_flux, detrended_flux_temp))
+        clean_time = np.concatenate((clean_time, cleaned_time_temp))
+        clean_flux = np.concatenate((clean_flux, detrended_flux_temp))
         trend_time = np.concatenate((trend_time, cleaned_time_temp))
         trend_flux = np.concatenate((trend_flux, trend_flux_temp))
 
-    if outdir != 'none': 
-        if outdir[-1]!='/':
-            outdir+='/'
+        clean_num_obs += len(clean_time)
+
+    if outdir != 'none':  
+        if outdir[-1]!='/':  
+            outdir+='/'  
         
         outfile = outdir+ticstr.replace(' ','_')+'.csv'
         
-        cols = [cleaned_time, detrended_flux, trend_time, trend_flux, raw_time, raw_flux]
+        cols = [clean_time, clean_flux, trend_time, trend_flux, no_flare_raw_time, no_flare_raw_flux, raw_time, raw_flux]
         cols = [pd.Series(i) for i in cols]
 
-        col_names = ['cleaned_time', 'detrended_flux', 'trend_time', 'trend_flux', 'raw_time', 'raw_flux']
+        col_names = ['clean_time', 'clean_flux', 'trend_time', 'trend_flux', 'no_flare_raw_time', 'no_flare_raw_flux', 'raw_time', 'raw_flux']
     
         dictionary = {}
         for i in range(len(cols)):
@@ -267,10 +237,7 @@ def preprocess(
 
         out_df.to_csv(outfile, index=False)
 
-        # cleaned as in flares have been removed 
-        # detrended has had flares removed and trend removed as well  
-
-    return (cleaned_time, detrended_flux), (cleaned_time, trend_flux), (raw_time, raw_flux) 
+    return out_df, [clean_num_obs, no_flare_num_obs, raw_num_obs]
 
 def download_and_preprocess(
     ticstr: str = '',
@@ -279,8 +246,7 @@ def download_and_preprocess(
     dtrdict: dict = {'method':'biweight',
                      'window_length':0.5,
                      'cval':5.0,
-                     "break_tolerance":1.0}, 
-    sigma_bounds: list = [10, 2]
+                     "break_tolerance":1.0}
     ): 
     
     '''
@@ -289,7 +255,6 @@ def download_and_preprocess(
         outdir: dir to save light curve to. default is none
         logdir: dir to save log file to. default is none
         dtrdict: detrending dictionary 
-        sigma_bounds: bounds for sigma clipping 
         
     Returns: 
         lc_list: list of light curve ojects that have met all criteria, been removed of outliers, normalized, and flattened. 
@@ -304,15 +269,13 @@ def download_and_preprocess(
     raw_list, data_found = download(ticstr=ticstr, logdir=logdir) 
 
     if data_found: 
-        stitched_lc, stitched_trend, stitched_raw = preprocess(raw_list=raw_list, ticstr=ticstr, outdir=outdir, dtrdict=dtrdict)
+        lc_df, counts = preprocess(raw_list=raw_list, ticstr=ticstr, outdir=outdir, dtrdict=dtrdict)
 
     else: 
-        stitched_lc, stitched_trend, stitched_raw = (None, None, None)
+        lc_df, counts = (None, None)
     
-    warnings.warn('need to FIX/reimplement LOGGING! and get rid of download returning stitched lc!')
+    return lc_df, counts 
 
-    return stitched_lc, stitched_trend, stitched_raw
-import numpy as np
 def remove_flares(time, flux, flux_err=np.array([]), sigma:int=3): 
     ''' 
     Args:
@@ -399,13 +362,87 @@ def remove_flares(time, flux, flux_err=np.array([]), sigma:int=3):
         return (time.to_numpy(), flux.to_numpy(), flux_err.to_numpy()), (removed_time, removed_flux, removed_flux_err)
     else: 
         return (time.to_numpy(), flux.to_numpy()), (removed_time, removed_flux)
+
+def download_pipeline(ids:str, download_dir:str, log_file:str): 
+    '''
+    Arguments: 
+        ids : list of tic ids 
+        download_dir: directory to download files to 
+        log_file: file to append results to 
+    '''
+
+    
+    import warnings
+    from tqdm import tqdm 
+    import pandas as pd
+    import numpy as np 
+    import os 
+    import re
+
+    from sunnyhills.pipeline_functions import download_and_preprocess 
+    from sunnyhills.false_alarm_checks import lombscargle
+
+    warnings.filterwarnings("ignore")
+
+    '''
+    completed_ids = np.array([i.replace('.csv', '') for i in os.listdir(download_dir) if i.split('.')[-1]=='csv'])
+    completed_ids = np.array([int(i.split('_')[-1]) for i in completed_ids])
+    print(completed_ids)
+    ids = np.setdiff1d(ids, completed_ids)
+
+    print(ids)
+    '''
+
+    np.random.shuffle(ids)
+
+    if not os.path.exists(log_file): 
+        with open(log_file, 'w') as f:
+            f.write('tic_id,clean_counts,no_flare_counts,raw_counts,ls_period,ls_sig'+'\n') 
+    lines = []
+
+    for id in tqdm(ids): 
+        try: 
+            id = str(id)
+            id = id.replace('TIC', '')
+            tic_id = 'TIC '+id.replace('_', " ")
+            tic_id = re.sub(' +', ' ', tic_id)
+            lc_df, counts = download_and_preprocess(tic_id, download_dir)
+
+            # counts = [clean_num_obs, no_flare_num_obs, raw_num_obs]
+
+            lc_df = lc_df[['no_flare_raw_time', 'no_flare_raw_flux']].dropna()
+
+            no_flare_time, no_flare_flux = (np.array(i) for i in [lc_df['no_flare_raw_time'], lc_df['no_flare_raw_flux']])
+
+            ls_results = lombscargle(time=no_flare_time, flux=no_flare_flux)
+            
+            ls_period = ls_results[2]
+            ls_power = ls_results[3]
+            fap_95 = ls_results[4][1]
+
+            ls_sig = False 
+            if ls_power>fap_95: 
+                ls_sig = True
+
+            log_list =[tic_id, counts[0], counts[1], counts[2], round(ls_period, 3), ls_sig]
+            log_list = [str(i) for i in log_list]
+
+            line = ','.join(log_list)+'\n'
+            lines.append(line)
         
+        except: 
+            continue 
+    
+    with open(log_file, 'a') as f: 
+        for line in lines: 
+            f.write(line)
+
 ## PERIOD SEARCH ROUTINES ##
 
 ## BLS ##
 
 def run_bls(time, flux, 
-            bls_params: dict = {'min_per':0.5, 'max_per':15, 
+            bls_params: dict = {'min_per':0.1, 'max_per':15, 
                                 'minimum_n_transit':2, 
                                 'freq_factor':1,
                                 'durations':[0.05, 0.0667, 
@@ -434,6 +471,7 @@ def run_bls(time, flux,
 
     from astropy.timeseries import BoxLeastSquares
     import numpy as np
+    import warnings
 
     durations = np.array(bls_params['durations'])
     bls_model = BoxLeastSquares(t=time, y=flux)
@@ -448,7 +486,11 @@ def run_bls(time, flux,
     duration = results.duration[index]
     in_transit = bls_model.transit_mask(time, period, 2*duration, t0)
 
-    best_params = [index, period, t0, duration]
+    depth = results.depth
+
+    warnings.warn('note to future users: I (Thaddaeus) addded depth to bls best params, so this may mess up anything ur using rn that refs run_bls')
+
+    best_params = [index, period, t0, duration, depth]
 
     if compute_stats: 
         stats = bls_model.compute_stats(period, duration, t0)
@@ -464,7 +506,8 @@ def run_bls(time, flux,
         unc_diff = ((err_even/depth_even)**2+(err_odd/depth_odd)**2)**0.5
         sig_diff = diff/unc_diff 
 
-        best_params.append(sig_diff)
+        warnings.warn('note to future users: I (Thaddaeus) changed sig diff from being the potential last parameter of best params to being an item in the compute_stats dictionary')
+        stats['sig_diff'] = sig_diff
 
         return best_params, results, bls_model, in_transit, stats
 
@@ -473,7 +516,7 @@ def run_bls(time, flux,
         
 def iterative_bls_runner(time:np.array, flux:np.array,  
                      iterations: int=1, 
-                     bls_params: dict = {'min_per':0.5, 'max_per':15, 
+                     bls_params: dict = {'min_per':0.1, 'max_per':15, 
                                 'minimum_n_transit':2, 
                                 'freq_factor':1,
                                 'durations':[0.05, 0.06666666666666668, 
@@ -555,56 +598,4 @@ def iterative_bls_runner(time:np.array, flux:np.array,
     else: 
         return results_dict, models_dict, in_transits_dict
 
-# False Alarm Validation Stuff
-
-def validate(routine:str, routine_output:tuple):
-    '''
-    Parameters: 
-        - routine: either "BLS" or "TLS"
-        - routine_output: the tuple returned by run_tls() or run_bls()
-
-    Returns: 
-
-    Notes: 
-        - A significant portion of the following code was borrowed from EDI Vetter, so don't forget to cite them.
-        - Checks should return True if they're a false alarm, and false otherwise 
-    '''
-
-    import numpy as np
-    import warnings 
-
-    def left_right(routine=routine, routine_output=routine_output, 
-                   sigma:int=5):
-        
-        '''
-        notes
-            - TLS checks if left/right depths are > 5 sigma diff
-            - (for now) BLS checks if left/right are consistent within errors
-        '''
-
-        if routine=='TLS':
-            warnings.warn('fix below line') 
-            eoSig=routine_output.tlsOut.odd_even_mismatch
-            if eoSig>sigma:
-                return True       
-            else:
-                return False 
-
-        elif routine=='BLS': 
-            stats = routine_output[4]
-            odd = stats['depth_odd']
-            even = stats['depth_even']
-
-            odd_range = [odd[0]-odd[1], odd[0]+odd[1]]
-            even_range = [even[0]-even[1], even[0]+even[1]]
-
-            r = [odd_range, even_range].sort()
-
-            overlapping = max(r[0]) > min(r[1]) # checks if they overlap 
-
-            return not overlapping # false if they do overlap, because that means they are not sig. different
-
-    validation_dict = {}
-    validation_dict['left_right_transits'] = left_right() 
-
-    return validation_dict 
+## TLS ##

@@ -1,0 +1,3 @@
+tic_id,clean_counts,no_flare_counts,raw_counts,ls_period,ls_sig
+TIC 1232360,38714,38875,26569,14.882819619696278,True
+TIC 12471629,18158,18174,18296,15.0,True

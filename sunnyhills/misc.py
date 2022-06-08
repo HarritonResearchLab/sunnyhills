@@ -20,32 +20,6 @@ def skycoord_to_tic(ra,dec):
     tic_id = mast.tic_from_coords((ra,dec))
     return tic_id
 
-def lomb_scargle(time,flux,flux_err:np.array=None,min_per:float=.1,max_per:int=15,calc_fap:bool=True,probilities:list=[.1,.05,.01]):
-    import numpy as np
-    from astropy.timeseries import LombScargle
-    
-    best_period = 0
-    best_period_power = 0
-
-    fap_levels = None
-    periodogram = LombScargle(time,flux,flux_err)
-    frequencies,powers = periodogram.autopower(min_per,max_per)
-
-    periods = 1/frequencies
-
-    if calc_fap:
-        fap_levels = periodogram.false_alarm_probability(probilities)
-
-    sorted = np.argsort(powers)[::-1] #descending order
-    powers = powers[sorted]
-    periods = periods[sorted]
-
-    if len(sorted)>0: 
-        best_period = periods[0] 
-        best_period_power = powers[0]
-
-    return powers,periods,best_period,best_period_power,fap_levels
-
 def rebin(x, y, num_bins:int=20): 
     '''
     arguments: 
@@ -69,33 +43,51 @@ def rebin(x, y, num_bins:int=20):
 
     return x_rebinned, y_rebinned 
 
-def phase(time, flux, best_params, model:None, model_name:None, fraction:int=0.2): 
+def phase(time, flux, period:float, t0:float=None, duration:float=None, bls_model=None, model_name:str=None, tls_results=None, fraction:int=0.2): 
         '''
         Arguments: 
             time: array of time values
             flux: corresponding array of flux values
             period: period to fold to 
             t0: t0 from BLS/TLS 
-            bls_model: bls model (FIX FOR TLS!)
+            bls_model: bls model (if model_name='BLS', otherwise None)
             fraction: how far from median time to go; default is 0.2
         Returns: 
-            return_list: [folded x, folded flux, mask] additional things depending on model
+            return_list: [folded_x, folded_flux] by default for model_name in (BLS, LS, TLS)
+                         Note: if model_name is BLS, you need to give bls_model the bls_model you used to fit, so it can calculate the model transit shape
+                         Note: if model_name is TLS, then you need to give tls_results the results from model.power() from tls bc TLS already calcs fold/not fold
+                         Note: in all cases cases, as noted above, they will return folded model time and flux in addition to (after) folded data time and flux
         '''
         
         import numpy as np
         import warnings
 
-        period = best_params[1]
-        t0 = best_params[2]
-        duration = best_params[3]
-        x = (time - t0 + 0.5*period) % period - 0.5*period
-        m = np.abs(x) < 0.2
-        
-        return_list = [x[m], flux[m], m]
+        if model_name!=None: 
+            if model_name=='BLS' or model_name=='TLS': 
 
-        if model_name=='BLS' and model!=None: 
-            f = model.model(x + t0, period, duration, t0) # for BLS
-            return_list.append(x)
-            return_list.append(f)
+                x = (time - t0 + 0.5*period) % period - 0.5*period
+                m = np.abs(x) < fraction
+                
+                return_list = [x[m], flux[m]]
 
-        return return_list
+                if model_name=='BLS' and bls_model!=None: 
+                    f = bls_model.model(x + t0, period, duration, t0) # for BLS
+                    return_list.append([x,f])
+
+                elif model_name=='TLS' and tls_results!=None: 
+                    return_list.append([tls_results.model_folded_phase,tls_results.model_folded_flux])
+
+            elif model_name=='LS': 
+                from astropy.timeseries import LombScargle
+
+                phased_dates = (np.mod(time, period))/period
+                return_list.append(phased_dates)
+                return_list.append(flux)
+                
+                t_fit = np.linspace(0, 1)
+                ls = LombScargle(time, flux)
+                y_fit = ls.model(t_fit, 1/period)
+
+                return_list.append([t_fit, y_fit])
+
+        return np.flatten(return_list)
