@@ -20,6 +20,10 @@ def skycoord_to_tic(ra,dec):
     tic_id = mast.tic_from_coords((ra,dec))
     return tic_id
 
+def get_best_period(periodogram):
+  import numpy as np
+  return periodogram.period[np.argmax(periodogram.power)]
+
 def rebin(x, y, num_bins:int=20): 
     '''
     arguments: 
