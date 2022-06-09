@@ -648,3 +648,77 @@ def run_tls(time, flux,
     
 
     return best_params, results, tls_model, in_transit
+
+def iterative_tls_runner(time, flux, 
+                     iterations: int=1, 
+                     tls_params: dict = {'min_per':0.5, 'max_per':15, 
+                                'minimum_n_transit':2, 
+                                'freq_factor':1,
+                                'durations':[0.05, 0.06666666666666668, 
+                                             0.08333333333333334, 0.1,
+                                             0.11666666666666668, 
+                                             0.13333333333333336,
+                                             0.15000000000000002, 
+                                             0.16666666666666669, 
+                                             0.18333333333333335, 0.2], 
+                                'objective':'snr'}): 
+
+    '''
+    Args:
+        stitched_lc: stitched_lc, per usual  
+        iterations: number of times to run the search, can be between 1 and 10 
+        tls_params: per usual, dictionary of tls parameters
+        compute_stats: will be set to true by default? 
+    Returns: 
+        results_dict: dictionary of results from each iteration 
+        models_dict: dicitonary of tls models from each iteration
+        in_transits_dict: dictionary of in_transit arrays from each iteration
+    '''
+
+    from transitleastsquares import transitleastsquares
+    from transitleastsquares import transit_mask
+    import numpy as np
+    import matplotlib.pyplot as plt
+
+
+    durations = np.array(tls_params['durations'])
+
+    if iterations < 1:
+        iterations = 1
+    elif iterations > 10: 
+        iterations = 10 
+
+    results_dict = {} 
+    models_dict = {} 
+    in_transits_dict = {} 
+    stats_dict = {} 
+
+    iteration_names = ['first', 'second', 'third', 'fourth',
+                       'fifth', 'sixth', 'seventh', 'eigth',
+                       'ninth', 'tenth']
+
+    for index in range(iterations):
+        iter_name = iteration_names[index] 
+        tls_model = transitleastsquares(t=time, y=flux)
+#tls uses power instead of autopower?
+#Removed duration because model.power only takes one argument
+        results = tls_model.power(frequency_factor=tls_params['freq_factor'], 
+                                minimum_period=tls_params['min_per'], 
+                                maximum_period=tls_params['max_per'], 
+                                objective=tls_params['objective'])
+  
+        
+        results_dict[iter_name] = results
+
+        index = np.argmax(results.power)
+        period = results.periods[index]
+        t0 = results.T0
+        duration = results.duration
+        
+        in_transit = transit_mask(time, period, 2*duration, t0)
+
+        in_transits_dict[iter_name] = in_transit
+
+        models_dict[iter_name] = tls_model
+
+        return results_dict, models_dict, in_transits_dict
