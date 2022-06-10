@@ -255,6 +255,7 @@ def plot_star_detrending(
     print(f"Made {plotpath}")
 
 def bls_validation_mosaic(tic_id:str, clean_time:np.array, clean_flux:np.array, 
+                          trend_time:np.array, trend_flux:np.array,
                           raw_time:np.array, raw_flux:np.array, 
                           best_params:list, bls_results, bls_model, in_transit, bls_stats, 
                           path:str=None, dpi:int=150): 
@@ -264,6 +265,8 @@ def bls_validation_mosaic(tic_id:str, clean_time:np.array, clean_flux:np.array,
         tic_id: tic id 
         clean_time: detrended and flare removed time array
         clean_flux: flux values corresponding to clean_time arg
+        trend_time: time values of the trend
+        trend_flux: flux values of the trend 
         raw_time: array of "raw" time values, i.e. not detrended and potentially with flares
         raw_flux: flux array corresponding to raw_time arg
         best_params, bls_results, bls_model, in_transit, bls_stats: the items returned by the run_bls function in pipeline_functions.py (NOTE: in run_bls, stats must be set to be calculated!)
@@ -295,13 +298,10 @@ def bls_validation_mosaic(tic_id:str, clean_time:np.array, clean_flux:np.array,
 
     
     # raw and trend light curve
-    p = Periodogram(bls_results.period*units.microhertz,units.Quantity(bls_results.power))
-    p.flatten()
-    p.plot(ax=ax1,xlabel='period',ylabel='power',style='https://raw.githubusercontent.com/thissop/MAXI-J1535/main/code/misc/stolen_science.mplstyle?token=GHSAT0AAAAAABVPXDLXKPLDOD6CCSMC3WMSYVDQ6XA')
-    '''    
+        
     ax1.scatter(raw_time, raw_flux, s=1)
     ax1.set(ylabel='Flux')
-    '''
+    
     # detrend light curve
     ax2.scatter(clean_time, clean_flux, s=1)
     index = np.argmax(bls_results.power)
@@ -336,7 +336,7 @@ def bls_validation_mosaic(tic_id:str, clean_time:np.array, clean_flux:np.array,
 
     # https://github.com/hippke/tls/blob/71da590d3e199264822db425ab9f9f633253986e/transitleastsquares/stats.py#L338
 
-    sig_diff = best_params[4]
+    sig_diff = bls_stats['sig_diff'] 
 
     intransit_stats = tls_intransit_stats(clean_time, clean_flux, 
                                           bls_stats['transit_times'], 
@@ -352,9 +352,12 @@ def bls_validation_mosaic(tic_id:str, clean_time:np.array, clean_flux:np.array,
     even_time, even_flux = (even_[0], even_[1])
     even_phased_time, even_phased_flux, (even_x, even_f) = phase(time=even_time, flux=even_flux, t0=t0, 
                                                                duration=duration, bls_model=bls_model, model_name='BLS', period=period)
-    even_phased_time = even_phased_time + 2.5*np.max(odd_phased_time) # shift over to show together 
     
-    odd_even_median = (np.max(odd_phased_time)+np.min(even_phased_time))/2
+    if len(odd_phased_time)>0: 
+        even_phased_time = even_phased_time + 2.5*np.max(odd_phased_time) # shift over to show together 
+    
+        if len(even_phased_time)>0: 
+            odd_even_median = (np.max(odd_phased_time)+np.min(even_phased_time))/2
 
     even_binned_time, even_binned_flux, even_success = rebin(even_phased_time, even_phased_flux)
 
@@ -366,16 +369,24 @@ def bls_validation_mosaic(tic_id:str, clean_time:np.array, clean_flux:np.array,
     if odd_success: 
         ax4.scatter(even_binned_time, even_binned_flux, c='orange', s=40, edgecolor='black')
 
-    print(sig_diff)
-    #ax4.axvline(x=odd_even_median, color='black', lw=0.5, label='Diff: '+str(round(sig_diff, 5))+r'$\sigma$')
+    if not np.isfinite(sig_diff): 
+        sig_diff = 'NaN'
+    else: 
+        sig_diff = str(round(sig_diff, 5))
 
-    ax4.legend(loc='upper right', handlelength=0)
+    if len(even_phased_time)>0 and len(odd_phased_time)>0: 
+        ax4.axvline(x=odd_even_median, color='black', lw=0.5, label='Diff: '+sig_diff+r'$\sigma$')
+
+        ax4.legend(loc='upper right', handlelength=0)
 
     ax4.set(xlabel='Odd (left) and Even (right) Folded Transits')
     ax4.xaxis.set_major_locator(plt.NullLocator())
 
     # periodogram 
-    ax5.plot(bls_results.period, bls_results.power)
+    #ax5.plot(bls_results.period, bls_results.power)
+    p = Periodogram(bls_results.period*units.hertz,units.Quantity(bls_results.power))
+    p.flatten()
+    p.plot(ax=ax5,xlabel='period',ylabel='power',style='https://raw.githubusercontent.com/thissop/MAXI-J1535/main/code/misc/stolen_science.mplstyle?token=GHSAT0AAAAAABVPXDLXKPLDOD6CCSMC3WMSYVDQ6XA')
     ax5.set(xlabel='Period (d)', ylabel='Power')
 
     #ax6.axis('off')

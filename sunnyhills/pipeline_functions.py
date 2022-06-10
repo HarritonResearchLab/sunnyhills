@@ -197,7 +197,7 @@ def preprocess(
         (cleaned_time_temp, cleaned_flux_temp), (_, _) = remove_flares(time, flux)
 
         no_flare_raw_time = np.concatenate((no_flare_raw_time, cleaned_time_temp))
-        no_flare_raw_flux = np.concatenate((no_flare_raw_flux, cleaned_time_temp))
+        no_flare_raw_flux = np.concatenate((no_flare_raw_flux, cleaned_flux_temp))
         
         no_flare_num_obs += len(no_flare_raw_time)
 
