@@ -19,6 +19,7 @@ from astropy import units as u, constants as const
 from astropy.coordinates import SkyCoord
 from astropy.table import Table
 import numpy as np
+import warnings
 
 #from sunnyhills.paths import DATADIR, EPOCHSDIR
 
@@ -285,7 +286,10 @@ def bls_validation_mosaic(tic_id:str, clean_time:np.array, clean_flux:np.array,
     from lightkurve.periodogram import Periodogram
 
     #plt.style.use('https://raw.githubusercontent.com/thissop/MAXI-J1535/main/code/misc/stolen_science.mplstyle?token=GHSAT0AAAAAABP54PQO2X2VXMNS256IWOBOYRNCFBA')
-    plt.style.use('https://raw.githubusercontent.com/thissop/MAXI-J1535/main/code/misc/stolen_science.mplstyle?token=GHSAT0AAAAAABVPXDLXKPLDOD6CCSMC3WMSYVDQ6XA')
+    #plt.style.use('https://raw.githubusercontent.com/thissop/MAXI-J1535/main/code/misc/stolen_science.mplstyle?token=GHSAT0AAAAAABVPXDLXKPLDOD6CCSMC3WMSYVDQ6XA')
+    plt.rcParams['font.family']='serif'
+    plt.style.use('seaborn-darkgrid')
+    plt.rcParams['font.family']='serif'
     fig = plt.figure(constrained_layout=True, figsize=(12,12))
 
     gs = GridSpec(4, 3, figure=fig)
@@ -300,6 +304,7 @@ def bls_validation_mosaic(tic_id:str, clean_time:np.array, clean_flux:np.array,
     # raw and trend light curve
         
     ax1.scatter(raw_time, raw_flux, s=1)
+    ax1.scatter(trend_time, trend_flux, s=1, c='r')
     ax1.set(ylabel='Flux')
     
     # detrend light curve
@@ -382,11 +387,13 @@ def bls_validation_mosaic(tic_id:str, clean_time:np.array, clean_flux:np.array,
     ax4.set(xlabel='Odd (left) and Even (right) Folded Transits')
     ax4.xaxis.set_major_locator(plt.NullLocator())
 
+    warnings.warn('future idea: put line on the selected period (ax.axvline)')
+
     # periodogram 
     #ax5.plot(bls_results.period, bls_results.power)
     p = Periodogram(bls_results.period*units.hertz,units.Quantity(bls_results.power))
     p.flatten()
-    p.plot(ax=ax5,xlabel='period',ylabel='power',style='https://raw.githubusercontent.com/thissop/MAXI-J1535/main/code/misc/stolen_science.mplstyle?token=GHSAT0AAAAAABVPXDLXKPLDOD6CCSMC3WMSYVDQ6XA')
+    p.plot(ax=ax5,xlabel='period',ylabel='power',style='seaborn-darkgrid')
     ax5.set(xlabel='Period (d)', ylabel='Power')
 
     #ax6.axis('off')

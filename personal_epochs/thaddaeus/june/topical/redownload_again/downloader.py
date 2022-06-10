@@ -19,21 +19,20 @@ def download_pipeline(ids:str, download_dir:str, log_file:str):
 
     warnings.filterwarnings("ignore")
 
-    '''
+
     completed_ids = np.array([i.replace('.csv', '') for i in os.listdir(download_dir) if i.split('.')[-1]=='csv'])
     completed_ids = np.array([int(i.split('_')[-1]) for i in completed_ids])
-    print(completed_ids)
+    #print(completed_ids)
     ids = np.setdiff1d(ids, completed_ids)
-
-    print(ids)
-    '''
-
+ 
     np.random.shuffle(ids)
 
     if not os.path.exists(log_file): 
         with open(log_file, 'w') as f:
             f.write('tic_id,clean_counts,no_flare_counts,raw_counts,ls_period,ls_power,fap_95'+'\n') 
     lines = []
+
+    warnings.filterwarnings("ignore")
 
     for id in tqdm(ids): 
         try: 
@@ -76,7 +75,9 @@ import os
 
 #ids = os.listdir(r'C:\Users\Research\Documents\GitHub\sunnyhills\data\current\processed\two_min_lightcurves')
 
-ids = ['TIC_316295827','TIC_399020708','TIC_369743688','TIC_326538701']
+import numpy as np
+import pandas as pd 
+ids = np.array(pd.read_csv('./data/current/current_key.csv')['tic_id'])
 
 download_dir = './data/current/processed/two_min_lightcurves'
 log_file = r'C:\Users\Research\Documents\GitHub\sunnyhills\data\current\download_log.txt'

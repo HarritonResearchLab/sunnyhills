@@ -5,9 +5,6 @@ import numpy as np
 
 ## DATA PROCESSING RELATED ##
 
-# cSpell:ignore lightkurve, biweight, cval, dtrdict, detrended
-# cSpell: disable
-
 ## DATA PROCESSING RELATED ##
 
 def download(
@@ -382,16 +379,14 @@ def download_pipeline(ids:str, download_dir:str, log_file:str):
     from sunnyhills.pipeline_functions import download_and_preprocess 
     from sunnyhills.false_alarm_checks import lombscargle
 
-    warnings.filterwarnings("ignore")
-
-    '''
+    
     completed_ids = np.array([i.replace('.csv', '') for i in os.listdir(download_dir) if i.split('.')[-1]=='csv'])
     completed_ids = np.array([int(i.split('_')[-1]) for i in completed_ids])
-    print(completed_ids)
+    #print(completed_ids)
     ids = np.setdiff1d(ids, completed_ids)
 
-    print(ids)
-    '''
+    #print(ids)
+    
 
     np.random.shuffle(ids)
 
@@ -424,7 +419,7 @@ def download_pipeline(ids:str, download_dir:str, log_file:str):
             if ls_power>fap_95: 
                 ls_sig = True
 
-            log_list =[tic_id, counts[0], counts[1], counts[2], round(ls_period, 3), ls_sig]
+            log_list =[tic_id, counts[0], counts[1], counts[2], round(ls_period, 3), ls_power, fap_95]
             log_list = [str(i) for i in log_list]
 
             line = ','.join(log_list)+'\n'
@@ -486,9 +481,7 @@ def run_bls(time, flux,
     duration = results.duration[index]
     in_transit = bls_model.transit_mask(time, period, 2*duration, t0)
 
-    depth = results.depth
-
-    warnings.warn('note to future users: I (Thaddaeus) added depth to bls best params, so this may mess up anything ur using rn that refs run_bls')
+    depth = results.depth[index]
 
     best_params = [index, period, t0, duration, depth]
 
@@ -509,7 +502,6 @@ def run_bls(time, flux,
         else: 
             sig_diff = np.nan 
         
-        warnings.warn('note to future users: I (Thaddaeus) changed sig diff from being the potential last parameter of best params to being an item in the compute_stats dictionary')
         stats['sig_diff'] = sig_diff
 
         return best_params, results, bls_model, in_transit, stats

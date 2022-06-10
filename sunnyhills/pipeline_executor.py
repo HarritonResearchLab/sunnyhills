@@ -61,7 +61,7 @@ def alpha_routine(key:str, data_dir:str, download_log_file:str, output_log_file:
         index = bls_best_params[0]
         bls_per = bls_best_params[1]
         results_key = ['period', 't0', 'duration', 'depth', 'depth_err', 'snr', 'log_likelihood']
-        results_vals = bls_best_params[1:] + [bls_results.depth_err, bls_results.power[index], bls_results.log_likelihood]
+        results_vals = bls_best_params[1:] + [bls_results.depth_err[index], bls_results.power[index], bls_results.log_likelihood[index]]
         results_dict = dict(zip(results_key, results_vals))
 
         false_alarm_dict = {}
@@ -88,13 +88,16 @@ def alpha_routine(key:str, data_dir:str, download_log_file:str, output_log_file:
 
         if plots_dir!=None: 
             plot_path = plots_dir+tic_id+'.png'
-            no_flare_raw_time = np.array(data['no_flare_raw_time'])
-            no_flare_raw_flux = np.array(data['no_flare_raw_flux'])
-            mask = np.isfinite(no_flare_raw_time)
-            no_flare_raw_time = no_flare_raw_time[mask] 
-            no_flare_raw_flux = no_flare_raw_flux[mask]
             
-            bls_validation_mosaic(tic_id=tic_id, clean_time=clean_time, clean_flux=clean_flux, raw_time=no_flare_raw_time, raw_flux=no_flare_raw_flux,
+            raw_data = data[['no_flare_raw_time', 'no_flare_raw_flux']].dropna()
+            no_flare_raw_time = np.array(raw_data['no_flare_raw_time'])
+            no_flare_raw_flux = np.array(raw_data['no_flare_raw_flux'])
+
+            trend_data = data[['trend_time', 'trend_flux']].dropna()
+            trend_time = np.array(trend_data['trend_time'])
+            trend_flux = np.array(trend_data['trend_flux'])
+
+            bls_validation_mosaic(tic_id=tic_id, clean_time=clean_time, clean_flux=clean_flux, trend_time=trend_time, trend_flux=trend_flux, raw_time=no_flare_raw_time, raw_flux=no_flare_raw_flux,
                                    best_params=bls_best_params, bls_results=bls_results, bls_model=bls_model, in_transit=bls_in_transit, bls_stats=bls_stats, path=plot_path)
 
             '''
