@@ -65,7 +65,7 @@ def alpha_routine(key:str, download_log_file:str, output_log_file:str, plots_dir
         false_alarm_dict['even_odd_transit'] = even_odd_check
 
         # lomb scargle check 
-        lombscargle_flag = False
+        lombscargle_flag = False 
         ls_index = np.where(download_log['tic_id']==tic_id)[0]
         if len(ls_index)!=0: 
             ls_index = ls_index[0]

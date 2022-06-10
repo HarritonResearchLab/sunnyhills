@@ -34,7 +34,7 @@ def tls_intransit_stats(t, y, transit_times, transit_duration_in_days):
             time_intransit = []
             mean_flux = np.nan
         else:
-            idx_intransit = np.where(np.logical_and(t > tmin, t < tmax))
+            idx_intransit = np.where(np.logical_and(t > tmin, t < tmax))[0]
             flux_intransit = y[idx_intransit]
             time_intransit = t[idx_intransit]
             if len(y[idx_intransit]) > 0:
