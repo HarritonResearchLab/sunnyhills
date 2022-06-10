@@ -95,3 +95,59 @@ def phase(time, flux, period:float, t0:float=None, duration:float=None, bls_mode
                 return_list.append([t_fit, y_fit])
 
         return np.flatten(return_list)
+
+def download_data(path:str,dir:str=''):
+    from sunnyhills.pipeline_functions import download_and_preprocess
+    import pandas as pd
+    import numpy as np
+    from lightkurve.utils import LightkurveError
+    from tqdm import tqdm
+
+    df = pd.read_csv(path)
+    # drop initials nans
+    df = df.dropna(subset=['pl_orbper','sy_pnum','pl_controv_flag'])
+
+    df = df.where(np.logical_and(df['pl_orbper']>.5,df['pl_orbper']<15))
+    df = df.where(df['pl_controv_flag']==0)
+    df = df.where(df['sy_pnum']==1)
+
+    # filter out the data where the given fields did not meet the conditions
+    filtered_df = df.dropna(subset=['pl_orbper','pl_controv_flag','sy_pnum','tic_id'])
+    
+    
+    for item in tqdm(filtered_df['tic_id']):
+        try:
+          lc = download_and_preprocess(item,dir)
+        except (KeyError,LightkurveError):
+            pass
+    
+  
+def append_download_status(path_to_csv:str,dir:str,save_dir):
+    import os
+    import pandas as pd
+    import numpy as np
+    
+    df = pd.read_csv(path_to_csv)
+
+    downloaded_lcs = np.array(os.listdir(dir))
+    new_arr = []
+    for lc in downloaded_lcs:
+      new_arr.append(os.path.splitext(lc)[0].replace('_',' '))
+    downloaded_2_min = []
+    downloaded_lcs = new_arr
+    
+    for item in df['tic_id']:
+      if item in downloaded_lcs[:]:
+        downloaded_2_min.append(True)    
+      else:
+        downloaded_2_min.append(False)    
+    downloaded_2_min = pd.Series(downloaded_2_min,name="has_two_min")
+
+    df = df.merge(downloaded_2_min,left_index=True,right_index=True)
+    df.to_csv(save_dir+'/updated_key.csv')
+
+    return df
+
+def download_and_append_status(path_to_csv:str,lc_dir,save_dir:str):
+    download_data(path_to_csv,lc_dir)
+    append_download_status(path_to_csv,lc_dir,save_dir)
