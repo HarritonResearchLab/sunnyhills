@@ -503,9 +503,12 @@ def run_bls(time, flux,
         depth_even = depth_even[0]
 
         diff = np.abs(depth_odd-depth_even)
-        unc_diff = ((err_even/depth_even)**2+(err_odd/depth_odd)**2)**0.5
-        sig_diff = diff/unc_diff 
-
+        if depth_even!=0 and depth_odd!=0: 
+            unc_diff = ((err_even/depth_even)**2+(err_odd/depth_odd)**2)**0.5
+            sig_diff = diff/unc_diff 
+        else: 
+            sig_diff = np.nan 
+        
         warnings.warn('note to future users: I (Thaddaeus) changed sig diff from being the potential last parameter of best params to being an item in the compute_stats dictionary')
         stats['sig_diff'] = sig_diff
 

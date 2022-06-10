@@ -90,7 +90,6 @@ def alpha_routine(key:str, data_dir:str, download_log_file:str, output_log_file:
             plot_path = plots_dir+tic_id+'.png'
             no_flare_raw_time = np.array(data['no_flare_raw_time'])
             no_flare_raw_flux = np.array(data['no_flare_raw_flux'])
-            print(bls_model)
             bls_validation_mosaic(tic_id=tic_id, clean_time=clean_time, clean_flux=clean_flux, raw_time=no_flare_raw_time, raw_flux=no_flare_raw_flux,
                                    best_params=bls_best_params, bls_results=bls_results, bls_model=bls_model, in_transit=bls_in_transit, bls_stats=bls_stats, path=plot_path)
 

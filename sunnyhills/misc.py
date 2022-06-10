@@ -34,18 +34,23 @@ def rebin(x, y, num_bins:int=20):
         x_rebinned: rebinned x 
         y_rebinned: rebinned y 
     '''
-    
-    step = int(len(x)/num_bins)
+    success = True
+    if len(x)>0: 
+        step = int(len(x)/num_bins)
 
-    ranges = []
+        ranges = []
 
-    for i in range(0, len(x)-step, step): 
-        ranges.append([i,i+step])
+        for i in range(0, len(x)-step, step): 
+            ranges.append([i,i+step])
 
-    x_rebinned = np.array([np.mean(x[range[0]:range[1]]) for range in ranges])
-    y_rebinned = np.array([np.mean(y[range[0]:range[1]]) for range in ranges])
+        x_rebinned = np.array([np.mean(x[range[0]:range[1]]) for range in ranges])
+        y_rebinned = np.array([np.mean(y[range[0]:range[1]]) for range in ranges])
 
-    return x_rebinned, y_rebinned 
+    else: 
+        x_rebinned, y_rebinned = (x,y)
+        success=False
+
+    return x_rebinned, y_rebinned, success 
 
 def phase(time, flux, period:float, t0:float=None, duration:float=None, bls_model=None, model_name:str=None, tls_results=None, fraction:int=0.2): 
         '''
@@ -96,7 +101,7 @@ def phase(time, flux, period:float, t0:float=None, duration:float=None, bls_mode
 
                 return_list.append([t_fit, y_fit])
 
-        return np.array(return_list).flatten()
+        return np.array(return_list, dtype=object).flatten()
 
 ## BELOW FUNCTIONS ARE VERONICA'S FOR STARS WITH CONFIRMED PLANETS ##
 

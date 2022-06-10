@@ -321,10 +321,11 @@ def bls_validation_mosaic(tic_id:str, clean_time:np.array, clean_flux:np.array,
     # phase folded
     ax3.scatter(phased_time, phased_flux, s=3, c='grey')
 
-    binned_x, binned_flux = rebin(phased_time, phased_flux)
+    binned_x, binned_flux, success = rebin(phased_time, phased_flux)
     
     ax3.plot(x, f, color='red', alpha=0.5)
-    ax3.scatter(binned_x, binned_flux, c='orange', s=40, edgecolor='black')
+    if success: 
+        ax3.scatter(binned_x, binned_flux, c='orange', s=40, edgecolor='black')
 
     ax3.set(xlim=(-0.2, 0.2))
 
@@ -345,24 +346,28 @@ def bls_validation_mosaic(tic_id:str, clean_time:np.array, clean_flux:np.array,
     odd_time, odd_flux = (odd_[0], odd_[1])
     odd_phased_time, odd_phased_flux, (odd_x, odd_f) = phase(time=odd_time, flux=odd_flux, period=period, t0=t0, 
                                                            duration=duration, bls_model=bls_model, model_name='BLS')
-    odd_binned_time, odd_binned_flux = rebin(odd_phased_time, odd_phased_flux)
+    odd_binned_time, odd_binned_flux, odd_success = rebin(odd_phased_time, odd_phased_flux)
 
     even_ = intransit_stats[5]
     even_time, even_flux = (even_[0], even_[1])
     even_phased_time, even_phased_flux, (even_x, even_f) = phase(time=even_time, flux=even_flux, t0=t0, 
-                                                               duration=duration, bls_model=bls_model, model_name='BLS')
+                                                               duration=duration, bls_model=bls_model, model_name='BLS', period=period)
     even_phased_time = even_phased_time + 2.5*np.max(odd_phased_time) # shift over to show together 
     
     odd_even_median = (np.max(odd_phased_time)+np.min(even_phased_time))/2
 
-    even_binned_time, even_binned_flux = rebin(even_phased_time, even_phased_flux)
+    even_binned_time, even_binned_flux, even_success = rebin(even_phased_time, even_phased_flux)
 
     ax4.scatter(odd_phased_time, odd_phased_flux, s=3, c='grey')
     ax4.scatter(even_phased_time, even_phased_flux, s=3, c='grey')
-    ax4.scatter(odd_binned_time, odd_binned_flux, c='orange', s=40, edgecolor='black')
-    ax4.scatter(even_binned_time, even_binned_flux, c='orange', s=40, edgecolor='black')
+    
+    if even_success: 
+        ax4.scatter(odd_binned_time, odd_binned_flux, c='orange', s=40, edgecolor='black')
+    if odd_success: 
+        ax4.scatter(even_binned_time, even_binned_flux, c='orange', s=40, edgecolor='black')
 
-    ax4.axvline(x=odd_even_median, color='black', lw=0.5, label='Diff: '+str(round(sig_diff, 5))+r'$\sigma$')
+    print(sig_diff)
+    #ax4.axvline(x=odd_even_median, color='black', lw=0.5, label='Diff: '+str(round(sig_diff, 5))+r'$\sigma$')
 
     ax4.legend(loc='upper right', handlelength=0)
 
