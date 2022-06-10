@@ -254,7 +254,7 @@ def plot_star_detrending(
     fig.savefig(plotpath, bbox_inches='tight', dpi=400)
     print(f"Made {plotpath}")
 
-def bls_validation_mosaic(tic_id:str, clean_time:np.array, detrend_flux:np.array, 
+def bls_validation_mosaic(tic_id:str, clean_time:np.array, clean_flux:np.array, 
                           raw_time:np.array, raw_flux:np.array, 
                           best_params:list, bls_results, bls_model, in_transit, bls_stats, 
                           path:str=None, dpi:int=150): 
@@ -263,7 +263,7 @@ def bls_validation_mosaic(tic_id:str, clean_time:np.array, detrend_flux:np.array
     arguments: 
         tic_id: tic id 
         clean_time: detrended and flare removed time array
-        detrend_flux: flux values corresponding to clean_time arg
+        clean_flux: flux values corresponding to clean_time arg
         raw_time: array of "raw" time values, i.e. not detrended and potentially with flares
         raw_flux: flux array corresponding to raw_time arg
         best_params, bls_results, bls_model, in_transit, bls_stats: the items returned by the run_bls function in pipeline_functions.py (NOTE: in run_bls, stats must be set to be calculated!)
@@ -281,7 +281,8 @@ def bls_validation_mosaic(tic_id:str, clean_time:np.array, detrend_flux:np.array
     import astropy.units as units
     from lightkurve.periodogram import Periodogram
 
-    plt.style.use('https://raw.githubusercontent.com/thissop/MAXI-J1535/main/code/misc/stolen_science.mplstyle?token=GHSAT0AAAAAABP54PQO2X2VXMNS256IWOBOYRNCFBA')
+    #plt.style.use('https://raw.githubusercontent.com/thissop/MAXI-J1535/main/code/misc/stolen_science.mplstyle?token=GHSAT0AAAAAABP54PQO2X2VXMNS256IWOBOYRNCFBA')
+    plt.style.use('https://raw.githubusercontent.com/thissop/MAXI-J1535/main/code/misc/stolen_science.mplstyle?token=GHSAT0AAAAAABVPXDLXKPLDOD6CCSMC3WMSYVDQ6XA')
     fig = plt.figure(constrained_layout=True, figsize=(12,12))
 
     gs = GridSpec(4, 3, figure=fig)
@@ -296,21 +297,22 @@ def bls_validation_mosaic(tic_id:str, clean_time:np.array, detrend_flux:np.array
     # raw and trend light curve
     p = Periodogram(bls_results.period*units.microhertz,units.Quantity(bls_results.power))
     p.flatten()
-    p.plot(ax=ax1,xlabel='period',ylabel='power',style='https://raw.githubusercontent.com/thissop/MAXI-J1535/main/code/misc/stolen_science.mplstyle?token=GHSAT0AAAAAABP54PQO2X2VXMNS256IWOBOYRNCFBA')
+    p.plot(ax=ax1,xlabel='period',ylabel='power',style='https://raw.githubusercontent.com/thissop/MAXI-J1535/main/code/misc/stolen_science.mplstyle?token=GHSAT0AAAAAABVPXDLXKPLDOD6CCSMC3WMSYVDQ6XA')
     '''    
     ax1.scatter(raw_time, raw_flux, s=1)
     ax1.set(ylabel='Flux')
     '''
     # detrend light curve
-    ax2.scatter(clean_time, detrend_flux, s=1)
+    ax2.scatter(clean_time, clean_flux, s=1)
     index = np.argmax(bls_results.power)
     period = bls_results.period[index]
     t0 = bls_results.transit_time[index]
     duration = bls_results.duration[index]
 
-    phased_time, phased_flux, x, f = phase(clean_time, detrend_flux, best_params, bls_model)
+    phased_time, phased_flux, (x, f) = phase(time=clean_time, flux=clean_flux, period=period, 
+                                           t0=t0, duration=duration, bls_model=bls_model, model_name='BLS')
 
-    ax2.vlines(clean_time[in_transit], min(detrend_flux), max(detrend_flux), color='red', lw=0.05, alpha=0.4, zorder=0)
+    ax2.vlines(clean_time[in_transit], min(clean_flux), max(clean_flux), color='red', lw=0.05, alpha=0.4, zorder=0)
     ax2.set(ylabel='Detrended Flux')
 
     for ax in [ax1, ax2]: 
@@ -335,18 +337,20 @@ def bls_validation_mosaic(tic_id:str, clean_time:np.array, detrend_flux:np.array
 
     sig_diff = best_params[4]
 
-    intransit_stats = tls_intransit_stats(clean_time, detrend_flux, 
+    intransit_stats = tls_intransit_stats(clean_time, clean_flux, 
                                           bls_stats['transit_times'], 
                                           best_params[3])
 
     odd_ = intransit_stats[4]
     odd_time, odd_flux = (odd_[0], odd_[1])
-    odd_phased_time, odd_phased_flux, odd_x, odd_f = phase(odd_time, odd_flux, best_params, bls_model)
+    odd_phased_time, odd_phased_flux, (odd_x, odd_f) = phase(time=odd_time, flux=odd_flux, period=period, t0=t0, 
+                                                           duration=duration, bls_model=bls_model, model_name='BLS')
     odd_binned_time, odd_binned_flux = rebin(odd_phased_time, odd_phased_flux)
 
     even_ = intransit_stats[5]
     even_time, even_flux = (even_[0], even_[1])
-    even_phased_time, even_phased_flux, even_x, even_f = phase(even_time, even_flux, best_params, bls_model)
+    even_phased_time, even_phased_flux, (even_x, even_f) = phase(time=even_time, flux=even_flux, t0=t0, 
+                                                               duration=duration, bls_model=bls_model, model_name='BLS')
     even_phased_time = even_phased_time + 2.5*np.max(odd_phased_time) # shift over to show together 
     
     odd_even_median = (np.max(odd_phased_time)+np.min(even_phased_time))/2

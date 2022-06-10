@@ -32,7 +32,7 @@ def download_pipeline(ids:str, download_dir:str, log_file:str):
 
     if not os.path.exists(log_file): 
         with open(log_file, 'w') as f:
-            f.write('tic_id,clean_counts,no_flare_counts,raw_counts,ls_period,ls_sig'+'\n') 
+            f.write('tic_id,clean_counts,no_flare_counts,raw_counts,ls_period,ls_power,fap_95'+'\n') 
     lines = []
 
     for id in tqdm(ids): 
@@ -59,7 +59,7 @@ def download_pipeline(ids:str, download_dir:str, log_file:str):
             if ls_power>fap_95: 
                 ls_sig = True
 
-            log_list =[tic_id, counts[0], counts[1], counts[2], round(ls_period, 3), ls_sig]
+            log_list =[tic_id, counts[0], counts[1], counts[2], round(ls_period, 3), ls_power, fap_95]
             log_list = [str(i) for i in log_list]
 
             line = ','.join(log_list)+'\n'
@@ -72,12 +72,11 @@ def download_pipeline(ids:str, download_dir:str, log_file:str):
         for line in lines: 
             f.write(line)
             
-
 import os 
 
-ids = os.listdir(r'C:\Users\Research\Documents\GitHub\sunnyhills\data\current\processed\two_min_lightcurves_old')
+#ids = os.listdir(r'C:\Users\Research\Documents\GitHub\sunnyhills\data\current\processed\two_min_lightcurves')
 
-ids = [i.split('.')[0] for i in ids if i!='.gitkeep']
+ids = ['TIC_316295827','TIC_399020708','TIC_369743688','TIC_326538701']
 
 download_dir = './data/current/processed/two_min_lightcurves'
 log_file = r'C:\Users\Research\Documents\GitHub\sunnyhills\data\current\download_log.txt'

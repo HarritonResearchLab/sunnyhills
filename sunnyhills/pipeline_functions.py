@@ -442,7 +442,7 @@ def download_pipeline(ids:str, download_dir:str, log_file:str):
 ## BLS ##
 
 def run_bls(time, flux, 
-            bls_params: dict = {'min_per':0.1, 'max_per':15, 
+            bls_params: dict = {'min_per':0.5, 'max_per':15, 
                                 'minimum_n_transit':2, 
                                 'freq_factor':1,
                                 'durations':[0.05, 0.0667, 

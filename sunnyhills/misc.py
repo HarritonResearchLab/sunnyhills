@@ -66,6 +66,8 @@ def phase(time, flux, period:float, t0:float=None, duration:float=None, bls_mode
         import numpy as np
         import warnings
 
+        return_list = []
+
         if model_name!=None: 
             if model_name=='BLS' or model_name=='TLS': 
 
@@ -94,7 +96,9 @@ def phase(time, flux, period:float, t0:float=None, duration:float=None, bls_mode
 
                 return_list.append([t_fit, y_fit])
 
-        return np.flatten(return_list)
+        return np.array(return_list).flatten()
+
+## BELOW FUNCTIONS ARE VERONICA'S FOR STARS WITH CONFIRMED PLANETS ##
 
 def download_data(path:str,dir:str=''):
     from sunnyhills.pipeline_functions import download_and_preprocess
@@ -120,8 +124,7 @@ def download_data(path:str,dir:str=''):
           lc = download_and_preprocess(item,dir)
         except (KeyError,LightkurveError):
             pass
-    
-  
+     
 def append_download_status(path_to_csv:str,dir:str,save_dir):
     import os
     import pandas as pd
