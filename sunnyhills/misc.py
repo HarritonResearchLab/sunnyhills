@@ -152,7 +152,8 @@ def append_download_status(path_to_csv:str,dir:str,save_dir):
     downloaded_2_min = pd.Series(downloaded_2_min,name="has_two_min")
 
     df = df.merge(downloaded_2_min,left_index=True,right_index=True)
-    df.to_csv(save_dir+'/updated_key.csv')
+    df = df.drop_duplicates(subset=['tic_id'])
+    df.to_csv(save_dir+'/current_key.csv')
 
     return df
 
