@@ -25,6 +25,8 @@ Finally, you should now be able to use everything in this perfectly working envi
 
 * Also note that you might have to launch VSCode from Anaconda Prompt (execute ```code```) after activating the virtual environment. 
 
+## Test
+- hello from wh1!
 
 ## Miscellaneous Notes
 * **Colab Setup:** 1). ```pip3``` install ```wotan```, ```transitleastsquares```, and ```lightkurve``` 2). install fortan  via  ```sudo apt-get install gfortran``` 3). Update ```matplotlib``` version via ```pip3 install 'matplotlib==3.3.1'``` 
