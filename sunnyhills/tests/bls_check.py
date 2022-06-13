@@ -23,15 +23,13 @@ def filter_data(path:str):
 
     return filtered_df
 
-
 def bls_check(table_path:str,lc_dir:str,display_mosaics:bool):
   import pandas as pd    
   import numpy as np
   import matplotlib.pyplot as plt
   from tqdm import tqdm
-  from sunnyhills.plotting import bls_validation_mosaic
-  from sunnyhills.misc import get_best_period
   from sunnyhills.pipeline_functions import run_bls
+  from sunnyhills.plotting import bls_validation_mosaic
 
 
   error = np.array([])
@@ -49,13 +47,12 @@ def bls_check(table_path:str,lc_dir:str,display_mosaics:bool):
     best_params, bls_model, in_transit, stats = run_bls(time, flux)
     error = np.append(error,(real_per-best_params[0])/real_per)
     if display_mosaics:
-      try:
-        #bls_validation_mosaic(item.replace('TIC',''), time, flux, time, flux, best_params, results, bls_model, in_transit, stats)
-        print('hi')
+      try:    
+        bls_validation_mosaic(item.replace('TIC',''), time, flux, time, flux, best_params, bls_model, in_transit, stats)
       except ValueError:
         print('trouble displaying validation mosaic')
     if stellar_rad != np.NaN and planet_rad != np.NaN:
-      graphed_error = np.append(graphed_error,(real_per-get_best_period[0])/real_per)
+      graphed_error = np.append(graphed_error,(real_per-best_params[0])/real_per)
       stellar_rads = np.append(stellar_rads,stellar_rad)    
       planet_rads = np.append(planet_rads,planet_rad*109)
   plt.figure(112)
