@@ -1,6 +1,7 @@
 # cSpell:ignore lightkurve, biweight, cval, dtrdict, detrended
 # cSpell: disable
 
+from tkinter.ttk import Progressbar
 import numpy as np
 
 ## DATA PROCESSING RELATED ##
@@ -606,7 +607,8 @@ def run_tls(time, flux,
                                              0.15000000000000002, 
                                              0.16666666666666669, 
                                              0.18333333333333335, 0.2], 
-                                'objective':'snr'}): 
+                                'objective':'snr', 
+                                'core_fraction':0.33}): 
 
     '''
     args: 
@@ -623,10 +625,13 @@ def run_tls(time, flux,
     from transitleastsquares import transitleastsquares
     from transitleastsquares import transit_mask
     from transitleastsquares.stats import intransit_stats
+    import multiprocessing 
 
     durations = np.array(tls_params['durations'])
-    tls_model = transitleastsquares(time, flux)
-    results = tls_model.power(period_min=tls_params['min_per'],period_max=tls_params['max_per'],objective=tls_params['objective'])
+    num_cores = int(tls_params['core_fraction']*multiprocessing.cpu_count())
+    tls_model = transitleastsquares(time, flux, verbose=False)
+    results = tls_model.power(period_min=tls_params['min_per'],period_max=tls_params['max_per'],objective=tls_params['objective'], 
+                              verbose=False, show_progress_bar=False, use_threads=num_cores)
     '''
     results = tls_model.autopower(durations, frequency_factor=bls_params['freq_factor'], 
                             minimum_period=bls_params['min_per'], 
@@ -639,11 +644,11 @@ def run_tls(time, flux,
     t0 = results.T0 # what is t0?
     duration = results.duration
     in_transit = transit_mask(time, period, 2*duration, t0) #what is this for?
-
-    best_params = [index, period, t0, duration]
+    
+    tls_best_params = [index, period, t0, duration]
     
 
-    return best_params, results, tls_model, in_transit
+    return tls_best_params, results, tls_model, in_transit
 
 def iterative_tls_runner(time, flux, 
                      iterations: int=1, 

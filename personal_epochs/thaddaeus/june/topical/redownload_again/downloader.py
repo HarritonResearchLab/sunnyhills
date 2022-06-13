@@ -13,6 +13,7 @@ def download_pipeline(ids:str, download_dir:str, log_file:str):
     import numpy as np 
     import os 
     import re
+    import LightCurve as lk
 
     from sunnyhills.pipeline_functions import download_and_preprocess 
     from sunnyhills.false_alarm_checks import lombscargle
@@ -27,9 +28,17 @@ def download_pipeline(ids:str, download_dir:str, log_file:str):
  
     np.random.shuffle(ids)
 
+    log_cols = ['tic_id','clean_counts','no_flare_counts','raw_counts','top_ls_period','top_ls_power','fap_95']
+    log_cols += ['cdpp', 'with_flare_std', 'no_flare_std', 'no_flare_diff_std']
+    log_cols += ['raw_amplitude_no_flare', 'raw_amplitude_with_flare']
+    log_cols += ['first_harmonic_period', 'sub_harmonic_period']
+    log_cols += [i+'_period' for i in ['second', 'third', 'fourth', 'fifth']]
+    log_cols += [i+'_power' for i in ['second', 'third', 'fourth', 'fifth']]
+
     if not os.path.exists(log_file): 
         with open(log_file, 'w') as f:
-            f.write('tic_id,clean_counts,no_flare_counts,raw_counts,ls_period,ls_power,fap_95'+'\n') 
+            f.write('\n') 
+    
     lines = []
 
     warnings.filterwarnings("ignore")
@@ -44,21 +53,40 @@ def download_pipeline(ids:str, download_dir:str, log_file:str):
 
             # counts = [clean_num_obs, no_flare_num_obs, raw_num_obs]
 
-            lc_df = lc_df[['no_flare_raw_time', 'no_flare_raw_flux']].dropna()
+            time, flux = (lc_df['time'], lc_df['flux'])
+            no_flare_mask = lc_df['no_flare_mask']
 
-            no_flare_time, no_flare_flux = (np.array(i) for i in [lc_df['no_flare_raw_time'], lc_df['no_flare_raw_flux']])
-
-            ls_results = lombscargle(time=no_flare_time, flux=no_flare_flux)
+            ls_results = lombscargle(time=time[no_flare_mask], flux=[no_flare_mask])
             
             ls_period = ls_results[2]
+            first_harmonic = ls_period / 2 
+            sub_harmonic = ls_period*2
+
+            other_four_periods = list(ls_results[1][1:5])
+            other_four_powers = list(ls_results[0][1:5])
+
             ls_power = ls_results[3]
             fap_95 = ls_results[4][1]
 
-            ls_sig = False 
-            if ls_power>fap_95: 
-                ls_sig = True
+            lc = lk.LightCurve(time=time[no_flare_mask], flux=flux[no_flare_mask])
 
-            log_list =[tic_id, counts[0], counts[1], counts[2], round(ls_period, 3), ls_power, fap_95]
+            cdpp = lc.estimate_cdpp()
+
+            with_flare_std = np.std(flux)
+            std = np.std(flux[no_flare_mask])
+            diff_std = np.std(np.diff(flux[no_flare_mask]))
+
+            raw_flux_amplitude_no_flare = np.diff(np.percentile(flux[no_flare_mask], q=[90,10]))[0]
+            raw_flux_flares_amplitude = np.diff(np.percentile(flux, q=[90,10]))[0]
+
+            log_list = [tic_id, counts[0], counts[1], counts[2], round(ls_period, 3), ls_power, fap_95]
+
+            log_list += [cdpp, with_flare_std, std, diff_std]
+            log_list += [raw_flux_amplitude_no_flare, raw_flux_flares_amplitude]
+            log_list += [first_harmonic, sub_harmonic]
+            log_list += other_four_periods
+            log_list += other_four_powers
+
             log_list = [str(i) for i in log_list]
 
             line = ','.join(log_list)+'\n'

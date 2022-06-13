@@ -117,8 +117,76 @@ def alpha_routine(key:str, data_dir:str, download_log_file:str, output_log_file:
             line = [logged_ids[index]] + list(results_dicts[index].values())+list(flag_dicts[index].values())
             f.write(','.join([str(i) for i in line])+'\n')
 
+'''
 key = r'C:\Users\Research\Documents\GitHub\sunnyhills\personal_epochs\thaddaeus\june\topical\misc\fake_key.csv'
 download_log_file = r'C:\Users\Research\Documents\GitHub\sunnyhills\data\current\download_log.txt'
 output_log_file = './personal_epochs/thaddaeus/june/topical/pipeline_alpha_dev/output.log'
 plots_dir = './personal_epochs/thaddaeus/june/topical/pipeline_alpha_dev'
 alpha_routine(key=key, data_dir='./data/current/processed/two_min_lightcurves', download_log_file=download_log_file, output_log_file=output_log_file, plots_dir=plots_dir)
+'''
+
+def beta_routine(key:str, data_dir:str, download_log_file:str, output_log:str, plots_dir:str=None):
+    '''
+    Parameters
+
+    Returns
+
+    Notes
+        - This is the first TLS pipeline executor routine; only runs TLS
+    '''
+    
+    from sunnyhills.pipeline_functions import run_tls 
+    from sunnyhills.plotting import bls_validation_mosaic
+    from false_alarm_checks import even_odd_transit, lombscargle
+    import numpy as np
+    import pandas as pd 
+    from tqdm import tqdm 
+    import os
+
+    key_df = pd.read_csv(key)
+    tic_ids = np.array(key_df['tic_id'])
+
+    #download_log = pd.read_csv(download_log_file)
+
+    if plots_dir!=None: 
+        if plots_dir[-1]!='/': 
+            plots_dir+='/'
+
+    if data_dir[-1]!='/':
+        data_dir+='/'
+
+    if type(tic_ids[0])==int: 
+        tic_ids = np.array(['TIC_'+str(i) for i in tic_ids]) 
+    elif type(tic_ids[0])==str: 
+        if '_' not in tic_ids[0]: 
+            tic_ids = np.array([i.replace('TIC', 'TIC_') for i in tic_ids])
+
+    flag_dicts = []
+
+    out_df = pd.DataFrame()
+    result_keys_to_save = ['SDE', 'period', 'T0', 'duration', 'depth', 'rp_rs', 'snr']
+
+    if not os.path.exists(output_log): 
+        with open(output_log, 'w') as f: 
+            f.write(','.join(['TIC_ID']+result_keys_to_save)+'\n')
+    
+    with open(output_log, 'a') as f: 
+        for tic_id in tqdm(tic_ids): 
+            try:
+                data = pd.read_csv(data_dir+tic_id+'.csv')
+                time = np.array(data['time'])
+                flux = np.array(data['flux'])
+                clean_mask = np.array(data['clean_mask'])
+
+                clean_time=clean_time[clean_mask]
+                clean_flux = clean_flux[clean_mask]
+
+                tls_best_params, results, tls_model, in_transit = run_tls(time=clean_time, flux=clean_flux)
+
+                result_list = [tic_id]+[results[key] for key in result_keys_to_save]
+                result_line = ','.join(result_list)
+                f.write(result_line+'\n')
+        
+            except Exception as e: 
+                print(e)
+                continue 
