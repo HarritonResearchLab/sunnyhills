@@ -25,8 +25,14 @@ Finally, you should now be able to use everything in this perfectly working envi
 
 * Also note that you might have to launch VSCode from Anaconda Prompt (execute ```code```) after activating the virtual environment. 
 
-## Test
-- hello from wh1!
+## Using WH1
+
+1. ssh into wh1
+2. activate the conda env in our project dir
+3. cd into the repo
+4. run the git command to pull, fetch, or commit
+   1. you will be asked to log in so enter your username
+   2. when it prompts you to enter your password you need to enter a **Personal Access Token** (see here: https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token)
 
 ## Miscellaneous Notes
 * **Colab Setup:** 1). ```pip3``` install ```wotan```, ```transitleastsquares```, and ```lightkurve``` 2). install fortan  via  ```sudo apt-get install gfortran``` 3). Update ```matplotlib``` version via ```pip3 install 'matplotlib==3.3.1'``` 
