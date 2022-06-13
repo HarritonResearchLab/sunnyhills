@@ -160,3 +160,8 @@ def append_download_status(path_to_csv:str,dir:str,save_dir):
 def download_and_append_status(path_to_csv:str,lc_dir,save_dir:str):
     download_data(path_to_csv,lc_dir)
     append_download_status(path_to_csv,lc_dir,save_dir)
+
+def in_transit_mask(time,period,duration,transit_time):
+    import numpy as np
+    hp = .5*period
+    return np.abs((time-transit_time+hp) % period - hp) < .5*duration

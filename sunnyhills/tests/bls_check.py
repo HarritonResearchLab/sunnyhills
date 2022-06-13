@@ -40,34 +40,43 @@ def bls_check(table_path:str,lc_dir:str,display_mosaics:bool):
   stellar_rads = np.array([])
   planet_rads = np.array([])
   graphed_error = np.array([])
-  for item,real_per,stellar_rad,planet_rad in tqdm(zip(df['tic_id'][:5],df['pl_orbper'][:5],df['st_rad'][:5],df['pl_rade'][:5])):
+  for item,real_per,stellar_rad,planet_rad in tqdm(zip(df['tic_id'],df['pl_orbper'],df['st_rad'],df['pl_rade'])):
     print(item)
     lc = pd.read_csv(modified_dir+item.replace(' ','_')+'.csv')
     lc = lc.dropna(subset=['clean_time','clean_flux'])
     time = lc['clean_time']
     flux = lc['clean_flux']
-    best_params, results, bls_model, in_transit, stats = run_bls(time, flux)
-    error = np.append(error,(real_per-get_best_period(results))/real_per)
+    best_params, bls_model, in_transit, stats = run_bls(time, flux)
+    error = np.append(error,(real_per-best_params[0])/real_per)
     if display_mosaics:
       try:
-        bls_validation_mosaic(item.replace('TIC',''), time, flux, time, flux, best_params, results, bls_model, in_transit, stats)
+        #bls_validation_mosaic(item.replace('TIC',''), time, flux, time, flux, best_params, results, bls_model, in_transit, stats)
+        print('hi')
       except ValueError:
         print('trouble displaying validation mosaic')
     if stellar_rad != np.NaN and planet_rad != np.NaN:
-      graphed_error = np.append(graphed_error,(real_per-get_best_period(results))/real_per)
+      graphed_error = np.append(graphed_error,(real_per-get_best_period[0])/real_per)
       stellar_rads = np.append(stellar_rads,stellar_rad)    
       planet_rads = np.append(planet_rads,planet_rad*109)
   plt.figure(112)
-  plt.scatter(np.absolute(graphed_error),np.divide(planet_rads,stellar_rads))
+  plt.title('radius vs error')
+  plt.scatter(np.divide(planet_rads,stellar_rads),np.log(100*np.absolute(graphed_error)))
   plt.xlabel('ratio of planetary radius to stellar radius')
-  plt.ylabel('error percentage')
+  plt.ylabel('log error percentage')
+  plt.savefig('data/bls_check/error_vs_radius_scatter.png')
   plt.figure(122)
-  plt.hist(np.absolute(error),50)
-  plt.xlabel('ratio of planetary radius to stellar radius')
-  plt.ylabel('error percentage')
-          
+  plt.title('error histogram')
+  plt.hist(100*np.absolute(error),50)
+  plt.xticks(np.arange(0, 350, 25))
+  plt.xlabel('error percentage')
+  plt.ylabel('frequency')
+
   error = 100*np.mean(np.absolute(error))
   print("average error for all the samples is: ", error)
-
+  plt.legend([str(error)])
+  plt.savefig('data/bls_check/percentage_histogram.png')
 
   return error
+
+def bls_check_runner(display_validation_plots:bool=False):
+  bls_check('personal_epochs/veronica/june/current_key.csv','data/current/processed/known_two_min',display_validation_plots)
