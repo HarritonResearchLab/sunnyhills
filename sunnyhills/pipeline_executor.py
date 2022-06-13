@@ -190,3 +190,5 @@ def beta_routine(key:str, data_dir:str, download_log_file:str, output_log:str, p
             except Exception as e: 
                 print(e)
                 continue 
+
+beta_routine()
