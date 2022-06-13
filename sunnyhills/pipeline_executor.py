@@ -191,4 +191,4 @@ def beta_routine(key:str, data_dir:str, download_log_file:str, output_log:str, p
                 print(e)
                 continue 
 
-beta_routine()
+beta_routine() asdfasd
