@@ -644,7 +644,7 @@ def run_tls(time, flux,
     t0 = results.T0 # what is t0?
     duration = results.duration
     in_transit = transit_mask(time, period, 2*duration, t0) #what is this for?
-    
+
     tls_best_params = [index, period, t0, duration]
     
 

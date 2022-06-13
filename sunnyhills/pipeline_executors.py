@@ -144,7 +144,7 @@ def beta_routine(key:str, data_dir:str, download_log_file:str, output_log:str, p
     import os
 
     key_df = pd.read_csv(key)
-    tic_ids = np.array(key_df['tic_id'])
+    tic_ids = np.array(key_df['TIC_ID'])
 
     #download_log = pd.read_csv(download_log_file)
 
@@ -154,12 +154,6 @@ def beta_routine(key:str, data_dir:str, download_log_file:str, output_log:str, p
 
     if data_dir[-1]!='/':
         data_dir+='/'
-
-    if type(tic_ids[0])==int: 
-        tic_ids = np.array(['TIC_'+str(i) for i in tic_ids]) 
-    elif type(tic_ids[0])==str: 
-        if '_' not in tic_ids[0]: 
-            tic_ids = np.array([i.replace('TIC', 'TIC_') for i in tic_ids])
 
     flag_dicts = []
 
@@ -174,21 +168,22 @@ def beta_routine(key:str, data_dir:str, download_log_file:str, output_log:str, p
         for tic_id in tqdm(tic_ids): 
             try:
                 data = pd.read_csv(data_dir+tic_id+'.csv')
-                time = np.array(data['time'])
-                flux = np.array(data['flux'])
-                clean_mask = np.array(data['clean_mask'])
+                if os.path.exists(data): 
+                    time = np.array(data['clean_time'])
+                    flux = np.array(data['clean_flux'])
+                    clean_mask = np.array(data['clean_mask'])
 
-                clean_time=clean_time[clean_mask]
-                clean_flux = clean_flux[clean_mask]
+                    clean_time=clean_time[clean_mask]
+                    clean_flux = clean_flux[clean_mask]
 
-                tls_best_params, results, tls_model, in_transit = run_tls(time=clean_time, flux=clean_flux)
+                    tls_best_params, results, tls_model, in_transit = run_tls(time=clean_time, flux=clean_flux)
 
-                result_list = [tic_id]+[results[key] for key in result_keys_to_save]
-                result_line = ','.join(result_list)
-                f.write(result_line+'\n')
+                    result_list = [tic_id]+[results[key] for key in result_keys_to_save]
+                    result_line = ','.join(result_list)
+                    f.write(result_line+'\n')
         
             except Exception as e: 
                 print(e)
                 continue 
 
-beta_routine() asdfasd
+beta_routine() 

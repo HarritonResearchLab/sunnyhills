@@ -6,14 +6,13 @@ def download_pipeline(ids:str, download_dir:str, log_file:str):
         log_file: file to append results to 
     '''
 
-    
     import warnings
     from tqdm import tqdm 
     import pandas as pd
     import numpy as np 
     import os 
     import re
-    import LightCurve as lk
+    import lightCurve as lk
 
     from sunnyhills.pipeline_functions import download_and_preprocess 
     from sunnyhills.false_alarm_checks import lombscargle
