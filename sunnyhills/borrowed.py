@@ -92,3 +92,13 @@ def tls_intransit_stats(t, y, transit_times, transit_duration_in_days):
         transit_depths_uncertainties,
     )
 
+def in_transit_mask(time,period,duration,transit_time):    
+    """
+    Return points that are in transit
+    
+    Source: Astropy
+    Status: Adaptation 
+    """
+    
+    import numpy as np
+    hp = .5*period

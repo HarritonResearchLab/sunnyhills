@@ -258,7 +258,7 @@ def plot_star_detrending(
 def bls_validation_mosaic(tic_id:str, clean_time:np.array, clean_flux:np.array, 
                           trend_time:np.array, trend_flux:np.array,
                           raw_time:np.array, raw_flux:np.array, 
-                          best_params:list, bls_results, bls_model, in_transit, bls_stats, 
+                          best_params:list, bls_model, in_transit, bls_stats, 
                           path:str=None, dpi:int=150): 
 
     '''
@@ -273,20 +273,14 @@ def bls_validation_mosaic(tic_id:str, clean_time:np.array, clean_flux:np.array,
         best_params, bls_results, bls_model, in_transit, bls_stats: the items returned by the run_bls function in pipeline_functions.py (NOTE: in run_bls, stats must be set to be calculated!)
         path: if defined, plot will be saved as the provided path. Otherwise, it will be displayed
         dpi: dpi of saved plot
-
     returns: 
     '''
-
     import matplotlib.pyplot as plt
     from matplotlib.gridspec import GridSpec
     from sunnyhills.borrowed import tls_intransit_stats
     from sunnyhills.misc import phase, rebin
+    import numpy as np
 
-    import astropy.units as units
-    from lightkurve.periodogram import Periodogram
-
-    #plt.style.use('https://raw.githubusercontent.com/thissop/MAXI-J1535/main/code/misc/stolen_science.mplstyle?token=GHSAT0AAAAAABP54PQO2X2VXMNS256IWOBOYRNCFBA')
-    #plt.style.use('https://raw.githubusercontent.com/thissop/MAXI-J1535/main/code/misc/stolen_science.mplstyle?token=GHSAT0AAAAAABVPXDLXKPLDOD6CCSMC3WMSYVDQ6XA')
     plt.rcParams['font.family']='serif'
     plt.style.use('seaborn-darkgrid')
     plt.rcParams['font.family']='serif'
@@ -296,11 +290,9 @@ def bls_validation_mosaic(tic_id:str, clean_time:np.array, clean_flux:np.array,
     ax1 = fig.add_subplot(gs[0, :])
     ax2 = fig.add_subplot(gs[1, :])
     ax3 = fig.add_subplot(gs[2, :-1])
-    ax4 = fig.add_subplot(gs[-1, 0])
-    ax5 = fig.add_subplot(gs[-1, -2])
-    ax6 = fig.add_subplot(gs[2:, -1])
+    ax4 = fig.add_subplot(gs[-1, :-1])
+    ax5 = fig.add_subplot(gs[2:, -1])
 
-    
     # raw and trend light curve
         
     ax1.scatter(raw_time, raw_flux, s=1)
@@ -309,14 +301,22 @@ def bls_validation_mosaic(tic_id:str, clean_time:np.array, clean_flux:np.array,
     
     # detrend light curve
     ax2.scatter(clean_time, clean_flux, s=1)
-    index = np.argmax(bls_results.power)
-    period = bls_results.period[index]
-    t0 = bls_results.transit_time[index]
-    duration = bls_results.duration[index]
+    period = best_params[0]
+    t0 = best_params[1]
+    duration = best_params[2]  
+
+    params = {
+      'power': bls_model.max_power.value,
+      'period': period,
+      't0': t0,
+      'duration': duration,
+      'depth': best_params[3],
+      'transit_time': np.argmax(bls_stats['transit_times'])
+    }  
+
 
     phased_time, phased_flux, (x, f) = phase(time=clean_time, flux=clean_flux, period=period, 
                                            t0=t0, duration=duration, bls_model=bls_model, model_name='BLS')
-
     ax2.vlines(clean_time[in_transit], min(clean_flux), max(clean_flux), color='red', lw=0.05, alpha=0.4, zorder=0)
     ax2.set(ylabel='Detrended Flux')
 
@@ -328,87 +328,33 @@ def bls_validation_mosaic(tic_id:str, clean_time:np.array, clean_flux:np.array,
 
     binned_x, binned_flux, success = rebin(phased_time, phased_flux)
     
-    ax3.plot(x, f, color='red', alpha=0.5)
+ 
+    #x3.plot(x.value, f.value, color='red', alpha=0.5)
     if success: 
         ax3.scatter(binned_x, binned_flux, c='orange', s=40, edgecolor='black')
 
     ax3.set(xlim=(-0.2, 0.2))
 
-    for ax in [ax3, ax4, ax5]: 
+    for ax in [ax3,ax4]: 
         ax.set(xlabel='Time from mid-transit (days)', ylabel='Detrended Flux')
 
-    # transit depths (odd, even)
 
-    # https://github.com/hippke/tls/blob/71da590d3e199264822db425ab9f9f633253986e/transitleastsquares/stats.py#L338
-
-    sig_diff = bls_stats['sig_diff'] 
-
-    intransit_stats = tls_intransit_stats(clean_time, clean_flux, 
-                                          bls_stats['transit_times'], 
-                                          best_params[3])
-
-    odd_ = intransit_stats[4]
-    odd_time, odd_flux = (odd_[0], odd_[1])
-    odd_phased_time, odd_phased_flux, (odd_x, odd_f) = phase(time=odd_time, flux=odd_flux, period=period, t0=t0, 
-                                                           duration=duration, bls_model=bls_model, model_name='BLS')
-    odd_binned_time, odd_binned_flux, odd_success = rebin(odd_phased_time, odd_phased_flux)
-
-    even_ = intransit_stats[5]
-    even_time, even_flux = (even_[0], even_[1])
-    even_phased_time, even_phased_flux, (even_x, even_f) = phase(time=even_time, flux=even_flux, t0=t0, 
-                                                               duration=duration, bls_model=bls_model, model_name='BLS', period=period)
-    
-    if len(odd_phased_time)>0: 
-        even_phased_time = even_phased_time + 2.5*np.max(odd_phased_time) # shift over to show together 
-    
-        if len(even_phased_time)>0: 
-            odd_even_median = (np.max(odd_phased_time)+np.min(even_phased_time))/2
-
-    even_binned_time, even_binned_flux, even_success = rebin(even_phased_time, even_phased_flux)
-
-    ax4.scatter(odd_phased_time, odd_phased_flux, s=3, c='grey')
-    ax4.scatter(even_phased_time, even_phased_flux, s=3, c='grey')
-    
-    if even_success: 
-        ax4.scatter(odd_binned_time, odd_binned_flux, c='orange', s=40, edgecolor='black')
-    if odd_success: 
-        ax4.scatter(even_binned_time, even_binned_flux, c='orange', s=40, edgecolor='black')
-
-    if not np.isfinite(sig_diff): 
-        sig_diff = 'NaN'
-    else: 
-        sig_diff = str(round(sig_diff, 5))
-
-    if len(even_phased_time)>0 and len(odd_phased_time)>0: 
-        ax4.axvline(x=odd_even_median, color='black', lw=0.5, label='Diff: '+sig_diff+r'$\sigma$')
-
-        ax4.legend(loc='upper right', handlelength=0)
-
-    ax4.set(xlabel='Odd (left) and Even (right) Folded Transits')
-    ax4.xaxis.set_major_locator(plt.NullLocator())
-
-    warnings.warn('future idea: put line on the selected period (ax.axvline)')
 
     # periodogram 
-    #ax5.plot(bls_results.period, bls_results.power)
-    p = Periodogram(bls_results.period*units.hertz,units.Quantity(bls_results.power))
-    p.flatten()
-    p.plot(ax=ax5,xlabel='period',ylabel='power',style='seaborn-darkgrid')
-    ax5.set(xlabel='Period (d)', ylabel='Power')
+    bls_model.plot(ax=ax4,xlabel='Period (d)',ylabel='Power',style='seaborn-darkgrid')
 
-    #ax6.axis('off')
-    ax6.tick_params(labelbottom=False, labelleft=False, axis='both', which='both', length=0)
+    ax5.tick_params(labelbottom=False, labelleft=False, axis='both', which='both', length=0)
 
-    index = np.argmax(bls_results.power)
     text_info = []
-    for key_name in bls_results.keys(): 
-        result = bls_results[key_name]
-        if type(result)!=str: 
-            result = str(round(result[index], 5))
+    for key_name,val in params.items(): 
+      val = round(float(val),5)
+      result = key_name
+      if type(result)!=str: 
+          result = str(round(result, 5))
 
-        text_info.append(key_name+': '+result+'\n')
+      text_info.append(key_name+': '+ str(val)+'\n')
 
-    ax6.text(x=0.1, y=0.5, s='\n'.join(str(i).replace('_','') for i in text_info), fontsize='large', va='center', transform=ax6.transAxes)
+    ax5.text(x=0.1, y=0.5, s='\n'.join(str(i).replace('_','') for i in text_info), fontsize='large', va='center', transform=ax5.transAxes)
 
     ax1.set_title('TIC: '+str(tic_id).replace('_','')+' PERIOD: '+str(round(period, 5)), size='xx-large')
 
