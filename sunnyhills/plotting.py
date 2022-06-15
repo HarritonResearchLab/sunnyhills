@@ -362,3 +362,6 @@ def bls_validation_mosaic(tic_id:str, clean_time:np.array, clean_flux:np.array,
         plt.show()
     else: 
         plt.savefig(path, dpi=dpi)
+
+def tls_validation_mosaic(): 
+    pass 

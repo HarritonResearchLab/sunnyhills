@@ -575,9 +575,6 @@ def run_tls(tic_id:str, time, flux,
             tls_params: dict = {'min_per':0.5, 'max_per':15, 
                                 'minimum_n_transit':3, 
                                 'freq_factor':1,
-                                'durations':[0.05, 0.06667, 0.08333, 0.1, 0.11667, 
-                                             0.13333, 0.15, 0.16667, 0.18333, 0.2], 
-                                'objective':'snr', 
                                 'core_fraction':0.33}): 
 
     r'''
@@ -596,15 +593,13 @@ def run_tls(tic_id:str, time, flux,
     from transitleastsquares.stats import intransit_stats
     import multiprocessing 
 
-    durations = np.array(tls_params['durations'])
     num_cores = int(tls_params['core_fraction']*multiprocessing.cpu_count())
     tls_model = transitleastsquares(time, flux, verbose=False)
     
     ab, mass, mass_min, mass_max, radius, radius_min, radius_max = catalog_info(TIC_ID=int(tic_id.replace('TIC_',''))) 
     
     results = tls_model.power(period_min=tls_params['min_per'],period_max=tls_params['max_per'],
-                              verbose=False, show_progress_bar=False, use_threads=num_cores, u=ab,
-                              durations=durations)
+                              verbose=False, show_progress_bar=False, use_threads=num_cores, u=ab)
 
     index = np.argmax(results.power)
     period = results.periods[index]

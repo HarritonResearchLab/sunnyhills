@@ -159,48 +159,59 @@ def beta_routine(key:str, data_dir:str, download_log_file:str=None, output_log:s
 
     index = 0
 
-    for tic_id in tqdm(tic_ids): 
-        #data = pd.read_csv(data_dir+tic_id+'.csv')
-        data_path = '/ar1/PROJ/fjuhsd/shared/github/sunnyhills/data/current/processed/two_min_lightcurves/TIC_5714469.csv'
-        if os.path.exists(data_path):
-            data = pd.read_csv(data_path) 
-            clean_time = np.array(data['clean_time'])
-            clean_flux = np.array(data['clean_flux'])
+    import os 
+    tic_ids = [i.replace('.csv','') for i in os.listdir('/ar1/PROJ/fjuhsd/shared/github/sunnyhills/data/current/processed/two_min_lightcurves') if i!='.gitkeep']
 
-            tls_best_params, results, tls_model, in_transit = run_tls(tic_id=tic_id, time=clean_time, flux=clean_flux)
-            print(results.period)
-            index+=1 
-            if index>5: 
-                break 
+    tic_ids = []
+    cadences = []
 
-    r'''
-    out_df = pd.DataFrame()
+    for file in os.listdir(data_dir): 
+        
+        if file!='.gitkeep': 
+            
+            path = data_dir+file 
+            
+            df = pd.read_csv(path).dropna()
+            cadences.append(len(df['clean_time']))
+            tic_ids.append(file.replace('.csv', ''))
+
+    tic_ids, cadences = (np.array(i) for i in [tic_ids, cadences])
+    idx = np.argsort(cadences)
+    tic_ids, cadences = (i[idx] for i in [tic_ids, cadences])
+
+    tic_ids = np.array(tic_ids)[np.where(cadences<np.percentile(cadences, 40))[0]]
+
     result_keys_to_save = ['SDE', 'period', 'T0', 'duration', 'depth', 'rp_rs', 'snr']
-
-    if not os.path.exists(output_log): 
-        with open(output_log, 'w') as f: 
-            f.write(','.join(['TIC_ID']+result_keys_to_save)+'\n')
     
-    with open(output_log, 'a') as f: 
-        countr = 0
-        for tic_id in tqdm(tic_ids): 
-            data = pd.read_csv(data_dir+tic_id+'.csv')
-            if os.path.exists(data): 
+    result_lines = []
+
+    for tic_id in tqdm(tic_ids): 
+        try: 
+            data_path = data_dir+tic_id+'.csv'
+            if os.path.exists(data_path):
+                data = pd.read_csv(data_path) 
                 clean_time = np.array(data['clean_time'])
                 clean_flux = np.array(data['clean_flux'])
 
-                tls_best_params, results, tls_model, in_transit = run_tls(time=clean_time, flux=clean_flux)
+                tls_best_params, results, tls_model = run_tls(tic_id=tic_id, time=clean_time, flux=clean_flux)
 
                 result_list = [tic_id]+[results[key] for key in result_keys_to_save]
-                result_line = ','.join(result_list)
-                f.write(result_line+'\n')
+                result_line = ','.join([str(i) for i in result_list])
 
-                counter+=1 
+                result_lines.append(result_line)
+        except: 
+            continue 
+        
+    with open(output_log, 'a') as f: 
+        for line in result_lines: 
+            print(f)
+            f.write(line+'\n')
 
-                if counter>5: 
-                    break 
-    '''
 
 key = 'data/current/current_key.csv'
-data_dir = 'data/current/processed/two_min_lightcurves'
-beta_routine(key=key, data_dir=data_dir) 
+data_dir = '/ar1/PROJ/fjuhsd/shared/github/sunnyhills/data/current/processed/two_min_lightcurves/'
+output_log = '/ar1/PROJ/fjuhsd/shared/github/sunnyhills/personal_epochs/thaddaeus/june/weekly/second_week/tls_routine/output_log.txt'
+beta_routine(key=key, data_dir=data_dir, output_log=output_log) 
+
+        
+        
