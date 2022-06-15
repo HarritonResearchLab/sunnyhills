@@ -136,7 +136,6 @@ def beta_routine(key:str, data_dir:str, download_log_file:str=None, output_log:s
     '''
     
     from sunnyhills.pipeline_functions import run_tls 
-    from sunnyhills.plotting import bls_validation_mosaic
     from false_alarm_checks import even_odd_transit, lombscargle
     import numpy as np
     import pandas as pd 
