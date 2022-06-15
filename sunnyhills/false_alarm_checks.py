@@ -82,6 +82,27 @@ def even_odd_phase_folded(time, flux, results):
 
     return even_transit_time_folded, even_transit_flux, odd_transit_time_folded, odd_transit_flux, all_even_indices_in_transit, all_odd_indices_in_transit
 
+### ACTUAL TESTS BELOW ###
+
+def tls_even_odd(tls_results): 
+    eb_flag = True 
+
+    odd = tls_results.depth_mean_even 
+
+    odd = [odd[0]-odd[1], odd[0]+odd[1]]
+
+    even = tls_results.depth_mean_odd
+    even = [even[0]-even[1], even[0]+even[1]]
+
+    temp = np.sort([even, odd])
+
+    if temp[0][1]>temp[1][0]: 
+        eb_flag = False
+
+    print(temp)
+
+    return eb_flag
+
 def lombscargle(time,flux,flux_err:np.array=None,min_per:float=.1,max_per:int=15,calc_fap:bool=True,probabilities:list=[.1,.05,.01]):
     import numpy as np
     from astropy.timeseries import LombScargle
@@ -106,4 +127,4 @@ def lombscargle(time,flux,flux_err:np.array=None,min_per:float=.1,max_per:int=15
         best_period = periods[0] 
         best_period_power = powers[0]
 
-    return powers,periods,best_period,best_period_power,fap_levels
+    return powers, periods, best_period, best_period_power, fap_levels

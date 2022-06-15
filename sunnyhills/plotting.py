@@ -497,21 +497,20 @@ def tls_validation_mosaic(tic_id:str, data, tls_model, tls_results,
     ax6.set(xlim=(np.min(tls_results.periods), np.max(tls_results.periods)), 
             xlabel='Period (days)', ylabel='SDE')
     
-    #ax7.axis('off')
-    ax7.tick_params(labelbottom=False, labelleft=False, axis='both', which='both', length=0)
+    labels = ['period', 'depth', 'T0', 
+                  'SDE', 'snr', 'rp/rs', 'transit_count', 
+                  'distinct_transit_count']
 
-    '''
-    index = np.argmax(bls_results.power)
+    values = [tls_results.period, tls_results.depth, tls_results.T0, 
+                  tls_results.SDE, tls_results.snr, tls_results.rp_rs, tls_results.transit_count, 
+                  tls_results.distinct_transit_count]
+
     text_info = []
-    for key_name in bls_results.keys(): 
-        result = bls_results[key_name]
-        if type(result)!=str: 
-            result = str(round(result[index], 5))
+    for label, value in zip(labels, values):
+        text_info.append(label+'='+str(round(value, 5)))
 
-        text_info.append(key_name+': '+result+'\n')
-
-    ax6.text(x=0.1, y=0.5, s='\n'.join(str(i).replace('_','') for i in text_info), fontsize='large', va='center', transform=ax6.transAxes)
-    '''
+    ax7.text(x=0.1, y=0.5, s='\n\n'.join(str(i).replace('_',' ') for i in text_info), fontsize='large', va='center', transform=ax7.transAxes)
+    ax7.tick_params(labelbottom=False, labelleft=False, axis='both', which='both', length=0)
 
     ax1.set_title('TIC: '+str(tic_id).replace('_','')+' PERIOD: '+str(round(tls_results.period, 5)), size='xx-large')
 
