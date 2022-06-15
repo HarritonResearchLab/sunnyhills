@@ -566,8 +566,7 @@ def iterative_bls_runner(time:np.array, flux:np.array,
 
         results = bls_model.autopower(durations, frequency_factor=bls_params['freq_factor'], 
                                 minimum_period=bls_params['min_per'], 
-                                maximum_period=bls_params['max_per'],
-                                objective=bls_params['objective'])
+                                maximum_period=bls_params['max_per'])
         
         results_dict[iter_name] = results
 
@@ -630,7 +629,7 @@ def run_tls(time, flux,
     durations = np.array(tls_params['durations'])
     num_cores = int(tls_params['core_fraction']*multiprocessing.cpu_count())
     tls_model = transitleastsquares(time, flux, verbose=False)
-    results = tls_model.power(period_min=tls_params['min_per'],period_max=tls_params['max_per'],objective=tls_params['objective'], 
+    results = tls_model.power(period_min=tls_params['min_per'],period_max=tls_params['max_per'], 
                               verbose=False, show_progress_bar=False, use_threads=num_cores)
     '''
     results = tls_model.autopower(durations, frequency_factor=bls_params['freq_factor'], 
