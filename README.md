@@ -4,6 +4,15 @@
 # sunnyhills
 
 
+## WH1 Stuff
+
+### git
+
+* do everything within `./sunnyhills` on wh1
+* make sure to pull commits first with ```git pull``` 
+* before pushing, do `git commit -a` (nano will pop up, yay!)
+* then do `git push`
+
 ## Environment Setup
 1. Download [miniconda](https://docs.conda.io/projects/conda/en/latest/user-guide/install/windows.html) (and despite the warning the installed gives, make sure to select the "Add Anaconda to my PATH enviroment variable" option) 
 2. If you don't already have windows build tools installed, install them from here: ```https://visualstudio.microsoft.com/visual-cpp-build-tools/``` 
