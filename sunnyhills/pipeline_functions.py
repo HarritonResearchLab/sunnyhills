@@ -571,48 +571,41 @@ def iterative_bls_runner(time:np.array, flux:np.array,
         return results_dict, models_dict, in_transits_dict
 
 ## TLS ##
-def run_tls(time, flux, 
+def run_tls(tic_id:str, time, flux, 
             tls_params: dict = {'min_per':0.5, 'max_per':15, 
-                                'minimum_n_transit':2, 
+                                'minimum_n_transit':3, 
                                 'freq_factor':1,
-                                'durations':[0.05, 0.06666666666666668, 
-                                             0.08333333333333334, 0.1,
-                                             0.11666666666666668, 
-                                             0.13333333333333336,
-                                             0.15000000000000002, 
-                                             0.16666666666666669, 
-                                             0.18333333333333335, 0.2], 
+                                'durations':[0.05, 0.06667, 0.08333, 0.1, 0.11667, 
+                                             0.13333, 0.15, 0.16667, 0.18333, 0.2], 
                                 'objective':'snr', 
                                 'core_fraction':0.33}): 
 
     '''
     args: 
-        stitched_lc: list of stitched light curve arrays [time, flux]
-        tls_params: params for tls execution. 
+        tic_id: obvious
+        time: time array
+        flux: flux array
+        tls_params: don't worry about it lol 
     returns: 
-        best_params: [index, period, t0, duration, sig_diff] for highest power period (sig_diff is sig_diff between left/right depths)
-        results: the TLS results array 
-        tls_model: the BTS model  
-        in_transit_mask: mask for the in_transit points. to get not in transit, do ~in_transit_mask
+        
     '''
 
     import numpy as np
     from transitleastsquares import transitleastsquares
-    from transitleastsquares import transit_mask
+    from transitleastsquares import transit_mask, catalog_info
     from transitleastsquares.stats import intransit_stats
     import multiprocessing 
 
     durations = np.array(tls_params['durations'])
     num_cores = int(tls_params['core_fraction']*multiprocessing.cpu_count())
     tls_model = transitleastsquares(time, flux, verbose=False)
+    
+    ab, mass, mass_min, mass_max, radius, radius_min, radius_max = catalog_info(TIC_ID=int(tic_id.replace('TIC_',''))) 
+    
     results = tls_model.power(period_min=tls_params['min_per'],period_max=tls_params['max_per'],objective=tls_params['objective'], 
-                              verbose=False, show_progress_bar=False, use_threads=num_cores)
-    '''
-    results = tls_model.autopower(durations, frequency_factor=bls_params['freq_factor'], 
-                            minimum_period=bls_params['min_per'], 
-                            maximum_period=bls_params['max_per'],
-                            objective=bls_params['objective'])
-                            '''
+                              verbose=False, show_progress_bar=False, use_threads=num_cores, 
+                              R_star=radius,  R_star_min=radius_min, R_star_max=radius_max,
+                              M_star=mass, M_star_min=mass_min, M_star_max=mass_max, u=ab)
 
     index = np.argmax(results.power)
     period = results.periods[index]
