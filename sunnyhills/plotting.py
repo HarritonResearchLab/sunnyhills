@@ -363,7 +363,7 @@ def bls_validation_mosaic(tic_id:str, clean_time:np.array, clean_flux:np.array,
     else: 
         plt.savefig(path, dpi=dpi)
 
-def tls_validation_mosaic(tic_id:str, data:str, tls_results, tls_model,   
+def tls_validation_mosaic(tic_id:str, data, tls_model, tls_results,
                           plot_dir:str=None, dpi:int=150): 
 
     '''
@@ -378,97 +378,134 @@ def tls_validation_mosaic(tic_id:str, data:str, tls_results, tls_model,
         best_params, bls_results, bls_model, in_transit, bls_stats: the items returned by the run_bls function in pipeline_functions.py (NOTE: in run_bls, stats must be set to be calculated!)
         path: if defined, plot will be saved as the provided path. Otherwise, it will be displayed
         dpi: dpi of saved plot
+
     returns: 
     '''
+
     import matplotlib.pyplot as plt
     from matplotlib.gridspec import GridSpec
-    from sunnyhills.borrowed import tls_intransit_stats
-    from sunnyhills.misc import phase, rebin
-    import numpy as np
-    from transitleastsquares import transit_mask
+    from sunnyhills.false_alarm_checks import even_odd_phase_folded
+    from transitleastsquares import (
+        transitleastsquares,
+        cleaned_array,
+        catalog_info,
+        transit_mask
+    )
 
-    plt.rcParams['font.family']='serif'
+    #plt.style.use('https://raw.githubusercontent.com/thissop/MAXI-J1535/main/code/misc/stolen_science.mplstyle?token=GHSAT0AAAAAABP54PQO2X2VXMNS256IWOBOYRNCFBA')
+    #plt.style.use('https://raw.githubusercontent.com/thissop/MAXI-J1535/main/code/misc/stolen_science.mplstyle?token=GHSAT0AAAAAABVPXDLXKPLDOD6CCSMC3WMSYVDQ6XA')
     plt.style.use('seaborn-darkgrid')
     plt.rcParams['font.family']='serif'
     fig = plt.figure(constrained_layout=True, figsize=(12,12))
 
     gs = GridSpec(4, 3, figure=fig)
-    ax1 = fig.add_subplot(gs[0, :])
-    ax2 = fig.add_subplot(gs[1, :])
-    ax3 = fig.add_subplot(gs[2, :-1])
-    ax4 = fig.add_subplot(gs[-1, :-1])
-    ax5 = fig.add_subplot(gs[2:, -1])
+    ax1 = fig.add_subplot(gs[0, :]) # detrended light curve
+    ax2 = fig.add_subplot(gs[1, :-1]) # no flare with trend light curve
+    ax3 = fig.add_subplot(gs[2, :-1]) # phase folded transit 
+    ax4 = fig.add_subplot(gs[-1, 0]) # left right transits
+    ax5 = fig.add_subplot(gs[-1, -2]) # depth diffs 
+    ax6 = fig.add_subplot(gs[-1,-1]) # periodogram 
+    ax7 = fig.add_subplot(gs[1:-1, -1]) # notes 
 
-    # misc 
-    in_transit = transit_mask(clean_time, tls_results.period, tls_results.duration, tls_results.T0)
+    
     df = pd.read_csv(data)
     clean_time, clean_flux = (np.array(df[i]) for i in ['clean_time', 'clean_flux'])
     clean_mask = np.isfinite(clean_time)
     clean_time, clean_flux = (i[clean_mask] for i in [clean_time, clean_flux])
+    in_transit = transit_mask(clean_time, tls_results.period, tls_results.duration, tls_results.T0)
 
     raw_time, raw_flux = (np.array(df[i]) for i in ['no_flare_raw_time','no_flare_raw_flux'])
 
-    trend_mask = np.isfinite(trend_time)
     trend_time, trend_flux = (np.array(df[i]) for i in ['trend_time','trend_flux'])
+    trend_mask = np.isfinite(trend_time)
     trend_time, trend_flux = (i[trend_mask] for i in [trend_time, trend_flux])
-    
-    # raw and trend light curve
-    ax1.scatter(raw_time, raw_flux, s=1)
-    ax1.scatter(trend_time, trend_flux, s=1, c='r')
-    ax1.set(ylabel='Flux')
-    
+
     # detrend light curve
-    ax2.scatter(clean_time, clean_flux, s=1)
-    period = tls_results.period
-    t0 = tls_results.T0
-    duration = tls_results.duration  
+    ax1.scatter(clean_time, clean_flux, s=1)
+    
+    in_transit = transit_mask(clean_time, tls_results.period, tls_results.duration, tls_results.T0)
+    ax1.scatter(clean_time[in_transit], clean_flux[in_transit], color='red', s=2, zorder=0)
+    ax1.scatter(clean_time[~in_transit], clean_flux[~in_transit], color='grey', alpha=0.5, s=2, zorder=0)
+    ax1.plot(tls_results.model_lightcurve_time, tls_results.model_lightcurve_model, alpha=0.5, color='red', zorder=1)
+    ax1.set(ylabel='Detrended Flux')
 
-    ax2.vlines(clean_time[in_transit], min(clean_flux), max(clean_flux), color='red', lw=0.05, alpha=0.4, zorder=0)
-    ax2.set(ylabel='Detrended Flux')
-
+    # raw and trend light curve
+        
+    ax2.scatter(raw_time, raw_flux, s=1)
+    ax2.plot(trend_time, trend_flux, lw=0.5, c='r')
+    ax2.set(ylabel='Flux')
+    
+    lc_xlim = (min((min(clean_time), min(raw_time))), max((max(clean_time), max(raw_time))))
     for ax in [ax1, ax2]: 
-        ax.set(xlabel='Time (days)')
+        ax.set(xlabel='Time (days)', xlim=lc_xlim)
 
     # phase folded
-    phased_time, phased_flux = (tls_results.folded_phase, tls_results.folded_y)
-    ax3.scatter(phased_time, phased_flux, s=3, c='grey')
-
-    binned_x, binned_flux, success = rebin(phased_time, phased_flux)
+    ax3.scatter(tls_results.folded_phase, tls_results.folded_y, s=3, c='grey')
+    
+    #binned_x, binned_flux, success = rebin(phased_time, phased_flux)
     
     ax3.plot(tls_results.model_folded_phase, tls_results.model_folded_model, color='red')
-    if success: 
-        ax3.scatter(binned_x, binned_flux, c='orange', s=40, edgecolor='black')
 
-    ax3.set(xlim=(-0.2, 0.2))
+    #ax3.scatter(binned_x, binned_flux)
 
-    for ax in [ax3,ax4]: 
+    ax3.set(xlim=(0.47, 0.53))
+
+    for ax in [ax3, ax4, ax5]: 
         ax.set(xlabel='Time from mid-transit (days)', ylabel='Detrended Flux')
 
+    # transit depths (odd, even)
+
+    # https://github.com/hippke/tls/blob/71da590d3e199264822db425ab9f9f633253986e/transitleastsquares/stats.py#L338
+
+    #ax4.errorbar(tls_results.transit_times, tls_results.transit_depths, yerr=2*tls_results.transit_depths_uncertainties,fmt='o', color='red')
+    transit_x = [min(clean_time), max(clean_time)]
+    transit_y = 2*[np.mean(tls_results.transit_depths)]
+    ax4.plot(transit_x, transit_y, color='black', linestyle='dashed')
+    ax4.plot(transit_x, 2*[1], color='black')
+    ax4.set(xlabel='Time (days)', ylabel='Flux')
+    
+    ax4.xaxis.set_major_locator(plt.NullLocator())
+
+    # even odd transits
+    #ax6.
+
+    even_transit_time_folded, even_transit_flux, odd_transit_time_folded, odd_transit_flux, even_indices, odd_indices = even_odd_phase_folded(time=clean_time, flux=clean_flux, results=tls_results)    
+    ax5.scatter(even_transit_time_folded, even_transit_flux)
+    #ax5.scatter(tls_results.folded_phase[even_indices], tls_results.folded_y[even_indices])
+    max_even = np.max(even_transit_time_folded)
+    shifted_odd_time = odd_transit_time_folded+1.1*max_even 
+    ax5.scatter(shifted_odd_time, odd_transit_flux)
+    ax5.axvline(x=np.mean([np.min(shifted_odd_time), max_even]), ls='--', lw=2, c='white')
+
     # periodogram 
-    ax5.axvline(tls_results.period, alpha=0.4, lw=3)
-    ax5.set(xlim=(np.min(tls_results.periods), np.max(tls_results.periods)))
+    #ax6.plot(bls_results.period, bls_results.power)
+    ax6.axvline(tls_results.period, alpha=0.4, lw=3)
     for n in range(2, 10):
-        ax5.axvline(n*tls_results.period, alpha=0.4, lw=1, linestyle="dashed")
-        ax5.axvline(tls_results.period / n, alpha=0.4, lw=1, linestyle="dashed")
-    ax5.plot(tls_results.periods, tls_results.power, color='black', lw=0.5)
-    ax5.set(xlim=(0, max(tls_results.periods)), xlabel='Period (days)', ylabel=r'SDE')
+        ax6.axvline(n*tls_results.period, alpha=0.4, lw=1, linestyle="dashed")
+        ax6.axvline(tls_results.period / n, alpha=0.4, lw=1, linestyle="dashed")
 
-    ax5.tick_params(labelbottom=False, labelleft=False, axis='both', which='both', length=0)
+    ax6.plot(tls_results.periods, tls_results.power, color='black', lw=0.5)
 
-    r'''
+    ax6.set(xlim=(np.min(tls_results.periods), np.max(tls_results.periods)), 
+            xlabel='Period (days)', ylabel='SDE')
+    
+    #ax7.axis('off')
+    ax7.tick_params(labelbottom=False, labelleft=False, axis='both', which='both', length=0)
+
+    '''
+    index = np.argmax(bls_results.power)
     text_info = []
-    for key_name,val in params.items(): 
-      val = round(float(val),5)
-      result = key_name
-      if type(result)!=str: 
-          result = str(round(result, 5))
+    for key_name in bls_results.keys(): 
+        result = bls_results[key_name]
+        if type(result)!=str: 
+            result = str(round(result[index], 5))
 
-      text_info.append(key_name+': '+ str(val)+'\n')
+        text_info.append(key_name+': '+result+'\n')
 
-    ax5.text(x=0.1, y=0.5, s='\n'.join(str(i).replace('_','') for i in text_info), fontsize='large', va='center', transform=ax5.transAxes)
+    ax6.text(x=0.1, y=0.5, s='\n'.join(str(i).replace('_','') for i in text_info), fontsize='large', va='center', transform=ax6.transAxes)
     '''
 
-    ax1.set_title('TIC: '+str(tic_id).replace('_','')+' PERIOD: '+str(round(period, 5)), size='xx-large')
+    ax1.set_title('TIC: '+str(tic_id).replace('_','')+' PERIOD: '+str(round(tls_results.period, 5)), size='xx-large')
 
     if plot_dir==None:
         plt.show()

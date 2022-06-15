@@ -599,7 +599,7 @@ def run_tls(tic_id:str, time, flux,
     ab, mass, mass_min, mass_max, radius, radius_min, radius_max = catalog_info(TIC_ID=int(tic_id.replace('TIC_',''))) 
     
     results = tls_model.power(period_min=tls_params['min_per'],period_max=tls_params['max_per'],
-                              verbose=False, show_progress_bar=False, use_threads=num_cores, u=ab)
+                              verbose=False, show_progress_bar=True, use_threads=num_cores, u=ab)
 
     index = np.argmax(results.power)
     period = results.periods[index]

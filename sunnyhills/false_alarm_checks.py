@@ -29,6 +29,56 @@ def even_odd_transit(routine:str, stats):
 
     return even_odd_flag
 
+def even_odd_phase_folded(time, flux, results):
+    """Return even odd phase folded transits"""
+
+    all_even_indices_in_transit = np.array([])
+    all_odd_indices_in_transit = np.array([])
+
+    all_indices = np.arange(0,len(time))
+
+    transit_times = results.transit_times
+    transit_duration_in_days = results.duration
+
+    period = results.period
+    T0 = results.T0
+
+    for i in range(len(transit_times)):
+        mid_transit = transit_times[i]
+        tmin = mid_transit -  transit_duration_in_days
+        tmax = mid_transit + transit_duration_in_days
+        if np.isnan(tmin) or np.isnan(tmax):
+            idx_intransit = []
+            mean_flux = np.nan
+        else:
+            idx_intransit = np.where(np.logical_and(time > tmin, time < tmax))[0]
+
+        # Check if transit odd/even to collect the flux for the mean calculations
+        if i % 2 == 0:  # even
+            all_even_indices_in_transit = np.concatenate((all_even_indices_in_transit, 
+                                                          idx_intransit))
+        else:  # odd
+            all_odd_indices_in_transit = np.concatenate((all_odd_indices_in_transit,
+                                                         idx_intransit))
+
+    def fold(time, period, T0):
+        """Normal phase folding"""
+        #return (time - T0) / period - np.floor((time - T0) / period)
+        return (time) / period - np.floor((time) / period)
+
+    all_even_indices_in_transit = all_even_indices_in_transit.astype(int)
+    all_odd_indices_in_transit = all_odd_indices_in_transit.astype(int)
+
+    even_transit_flux = flux[all_even_indices_in_transit] 
+    even_transit_time = time[all_even_indices_in_transit]
+    odd_transit_flux = flux[all_odd_indices_in_transit]
+    odd_transit_time = time[all_odd_indices_in_transit]
+
+    even_transit_time_folded = fold(even_transit_time, period, T0)
+    odd_transit_time_folded = fold(odd_transit_time, period, T0)
+
+    return even_transit_time_folded, even_transit_flux, odd_transit_time_folded, odd_transit_flux, all_even_indices_in_transit, all_odd_indices_in_transit
+
 def lombscargle(time,flux,flux_err:np.array=None,min_per:float=.1,max_per:int=15,calc_fap:bool=True,probabilities:list=[.1,.05,.01]):
     import numpy as np
     from astropy.timeseries import LombScargle

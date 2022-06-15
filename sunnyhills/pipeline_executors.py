@@ -185,21 +185,21 @@ def beta_routine(key:str, data_dir:str, download_log_file:str=None, output_log:s
     result_lines = []
 
     for tic_id in tqdm(tic_ids): 
-        try: 
-            data_path = data_dir+tic_id+'.csv'
-            if os.path.exists(data_path):
-                data = pd.read_csv(data_path) 
-                clean_time = np.array(data['clean_time'])
-                clean_flux = np.array(data['clean_flux'])
+        #try: 
+        data_path = data_dir+tic_id+'.csv'
+        if os.path.exists(data_path):
+            data = pd.read_csv(data_path) 
+            clean_time = np.array(data['clean_time'])
+            clean_flux = np.array(data['clean_flux'])
 
-                tls_best_params, results, tls_model = run_tls(tic_id=tic_id, time=clean_time, flux=clean_flux)
+            tls_best_params, results, tls_model = run_tls(tic_id=tic_id, time=clean_time, flux=clean_flux)
 
-                result_list = [tic_id]+[results[key] for key in result_keys_to_save]
-                result_line = ','.join([str(i) for i in result_list])
+            result_list = [tic_id]+[results[key] for key in result_keys_to_save]
+            result_line = ','.join([str(i) for i in result_list])
 
-                result_lines.append(result_line)
-        except: 
-            continue 
+            result_lines.append(result_line)
+        #except: 
+        #    continue 
         
     with open(output_log, 'a') as f: 
         for line in result_lines: 
