@@ -572,10 +572,11 @@ def iterative_bls_runner(time:np.array, flux:np.array,
 
 ## TLS ##
 def run_tls(tic_id:str, time, flux, 
+            cache_dir:str=None, 
             tls_params: dict = {'min_per':0.5, 'max_per':15, 
                                 'minimum_n_transit':3, 
                                 'freq_factor':1,
-                                'core_fraction':0.33}): 
+                                'core_fraction':0.5}): 
 
     r'''
     args: 
@@ -592,24 +593,33 @@ def run_tls(tic_id:str, time, flux,
     from transitleastsquares import transit_mask, catalog_info
     from transitleastsquares.stats import intransit_stats
     import multiprocessing 
+    import pickle 
 
     num_cores = int(tls_params['core_fraction']*multiprocessing.cpu_count())
     tls_model = transitleastsquares(time, flux, verbose=False)
     
     ab, mass, mass_min, mass_max, radius, radius_min, radius_max = catalog_info(TIC_ID=int(tic_id.replace('TIC_',''))) 
     
-    results = tls_model.power(period_min=tls_params['min_per'],period_max=tls_params['max_per'],
+    tls_results = tls_model.power(period_min=tls_params['min_per'],period_max=tls_params['max_per'],
                               verbose=False, show_progress_bar=True, use_threads=num_cores, u=ab)
 
-    index = np.argmax(results.power)
-    period = results.periods[index]
-    t0 = results.T0 
-    duration = results.duration
-    #in_transit = transit_mask(time, period, 2*duration, t0) #what is this for?
 
     tls_best_params = [index, period, t0, duration]
     
-    return tls_best_params, results, tls_model
+    if cache_dir!=None: 
+        if cache_dir[-1]!='/': 
+            cache_dir+='/'
+
+        tls_model_cache_file = cache_dir+tic_id+'_tls-model.pickle'
+        tls_results_cache_file = cache_dir+tic+id+'_tls-results.pickle'
+
+        with open(tls_model_cache_file, 'wb') as file: 
+            pickle.dump(tls_model, file, protocol=pickle.HIGHEST_PROTOCOL)
+
+        with open(tls_results_cache_file, 'wb') as file: 
+            pickle.dump(tls_results, file, protocol=pickle.HIGHEST_PROTOCOL)
+
+    return tls_results, tls_model
 
 def iterative_tls_runner(time, flux, 
                      iterations: int=1, 

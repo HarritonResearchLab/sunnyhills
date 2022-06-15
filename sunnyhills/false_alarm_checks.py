@@ -77,6 +77,9 @@ def even_odd_phase_folded(time, flux, results):
     even_transit_time_folded = fold(even_transit_time, period, T0)
     odd_transit_time_folded = fold(odd_transit_time, period, T0)
 
+    even_transit_time_folded[even_transit_time_folded>0.5] = even_transit_time_folded[even_transit_time_folded>0.5] - 1
+    odd_transit_time_folded[odd_transit_time_folded>0.5] = odd_transit_time_folded[odd_transit_time_folded>0.5] - 1
+
     return even_transit_time_folded, even_transit_flux, odd_transit_time_folded, odd_transit_flux, all_even_indices_in_transit, all_odd_indices_in_transit
 
 def lombscargle(time,flux,flux_err:np.array=None,min_per:float=.1,max_per:int=15,calc_fap:bool=True,probabilities:list=[.1,.05,.01]):
