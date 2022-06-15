@@ -117,7 +117,7 @@ def alpha_routine(key:str, data_dir:str, download_log_file:str, output_log_file:
             line = [logged_ids[index]] + list(results_dicts[index].values())+list(flag_dicts[index].values())
             f.write(','.join([str(i) for i in line])+'\n')
 
-'''
+r'''
 key = r'C:\Users\Research\Documents\GitHub\sunnyhills\personal_epochs\thaddaeus\june\topical\misc\fake_key.csv'
 download_log_file = r'C:\Users\Research\Documents\GitHub\sunnyhills\data\current\download_log.txt'
 output_log_file = './personal_epochs/thaddaeus/june/topical/pipeline_alpha_dev/output.log'
@@ -125,7 +125,7 @@ plots_dir = './personal_epochs/thaddaeus/june/topical/pipeline_alpha_dev'
 alpha_routine(key=key, data_dir='./data/current/processed/two_min_lightcurves', download_log_file=download_log_file, output_log_file=output_log_file, plots_dir=plots_dir)
 '''
 
-def beta_routine(key:str, data_dir:str, download_log_file:str, output_log:str, plots_dir:str=None):
+def beta_routine(key:str, data_dir:str, download_log_file:str=None, output_log:str=None, plots_dir:str=None):
     r'''
     Parameters
 
@@ -159,19 +159,20 @@ def beta_routine(key:str, data_dir:str, download_log_file:str, output_log:str, p
 
     index = 0
 
-
     for tic_id in tqdm(tic_ids): 
-        data = pd.read_csv(data_dir+tic_id+'.csv')
-        if os.path.exists(data): 
+        #data = pd.read_csv(data_dir+tic_id+'.csv')
+        data_path = '/ar1/PROJ/fjuhsd/shared/github/sunnyhills/data/current/processed/two_min_lightcurves/TIC_5714469.csv'
+        if os.path.exists(data_path):
+            data = pd.read_csv(data_path) 
             clean_time = np.array(data['clean_time'])
             clean_flux = np.array(data['clean_flux'])
 
-            tls_best_params, results, tls_model, in_transit = run_tls(time=clean_time, flux=clean_flux)
+            tls_best_params, results, tls_model, in_transit = run_tls(tic_id=tic_id, time=clean_time, flux=clean_flux)
             print(results.period)
             index+=1 
             if index>5: 
                 break 
-            
+
     r'''
     out_df = pd.DataFrame()
     result_keys_to_save = ['SDE', 'period', 'T0', 'duration', 'depth', 'rp_rs', 'snr']
@@ -200,5 +201,6 @@ def beta_routine(key:str, data_dir:str, download_log_file:str, output_log:str, p
                     break 
     '''
 
-
-beta_routine() 
+key = 'data/current/current_key.csv'
+data_dir = 'data/current/processed/two_min_lightcurves'
+beta_routine(key=key, data_dir=data_dir) 

@@ -602,21 +602,19 @@ def run_tls(tic_id:str, time, flux,
     
     ab, mass, mass_min, mass_max, radius, radius_min, radius_max = catalog_info(TIC_ID=int(tic_id.replace('TIC_',''))) 
     
-    results = tls_model.power(period_min=tls_params['min_per'],period_max=tls_params['max_per'],objective=tls_params['objective'], 
-                              verbose=False, show_progress_bar=False, use_threads=num_cores, 
-                              R_star=radius,  R_star_min=radius_min, R_star_max=radius_max,
-                              M_star=mass, M_star_min=mass_min, M_star_max=mass_max, u=ab)
+    results = tls_model.power(period_min=tls_params['min_per'],period_max=tls_params['max_per'],
+                              verbose=False, show_progress_bar=False, use_threads=num_cores, u=ab,
+                              durations=durations)
 
     index = np.argmax(results.power)
     period = results.periods[index]
-    t0 = results.T0 # what is t0?
+    t0 = results.T0 
     duration = results.duration
-    in_transit = transit_mask(time, period, 2*duration, t0) #what is this for?
+    #in_transit = transit_mask(time, period, 2*duration, t0) #what is this for?
 
     tls_best_params = [index, period, t0, duration]
     
-
-    return tls_best_params, results, tls_model, in_transit
+    return tls_best_params, results, tls_model
 
 def iterative_tls_runner(time, flux, 
                      iterations: int=1, 
