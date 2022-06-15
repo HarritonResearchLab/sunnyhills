@@ -602,16 +602,13 @@ def run_tls(tic_id:str, time, flux,
     
     tls_results = tls_model.power(period_min=tls_params['min_per'],period_max=tls_params['max_per'],
                               verbose=False, show_progress_bar=True, use_threads=num_cores, u=ab)
-
-
-    tls_best_params = [index, period, t0, duration]
     
     if cache_dir!=None: 
         if cache_dir[-1]!='/': 
             cache_dir+='/'
 
         tls_model_cache_file = cache_dir+tic_id+'_tls-model.pickle'
-        tls_results_cache_file = cache_dir+tic+id+'_tls-results.pickle'
+        tls_results_cache_file = cache_dir+tic_id+'_tls-results.pickle'
 
         with open(tls_model_cache_file, 'wb') as file: 
             pickle.dump(tls_model, file, protocol=pickle.HIGHEST_PROTOCOL)
