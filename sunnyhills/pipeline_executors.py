@@ -129,7 +129,7 @@ def beta_routine(key:str, data_dir:str, download_log:str, output_log:str, plots_
     '''
     
     from sunnyhills.pipeline_functions import run_tls 
-    from sunnyhills.plotting import run_tls_mosaic
+    from sunnyhills.plotting import bls_validation_mosaic
     from false_alarm_checks import even_odd_transit, lombscargle
     import numpy as np
     import pandas as pd 
@@ -142,7 +142,7 @@ def beta_routine(key:str, data_dir:str, download_log:str, output_log:str, plots_
     download_log = pd.read_csv(download_log)
 
     if plots_dir!=None: 
-        if plots_dir[-1]!='/':  
+        if plots_dir[-1]!='/': 
             plots_dir+='/'
 
     if data_dir[-1]!='/':
@@ -158,10 +158,9 @@ def beta_routine(key:str, data_dir:str, download_log:str, output_log:str, plots_
             f.write(','.join(['TIC_ID']+result_keys_to_save)+'\n')
     
     with open(output_log, 'a') as f: 
-        counter = 0
+        countr = 0
         for tic_id in tqdm(tic_ids): 
             #try:
-<<<<<<< Updated upstream
             data_path = data_dir+tic_id+'.csv'
             
             data_path = '/ar1/PROJ/fjuhsd/shared/github/sunnyhills/data/current/processed/two_min_lightcurves/TIC_1232360.csv'
@@ -185,31 +184,11 @@ def beta_routine(key:str, data_dir:str, download_log:str, output_log:str, plots_
 
                 if counter>5: 
                     break 
-=======
-            
-            data = pd.read_csv(data_dir+tic_id+'.csv')
-            if os.path.exists(data): 
-                clean_time = np.array(data['clean_time'])
-                clean_flux = np.array(data['clean_flux'])
-
-                tls_best_params, results, tls_model, in_transit = run_tls(time=clean_time, flux=clean_flux)
-
-                result_list = [tic_id]+[results[key] for key in result_keys_to_save]
-                result_line = ','.join(result_list)
-                f.write(result_line+'\n')
-
-                counter+=1 
-
-                if counter>5: 
-                    break 
-            
->>>>>>> Stashed changes
             '''
             except Exception as e: 
                 #print(e)
                 continue 
             '''
-<<<<<<< Updated upstream
             break 
 
 key = './data/current/current_key.csv'
@@ -217,6 +196,3 @@ data_dir = '/ar1/PROJ/fjuhsd/shared/github/sunnyhills/data/current/processed/two
 download_log = './data/current/download_log.txt'
 output_log = './personal_epochs/thaddaeus/june/topical/pipeline_beta_dev/logging.txt'
 beta_routine(key, data_dir, download_log, output_log) 
-=======
-beta_routine() 
->>>>>>> Stashed changes

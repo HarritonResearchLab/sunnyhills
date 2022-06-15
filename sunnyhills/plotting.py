@@ -362,6 +362,3 @@ def bls_validation_mosaic(tic_id:str, clean_time:np.array, clean_flux:np.array,
         plt.show()
     else: 
         plt.savefig(path, dpi=dpi)
-
-def run_tls_mosaic(): 
-    pass 
