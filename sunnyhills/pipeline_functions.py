@@ -580,7 +580,7 @@ def run_tls(tic_id:str, time, flux,
                                 'objective':'snr', 
                                 'core_fraction':0.33}): 
 
-    '''
+    r'''
     args: 
         tic_id: obvious
         time: time array

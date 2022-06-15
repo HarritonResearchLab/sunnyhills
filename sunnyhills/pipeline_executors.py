@@ -1,5 +1,5 @@
 def alpha_routine(key:str, data_dir:str, download_log_file:str, output_log_file:str, plots_dir:str=None): 
-    '''
+    r'''
     Parameters
 
     Returns
@@ -126,7 +126,7 @@ alpha_routine(key=key, data_dir='./data/current/processed/two_min_lightcurves', 
 '''
 
 def beta_routine(key:str, data_dir:str, download_log_file:str, output_log:str, plots_dir:str=None):
-    '''
+    r'''
     Parameters
 
     Returns
@@ -157,6 +157,22 @@ def beta_routine(key:str, data_dir:str, download_log_file:str, output_log:str, p
 
     flag_dicts = []
 
+    index = 0
+
+
+    for tic_id in tqdm(tic_ids): 
+        data = pd.read_csv(data_dir+tic_id+'.csv')
+        if os.path.exists(data): 
+            clean_time = np.array(data['clean_time'])
+            clean_flux = np.array(data['clean_flux'])
+
+            tls_best_params, results, tls_model, in_transit = run_tls(time=clean_time, flux=clean_flux)
+            print(results.period)
+            index+=1 
+            if index>5: 
+                break 
+            
+    r'''
     out_df = pd.DataFrame()
     result_keys_to_save = ['SDE', 'period', 'T0', 'duration', 'depth', 'rp_rs', 'snr']
 
@@ -167,25 +183,22 @@ def beta_routine(key:str, data_dir:str, download_log_file:str, output_log:str, p
     with open(output_log, 'a') as f: 
         countr = 0
         for tic_id in tqdm(tic_ids): 
-            try:
-                data = pd.read_csv(data_dir+tic_id+'.csv')
-                if os.path.exists(data): 
-                    clean_time = np.array(data['clean_time'])
-                    clean_flux = np.array(data['clean_flux'])
+            data = pd.read_csv(data_dir+tic_id+'.csv')
+            if os.path.exists(data): 
+                clean_time = np.array(data['clean_time'])
+                clean_flux = np.array(data['clean_flux'])
 
-                    tls_best_params, results, tls_model, in_transit = run_tls(time=clean_time, flux=clean_flux)
+                tls_best_params, results, tls_model, in_transit = run_tls(time=clean_time, flux=clean_flux)
 
-                    result_list = [tic_id]+[results[key] for key in result_keys_to_save]
-                    result_line = ','.join(result_list)
-                    f.write(result_line+'\n')
+                result_list = [tic_id]+[results[key] for key in result_keys_to_save]
+                result_line = ','.join(result_list)
+                f.write(result_line+'\n')
 
-                    counter+=1 
+                counter+=1 
 
-                    if counter>5: 
-                        break 
+                if counter>5: 
+                    break 
+    '''
 
-            except Exception as e: 
-                print(e)
-                continue 
 
 beta_routine() 
