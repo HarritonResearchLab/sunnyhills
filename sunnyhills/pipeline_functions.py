@@ -436,7 +436,6 @@ def download_pipeline(ids:str, download_dir:str, log_file:str):
 ## PERIOD SEARCH ROUTINES ##
 
 ## BLS ##
-
 def run_bls(time, flux, 
             bls_params: dict = {'min_per':0.5, 'max_per':15, 
                                 'minimum_n_transit':2, 
@@ -448,27 +447,26 @@ def run_bls(time, flux,
                                              0.15, 
                                              0.1667, 
                                              0.1834, 0.2], 
-                                'objective':'snr'}, 
-            compute_stats: bool = True): 
+                                'objective':'snr'}): 
 
     '''
     args: 
         time: array of time values
         flux: array of flux values
         bls_params: params for bls execution. see documentation
-        compute_stats: compute statistics on best period/duration combination? default False
     returns: 
         best_params: [index, period, t0, duration, sig_diff] for highest power period (sig_diff is sig_diff between left/right depths)
+        results: the BLS results array 
         bls_model: the BLS model  
         in_transit_mask: mask for the in_transit points. to get not in transit, do ~in_transit_mask
-        stats: if compute_stats==True, then the stats on the best period/duration/t0 are returned
+        stats: the stats on the best period/duration/t0 
     '''
 
     from astropy.timeseries import BoxLeastSquares
     import numpy as np
     import warnings
     import lightkurve as lk
-    from sunnyhills.misc import in_transit_mask
+    from sunnyhills.borrowed import in_transit_mask
 
     durations = np.array(bls_params['durations'])
 
@@ -481,35 +479,12 @@ def run_bls(time, flux,
     t0 = bls_model.transit_time_at_max_power.value
     duration = bls_model.duration_at_max_power.value
     in_transit = in_transit_mask(time,period,2*duration,t0)
+    stats = bls_model.compute_stats(period, duration, t0)
+    depth = stats['depth'][0]
 
-    best_params = [period, t0, duration]
+    best_params = [period, t0, duration,depth]
 
-    if compute_stats: 
-        stats = bls_model.compute_stats(period, duration, t0)
-
-        depth_odd = stats['depth_odd']
-        err_odd = depth_odd[1]
-        depth_odd = depth_odd[0]
-        depth_even = stats['depth_even']
-        err_even = depth_even[1]
-        depth_even = depth_even[0]
-        depth = stats['depth'][0]
-
-        diff = np.abs(depth_odd-depth_even)
-        if depth_even!=0 and depth_odd!=0: 
-            unc_diff = ((err_even/depth_even)**2+(err_odd/depth_odd)**2)**0.5
-            sig_diff = diff/unc_diff 
-        else: 
-            sig_diff = np.nan 
-        
-        stats['sig_diff'] = sig_diff
-        best_params.append(depth)
-        best_params.append(sig_diff)
-
-        return best_params, bls_model, in_transit, stats
-
-    else: 
-        return best_params, bls_model, in_transit 
+    return best_params, bls_model, in_transit,stats 
         
 def iterative_bls_runner(time:np.array, flux:np.array,  
                      iterations: int=1, 

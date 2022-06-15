@@ -23,14 +23,20 @@ def filter_data(path:str):
 
     return filtered_df
 
-def bls_check(table_path:str,lc_dir:str,display_mosaics:bool):
+
+def bls_check(table_path:str,lc_dir:str,display_mosaics:bool=False):  
+  '''
+  runs the bls pipeline on known light curves and then computes the average error of the dataset
+  
+  args:
+  table_path: path to confirmed candidates file
+  lc_dir: path to light curves to compare to
+  display_mosaics: option to display mosaic plots 
+  '''    
   import pandas as pd    
   import numpy as np
   import matplotlib.pyplot as plt
   from tqdm import tqdm
-  from sunnyhills.pipeline_functions import run_bls
-  from sunnyhills.plotting import bls_validation_mosaic
-
 
   error = np.array([])
   df = filter_data(table_path)
@@ -41,16 +47,15 @@ def bls_check(table_path:str,lc_dir:str,display_mosaics:bool):
   for item,real_per,stellar_rad,planet_rad in tqdm(zip(df['tic_id'],df['pl_orbper'],df['st_rad'],df['pl_rade'])):
     print(item)
     lc = pd.read_csv(modified_dir+item.replace(' ','_')+'.csv')
-    lc = lc.dropna(subset=['clean_time','clean_flux'])
+    lc = lc.dropna(subset=['clean_time','clean_flux','trend_time','trend_flux'])
     time = lc['clean_time']
     flux = lc['clean_flux']
-    best_params, bls_model, in_transit, stats = run_bls(time, flux)
+    trend_time = lc['trend_time']
+    trend_flux = lc['trend_flux']
+    best_params, bls_model, in_transit,stats = run_bls(time, flux)
     error = np.append(error,(real_per-best_params[0])/real_per)
     if display_mosaics:
-      try:    
-        bls_validation_mosaic(item.replace('TIC',''), time, flux, time, flux, best_params, bls_model, in_transit, stats)
-      except ValueError:
-        print('trouble displaying validation mosaic')
+      bls_validation_mosaic(item.replace('TIC',''), time, flux, trend_time, trend_flux, time, flux, best_params, bls_model, in_transit,stats)
     if stellar_rad != np.NaN and planet_rad != np.NaN:
       graphed_error = np.append(graphed_error,(real_per-best_params[0])/real_per)
       stellar_rads = np.append(stellar_rads,stellar_rad)    
