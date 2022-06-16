@@ -1,0 +1,1 @@
+TIC_ID,clean_num_obs,no_flare_num_obs,raw_num_obs,no_flare_sigma,no_flare_diff_sigma,cdpp,top_ls_period,top_ls_power,fap_95,top_ls_period_sub_harmonic,top_ls_period_harmonic,second,third,fourth,fifth,_ls_period,_ls_period,_ls_period,_ls_period,second,third,fourth,fifth,_ls_power,_ls_power,_ls_power,_ls_power,ab,mass,mass_min,mass_max,radius,radius_min,radius_max,num_sectors
