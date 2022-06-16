@@ -517,18 +517,22 @@ def tls_validation_mosaic(tic_id:str, data, tls_model, tls_results,
     for label, value in zip(labels, values):
         text_info.append(label+'='+str(round(value, 5)))
 
-    ax7.text(x=0.1, y=0.5, s='\n\n'.join(str(i).replace('_',' ') for i in text_info), fontsize='large', va='center', transform=ax7.transAxes)
+    ax7.text(x=0.1, y=0.5, s='\n\n'.join(str(i).replace('_',' ') for i in text_info), fontsize='x-large', va='center', transform=ax7.transAxes)
     ax7.tick_params(labelbottom=False, labelleft=False, axis='both', which='both', length=0)
 
     ax1.set_title('TIC: '+str(tic_id).replace('_','')+' PERIOD: '+str(round(tls_results.period, 5)), size='xx-large')
 
     if plot_dir==None:
         plt.show()
+        plt.clf()
+        plt.close()
     else: 
         if plot_dir[-1]!='/': 
             plot_dir += '/'
         plot_path = plot_dir + tic_id + '.png'
         plt.savefig(plot_path, dpi=dpi)
+        plt.clf()
+        plt.close()
 
 def plot_detrend_validation(tic_id, data_dir:str, plot_dir:str=None): 
     

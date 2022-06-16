@@ -239,6 +239,6 @@ plot_dir = '/ar1/PROJ/fjuhsd/shared/github/sunnyhills/routines/alpha_tls/plots/t
 import os 
 full_set = [i.replace('.csv', '') for i in os.listdir('data/current/processed/two_min_lightcurves') if i!='.gitkeep']
 
-single_id = ['TIC_190885165', 'TIC_171773770', 'TIC_408411330']
+small_set = ['TIC_190885165', 'TIC_171773770', 'TIC_408411330']
 
-beta_routine(tic_ids=single_id, key=key, data_dir=data_dir, download_log=download_log, output_log=output_log, plot_dir=plot_dir) 
+beta_routine(key=key, data_dir=data_dir, download_log=download_log, output_log=output_log, plot_dir=plot_dir) 
