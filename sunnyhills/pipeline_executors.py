@@ -118,7 +118,8 @@ def alpha_routine(key:str, data_dir:str, download_log_file:str, output_log_file:
             f.write(','.join([str(i) for i in line])+'\n')
 
 def beta_routine(key:str, data_dir:str, download_log:str=None, output_log:str=None, plot_dir:str=None, 
-                 tic_ids=None, cache_dir:str='/ar1/PROJ/fjuhsd/shared/github/sunnyhills/routines/alpha_tls/cache_dir'):
+                 tic_ids=None, cache_dir:str='/ar1/PROJ/fjuhsd/shared/github/sunnyhills/routines/alpha_tls/cache_dir', 
+                 detrend_plot_dir:str='/ar1/PROJ/fjuhsd/shared/github/sunnyhills/routines/alpha_tls/plots/detrend_plots'):
     
     r'''
     Notes
@@ -136,7 +137,7 @@ def beta_routine(key:str, data_dir:str, download_log:str=None, output_log:str=No
     from tqdm import tqdm 
     import os
     import pickle 
-    from sunnyhills.plotting import tls_validation_mosaic
+    from sunnyhills.plotting import tls_validation_mosaic, plot_detrend_validation
     from sunnyhills.false_alarm_checks import tls_even_odd, transit_outliers_fap_test, check_lombscargle
     from sunnyhills.pipeline_functions import download_pipeline
 
@@ -149,6 +150,10 @@ def beta_routine(key:str, data_dir:str, download_log:str=None, output_log:str=No
 
     if cache_dir[-1]!='/': 
         cache_dir+='/'
+
+    if detrend_plot_dir!=None: 
+        if detrend_plot_dir[-1]!='/': 
+            detrend_plot_dir+='/'
 
     if tic_ids==None: 
         key_df = pd.read_csv(key)
@@ -173,7 +178,11 @@ def beta_routine(key:str, data_dir:str, download_log:str=None, output_log:str=No
         if os.path.exists(data_path):
             data = pd.read_csv(data_path) 
             clean_time = np.array(data['clean_time'])
+            
             clean_flux = np.array(data['clean_flux'])
+
+            if detrend_plot_dir!=None: 
+                plot_detrend_validation(tic_id=tic_id, data_dir=data_path, plot_dir=detrend_plot_dir)
         
             if os.path.exists(cache_dir+tic_id+'_tls-model.pickle'): 
                 pickle_results = cache_dir+tic_id+'_tls-results.pickle'

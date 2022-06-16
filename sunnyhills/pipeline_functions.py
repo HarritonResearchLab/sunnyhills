@@ -412,7 +412,19 @@ def download_pipeline(tic_ids:str, download_dir:str, download_log:str):
 
     for tic_id in tqdm(tic_ids): 
         #try: 
-        lc_df, counts = download_and_preprocess(tic_id, download_dir)
+        lc_df, counts = (None, None)
+
+        data_path= download_dir + tic_id + '.csv'
+        print(pd.read_csv(data_path))
+        if os.path.exists(data_path): 
+            print(data_path)
+            lc_df = pd.read_csv(data_path)
+            counts = [len(lc_df['clean_time'].dropna()), 
+                      len(lc_df['no_flare_raw_time'].dropna()), 
+                      len(lc_df['raw_time'])]
+
+        else: 
+            lc_df, counts = download_and_preprocess(tic_id, download_dir)
 
         # counts = [clean_num_obs, no_flare_num_obs, raw_num_obs]
 
@@ -608,7 +620,7 @@ def run_tls(tic_id:str, time, flux,
             tls_params: dict = {'min_per':0.5, 'max_per':15, 
                                 'minimum_n_transit':3, 
                                 'freq_factor':1,
-                                'core_fraction':0.5}): 
+                                'core_fraction':0.66}): 
 
     r'''
     args: 
