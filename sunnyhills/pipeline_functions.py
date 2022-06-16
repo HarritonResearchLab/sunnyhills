@@ -371,7 +371,6 @@ def download_pipeline(tic_ids:str, download_dir:str, download_log:str):
 
     
     import warnings
-    from tqdm import tqdm 
     import pandas as pd
     import numpy as np 
     import os 
@@ -401,7 +400,7 @@ def download_pipeline(tic_ids:str, download_dir:str, download_log:str):
 
     lines = []
 
-    for tic_id in tqdm(tic_ids): 
+    for tic_id in tic_ids: 
         #try: 
         lc_df, counts = (None, None)
 

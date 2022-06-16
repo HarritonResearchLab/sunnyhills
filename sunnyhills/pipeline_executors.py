@@ -169,6 +169,7 @@ def beta_routine(key:str, data_dir:str, download_log:str=None, output_log:str=No
     download_log = pd.read_csv(download_log)
 
     result_keys = ['SDE', 'period', 'T0', 'duration', 'depth', 'rp_rs', 'snr']
+    tls_result_keys = ['SDE', 'period', 'T0', 'duration', 'depth', 'rp_rs', 'snr']
     flags_appended_to_key = False  
     result_lines = []
 
@@ -197,7 +198,7 @@ def beta_routine(key:str, data_dir:str, download_log:str=None, output_log:str=No
 
                 tls_results, tls_model = run_tls(tic_id=tic_id, time=clean_time, flux=clean_flux, cache_dir=cache_dir) 
 
-            result_list = [tic_id]+[tls_results[key] for key in result_keys]
+            result_list = [tic_id]+[tls_results[key] for key in tls_result_keys]
             
             tls_validation_mosaic(tic_id=tic_id, data=data_path, tls_results=tls_results, tls_model=tls_model, plot_dir=plot_dir)
             
@@ -238,6 +239,6 @@ plot_dir = '/ar1/PROJ/fjuhsd/shared/github/sunnyhills/routines/alpha_tls/plots/t
 import os 
 full_set = [i.replace('.csv', '') for i in os.listdir('data/current/processed/two_min_lightcurves') if i!='.gitkeep']
 
-single_id = ['TIC_190885165']
+single_id = ['TIC_190885165', 'TIC_171773770', 'TIC_408411330']
 
 beta_routine(tic_ids=single_id, key=key, data_dir=data_dir, download_log=download_log, output_log=output_log, plot_dir=plot_dir) 
