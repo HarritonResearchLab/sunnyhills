@@ -453,8 +453,6 @@ def tls_validation_mosaic(tic_id:str, data, tls_model, tls_results,
     binned_time = binned_statistic(folded_phase[mask], folded_phase[mask], bins=20)[0]
     binned_flux = binned_statistic(folded_phase[mask], folded_y[mask], bins=20)[0]
 
-    print(binned_time, binned_flux)
-
     ax3.scatter(binned_time, binned_flux, s=35, c='orange', edgecolor='black')
 
     ax3.set(xlim=(0.47, 0.53))
