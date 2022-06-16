@@ -451,9 +451,6 @@ def tls_validation_mosaic(tic_id:str, data, tls_model, tls_results,
 
     ax3.set(xlim=(0.47, 0.53))
 
-    for ax in [ax3, ax4, ax5]: 
-        ax.set(xlabel='Time from mid-transit (days)', ylabel='Detrended Flux')
-
     # transit depths (odd, even)
 
     # https://github.com/hippke/tls/blob/71da590d3e199264822db425ab9f9f633253986e/transitleastsquares/stats.py#L338
@@ -479,11 +476,14 @@ def tls_validation_mosaic(tic_id:str, data, tls_model, tls_results,
     #ax6.
 
     even_transit_time_folded, even_transit_flux, odd_transit_time_folded, odd_transit_flux, even_indices, odd_indices = even_odd_phase_folded(time=clean_time, flux=clean_flux, results=tls_results)    
-    ax5.scatter(even_transit_time_folded, even_transit_flux)
+    ax5.scatter(even_transit_time_folded, even_transit_flux, label='Even')
     #ax5.scatter(tls_results.folded_phase[even_indices], tls_results.folded_y[even_indices])
     max_even = np.max(even_transit_time_folded)
-    shifted_odd_time = odd_transit_time_folded+1.1*max_even 
-    ax5.scatter(shifted_odd_time, odd_transit_flux)
+    shifted_odd_time = odd_transit_time_folded+max_even
+    ax5.scatter(shifted_odd_time, odd_transit_flux, label='Odd')
+    ax5.get_xaxis().set_ticks([])
+    ax5.set(xlabel='Time (d)', ylabel='Detrended Flux')
+    ax5.legend()
 
     # periodogram 
     #ax6.plot(bls_results.period, bls_results.power)
