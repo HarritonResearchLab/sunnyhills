@@ -375,9 +375,8 @@ def download_pipeline(tic_ids:str, download_dir:str, download_log:str):
     import numpy as np 
     import os 
     import lightkurve as lk 
-    import re
     from transitleastsquares import catalog_info
-
+    from tqdm import tqdm 
     from sunnyhills.pipeline_functions import download_and_preprocess 
     from sunnyhills.misc import lombscargle
 
@@ -400,7 +399,7 @@ def download_pipeline(tic_ids:str, download_dir:str, download_log:str):
 
     lines = []
 
-    for tic_id in tic_ids: 
+    for tic_id in tqdm(tic_ids): 
         #try: 
         lc_df, counts = (None, None)
 
