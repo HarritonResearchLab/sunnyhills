@@ -387,9 +387,9 @@ def download_pipeline(tic_ids:str, download_dir:str, download_log:str):
     cols = ['TIC_ID', 'clean_num_obs', 'no_flare_num_obs', 'raw_num_obs']
     cols += ['no_flare_sigma', 'no_flare_diff_sigma', 'cdpp']
     cols += ['top_ls_period', 'top_ls_power', 'fap_95', 'top_ls_period_sub_harmonic', 'top_ls_period_harmonic']
-    period_cols = ['second', 'third', 'fourth', 'fifth']+4*['_ls_period']
+    period_cols = ['second_ls_period', 'third_ls_period', 'fourth_ls_period', 'fifth_ls_period']
     cols += period_cols 
-    power_cols = ['second', 'third', 'fourth', 'fifth']+4*['_ls_power']
+    power_cols = ['second_ls_power', 'third_ls_power', 'fourth_ls_power', 'fifth_ls_power']
     cols += power_cols 
     tls_catalog_cols = ['ab', 'mass', 'mass_min', 'mass_max', 'radius', 'radius_min', 'radius_max']
     cols += tls_catalog_cols
@@ -448,7 +448,10 @@ def download_pipeline(tic_ids:str, download_dir:str, download_log:str):
         # catalog info from TLS #
         tls_catalog_info = catalog_info(TIC_ID=int(tic_id.replace('TIC_', ''))) 
 
-        line_list += tls_catalog_info 
+        ab = tls_catalog_info[0]
+        ab = '"('+str(ab[0])+','+str(ab[1])+')"'
+
+        line_list += [ab] + list(tls_catalog_info[1:]) 
 
         diffs = np.diff(lc_df['raw_time'])
         start_indices = np.where(diffs>25)[0]

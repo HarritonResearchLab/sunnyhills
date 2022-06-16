@@ -222,7 +222,7 @@ def beta_routine(key:str, data_dir:str, download_log:str=None, output_log:str=No
         #    continue 
         
     with open(output_log, 'a') as f: 
-        f.write(','.join(result_keys)+'\n')
+        f.write(','.join(['TIC_ID']+result_keys)+'\n')
         
         for line in result_lines: 
             f.write(line+'\n')
@@ -230,8 +230,8 @@ def beta_routine(key:str, data_dir:str, download_log:str=None, output_log:str=No
 
 key = 'data/current/current_key.csv'
 data_dir = '/ar1/PROJ/fjuhsd/shared/github/sunnyhills/routines/alpha_tls/data/two_min_lightcurves'
-download_log = '/ar1/PROJ/fjuhsd/shared/github/sunnyhills/routines/alpha_tls/data/download_log.txt'
-output_log = '/ar1/PROJ/fjuhsd/shared/github/sunnyhills/routines/alpha_tls/routine-output.txt'
+download_log = '/ar1/PROJ/fjuhsd/shared/github/sunnyhills/routines/alpha_tls/data/download_log.csv'
+output_log = '/ar1/PROJ/fjuhsd/shared/github/sunnyhills/routines/alpha_tls/routine-output.csv'
 plot_dir = '/ar1/PROJ/fjuhsd/shared/github/sunnyhills/routines/alpha_tls/plots/tls_validation'
 
 
