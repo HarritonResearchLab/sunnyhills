@@ -106,8 +106,6 @@ def phase(time, flux, period:float, t0:float=None, duration:float=None, bls_mode
 
 ## MISC ##
 
-import numpy as np
-
 def even_odd_transit(routine:str, stats):
     '''
     Arguments

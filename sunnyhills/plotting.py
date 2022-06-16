@@ -326,12 +326,12 @@ def bls_validation_mosaic(tic_id:str, clean_time:np.array, clean_flux:np.array,
     # phase folded
     ax3.scatter(phased_time, phased_flux, s=3, c='grey')
 
-    binned_x, binned_flux, success = rebin(phased_time, phased_flux)
+    #binned_x, binned_flux, success = rebin(phased_time, phased_flux)
     
  
     #x3.plot(x.value, f.value, color='red', alpha=0.5)
-    if success: 
-        ax3.scatter(binned_x, binned_flux, c='orange', s=40, edgecolor='black')
+    #if success: 
+    #    ax3.scatter(binned_x, binned_flux, c='orange', s=40, edgecolor='black')
 
     ax3.set(xlim=(-0.2, 0.2))
 
@@ -384,8 +384,8 @@ def tls_validation_mosaic(tic_id:str, data, tls_model, tls_results,
 
     import matplotlib.pyplot as plt
     from matplotlib.gridspec import GridSpec
-    from sunnyhills.misc import rebin 
-    from sunnyhills.false_alarm_checks import even_odd_phase_folded
+    from scipy.stats import binned_statistic
+    from sunnyhills.misc import even_odd_phase_folded
     from transitleastsquares import (
         transitleastsquares,
         cleaned_array,
@@ -421,7 +421,8 @@ def tls_validation_mosaic(tic_id:str, data, tls_model, tls_results,
     trend_mask = np.isfinite(trend_time)
     trend_time, trend_flux = (i[trend_mask] for i in [trend_time, trend_flux])
 
-    # detrend light curve
+    # detrended light curve # 
+
     ax1.scatter(clean_time, clean_flux, s=1)
     
     in_transit = transit_mask(clean_time, tls_results.period, tls_results.duration, tls_results.T0)
@@ -430,7 +431,7 @@ def tls_validation_mosaic(tic_id:str, data, tls_model, tls_results,
     ax1.plot(tls_results.model_lightcurve_time, tls_results.model_lightcurve_model, alpha=0.5, color='red', zorder=1)
     ax1.set(ylabel='Detrended Flux')
 
-    # raw and trend light curve
+    # raw and trend light curve # 
         
     ax2.scatter(raw_time, raw_flux, s=1)
     ax2.plot(trend_time, trend_flux, lw=0.5, c='r')
@@ -441,19 +442,24 @@ def tls_validation_mosaic(tic_id:str, data, tls_model, tls_results,
         ax.set(xlabel='Time (days)', xlim=lc_xlim)
 
     # phase folded
-    ax3.scatter(tls_results.folded_phase, tls_results.folded_y, s=3, c='grey')
-    
-    binned_x, binned_flux, success = rebin(tls_results.folded_phase, tls_results.folded_y)
-    
+    folded_phase = tls_results.folded_phase 
+    folded_y = tls_results.folded_y
+    ax3.scatter(folded_phase, folded_y, s=3, c='grey')
+        
     ax3.plot(tls_results.model_folded_phase, tls_results.model_folded_model, color='red')
 
-    ax3.scatter(binned_x, binned_flux, s=9, c='orange', edgecolor='black')
+    mask = np.logical_and(folded_phase<0.53, folded_phase>0.47)
+    
+    binned_time = binned_statistic(folded_phase[mask], folded_phase[mask], bins=20)[0]
+    binned_flux = binned_statistic(folded_phase[mask], folded_y[mask], bins=20)[0]
+
+    print(binned_time, binned_flux)
+
+    ax3.scatter(binned_time, binned_flux, s=35, c='orange', edgecolor='black')
 
     ax3.set(xlim=(0.47, 0.53))
 
     # transit depths (odd, even)
-
-    # https://github.com/hippke/tls/blob/71da590d3e199264822db425ab9f9f633253986e/transitleastsquares/stats.py#L338
 
     transit_times = np.array(tls_results.transit_times) 
     transit_depths = tls_results.transit_depths
@@ -465,19 +471,17 @@ def tls_validation_mosaic(tic_id:str, data, tls_model, tls_results,
     
     ax4.errorbar(x=transit_times, y=transit_depths, yerr=yerr, fmt='o', color='red')
     transit_x = [clean_time.min(), clean_time.max()]
-    transit_base = 2*[np.min(transit_depths)]
+    transit_base = 2*[np.mean(transit_depths)]
     ax4.plot(transit_x, transit_base, color='black', linestyle='dashed')
     ax4.plot(transit_x, 2*[1], color='black')
     ax4.set(xlabel='Time (days)', ylabel='Flux')
     
     ax4.xaxis.set_major_locator(plt.NullLocator())
 
-    # even odd transits
-    #ax6.
+    # even odd transits # 
 
     even_transit_time_folded, even_transit_flux, odd_transit_time_folded, odd_transit_flux, even_indices, odd_indices = even_odd_phase_folded(time=clean_time, flux=clean_flux, results=tls_results)    
     ax5.scatter(even_transit_time_folded, even_transit_flux, label='Even')
-    #ax5.scatter(tls_results.folded_phase[even_indices], tls_results.folded_y[even_indices])
     max_even = np.max(even_transit_time_folded)
     shifted_odd_time = odd_transit_time_folded+max_even
     ax5.scatter(shifted_odd_time, odd_transit_flux, label='Odd')
@@ -485,9 +489,8 @@ def tls_validation_mosaic(tic_id:str, data, tls_model, tls_results,
     ax5.set(xlabel='Time (d)', ylabel='Detrended Flux')
     ax5.legend()
 
-    # periodogram 
-    #ax6.plot(bls_results.period, bls_results.power)
-    #ax6.axvline(tls_results.period, alpha=0.4, lw=3)
+    # periodogram #
+
     for n in range(2, 10):
         ax6.axvline(n*tls_results.period, alpha=0.4, lw=1, linestyle="dashed")
         ax6.axvline(tls_results.period / n, alpha=0.4, lw=1, linestyle="dashed")

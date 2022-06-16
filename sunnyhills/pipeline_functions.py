@@ -363,7 +363,7 @@ def remove_flares(time, flux, flux_err=np.array([]), sigma:int=3):
     else: 
         return (time.to_numpy(), flux.to_numpy()), (removed_time, removed_flux)
 
-def download_pipeline(ids:str, download_dir:str, log_file:str): 
+def download_pipeline(tic_ids:str, download_dir:str, download_log:str): 
     '''
     Arguments: 
         ids : list of tic ids 
@@ -382,15 +382,16 @@ def download_pipeline(ids:str, download_dir:str, log_file:str):
     from transitleastsquares import catalog_info
 
     from sunnyhills.pipeline_functions import download_and_preprocess 
-    from sunnyhills.false_alarm_checks import lombscargle
+    from sunnyhills.misc import lombscargle
 
-    
+    r'''
     completed_ids = np.array([i.replace('.csv', '') for i in os.listdir(download_dir) if i.split('.')[-1]=='csv'])
     completed_ids = np.array([int(i.split('_')[-1]) for i in completed_ids])
-    #print(completed_ids)
-    ids = np.setdiff1d(ids, completed_ids)
 
-    np.random.shuffle(ids)
+    ids = np.setdiff1d(tic_ids, completed_ids)
+    '''
+
+    np.random.shuffle(tic_ids)
 
     cols = ['TIC_ID', 'clean_num_obs', 'no_flare_num_obs', 'raw_num_obs']
     cols += ['no_flare_sigma', 'no_flare_diff_sigma', 'cdpp']
@@ -403,67 +404,63 @@ def download_pipeline(ids:str, download_dir:str, log_file:str):
     cols += tls_catalog_cols
     cols += ['num_sectors']
 
-    if not os.path.exists(log_file): 
-        with open(log_file, 'w') as f:
+    if not os.path.exists(download_log): 
+        with open(download_log, 'w') as f:
             f.write(','.join(cols)+'\n') 
 
     lines = []
 
-    for id in tqdm(ids): 
-        try: 
-            id = str(id)
-            id = id.replace('TIC', '')
-            tic_id = 'TIC '+id.replace('_', " ")
-            tic_id = re.sub(' +', ' ', tic_id)
-            lc_df, counts = download_and_preprocess(tic_id, download_dir)
+    for tic_id in tqdm(tic_ids): 
+        #try: 
+        lc_df, counts = download_and_preprocess(tic_id, download_dir)
 
-            # counts = [clean_num_obs, no_flare_num_obs, raw_num_obs]
+        # counts = [clean_num_obs, no_flare_num_obs, raw_num_obs]
 
-            lc_df = lc_df[['no_flare_raw_time', 'no_flare_raw_flux']].dropna()
+        lc_df = lc_df[['no_flare_raw_time', 'no_flare_raw_flux']].dropna()
 
-            no_flare_time, no_flare_flux = (np.array(i) for i in [lc_df['no_flare_raw_time'], lc_df['no_flare_raw_flux']])
+        no_flare_time, no_flare_flux = (np.array(i) for i in [lc_df['no_flare_raw_time'], lc_df['no_flare_raw_flux']])
 
-            # noise steps 
-            no_flare_lc = lk.LighCurve(time=no_flare_time, flux=no_flare_flux)
-            cdpp = no_flare_lc.estimate_cdpp()
+        # noise steps 
+        no_flare_lc = lk.LighCurve(time=no_flare_time, flux=no_flare_flux)
+        cdpp = no_flare_lc.estimate_cdpp()
 
-            no_flare_sigma = np.std(no_flare_flux)
-            no_flare_diff_sigma = np.std(np.diff(no_flare_flux))
+        no_flare_sigma = np.std(no_flare_flux)
+        no_flare_diff_sigma = np.std(np.diff(no_flare_flux))
 
-            ls_results = lombscargle(time=no_flare_time, flux=no_flare_flux)
-            
-            top_ls_period = ls_results[2]
-
-            top_ls_period_sub_harmonic = top_ls_period/2
-            top_ls_period_harmonic = top_ls_period*2
-
-            top_ls_power = ls_results[3]
-            fap_95 = ls_results[4][1]
-
-            four_other_powers, four_other_periods = (ls_results[0][1:5], ls_results[1][1:5])
-
-            line_list = [tic_id] + counts + [no_flare_sigma, no_flare_diff_sigma, cdpp]
-            line_list += [top_ls_period, top_ls_power, fap_95, top_ls_period_sub_harmonic, top_ls_period_harmonic]
-            line_list += four_other_periods + four_other_powers
-
-            # catalog info from TLS #
-            tls_catalog_info = catalog_info(TIC_ID=int(tic_id.replace('TIC_', ''))) 
-
-            line_list += tls_catalog_info 
-
-            diffs = np.diff(lc_df['raw_time'])
-            start_indices = np.where(diffs>25)[0]
-            num_sectors = len(start_indices)+1
-            
-            line_list.append(num_sectors)
-
-            line = ','.join([str(i) for i in line_list])+'\n'
-            lines.append(line)
+        ls_results = lombscargle(time=no_flare_time, flux=no_flare_flux)
         
-        except: 
-            continue 
+        top_ls_period = ls_results[2]
+
+        top_ls_period_sub_harmonic = top_ls_period/2
+        top_ls_period_harmonic = top_ls_period*2
+
+        top_ls_power = ls_results[3]
+        fap_95 = ls_results[4][1]
+
+        four_other_powers, four_other_periods = (ls_results[0][1:5], ls_results[1][1:5])
+
+        line_list = [tic_id] + counts + [no_flare_sigma, no_flare_diff_sigma, cdpp]
+        line_list += [top_ls_period, top_ls_power, fap_95, top_ls_period_sub_harmonic, top_ls_period_harmonic]
+        line_list += four_other_periods + four_other_powers
+
+        # catalog info from TLS #
+        tls_catalog_info = catalog_info(TIC_ID=int(tic_id.replace('TIC_', ''))) 
+
+        line_list += tls_catalog_info 
+
+        diffs = np.diff(lc_df['raw_time'])
+        start_indices = np.where(diffs>25)[0]
+        num_sectors = len(start_indices)+1
+        
+        line_list.append(num_sectors)
+
+        line = ','.join([str(i) for i in line_list])+'\n'
+        lines.append(line)
+        
+        #except: 
+        #    continue 
     
-    with open(log_file, 'a') as f: 
+    with open(download_log, 'a') as f: 
         for line in lines: 
             f.write(line)
 
@@ -650,7 +647,9 @@ def run_tls(tic_id:str, time, flux,
         with open(tls_results_cache_file, 'wb') as file: 
             pickle.dump(tls_results, file, protocol=pickle.HIGHEST_PROTOCOL)
 
-    return tls_results, tls_model
+   
+
+    return tls_results, tls_model 
 
 def iterative_tls_runner(time, flux, 
                      iterations: int=1, 

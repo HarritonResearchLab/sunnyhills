@@ -10,7 +10,7 @@ def alpha_routine(key:str, data_dir:str, download_log_file:str, output_log_file:
     
     from sunnyhills.pipeline_functions import run_bls
     from sunnyhills.plotting import bls_validation_mosaic
-    from false_alarm_checks import even_odd_transit, lombscargle
+    from misc import even_odd_transit, lombscargle
     import numpy as np
     import pandas as pd 
     from tqdm import tqdm 
@@ -117,35 +117,28 @@ def alpha_routine(key:str, data_dir:str, download_log_file:str, output_log_file:
             line = [logged_ids[index]] + list(results_dicts[index].values())+list(flag_dicts[index].values())
             f.write(','.join([str(i) for i in line])+'\n')
 
-r'''
-key = r'C:\Users\Research\Documents\GitHub\sunnyhills\personal_epochs\thaddaeus\june\topical\misc\fake_key.csv'
-download_log_file = r'C:\Users\Research\Documents\GitHub\sunnyhills\data\current\download_log.txt'
-output_log_file = './personal_epochs/thaddaeus/june/topical/pipeline_alpha_dev/output.log'
-plots_dir = './personal_epochs/thaddaeus/june/topical/pipeline_alpha_dev'
-alpha_routine(key=key, data_dir='./data/current/processed/two_min_lightcurves', download_log_file=download_log_file, output_log_file=output_log_file, plots_dir=plots_dir)
-'''
-
-def beta_routine(key:str, data_dir:str, download_log_file:str=None, output_log:str=None, plots_dir:str=None):
+def beta_routine(key:str, data_dir:str, download_log:str=None, output_log:str=None, plot_dir:str=None, 
+                 tic_ids=None, cache_dir:str='/ar1/PROJ/fjuhsd/shared/github/sunnyhills/routines/alpha_tls/cache_dir'):
+    
     r'''
-    Parameters
-
-    Returns
-
     Notes
+    -----
         - This is the first TLS pipeline executor routine; only runs TLS
+        - It starts by downloading light curves and logging data for any objects in the key lacking data in the data directory. 
+        - In the process it creates detrend validation plots for downloaded data. 
+        - It then runs TLS on them if there is no cached TLS model/results for them, and caches these. It then makes tls validation plot
+        - It then saves tls run information with false alarm checks/info to output_log
     '''
     
     from sunnyhills.pipeline_functions import run_tls 
-    from false_alarm_checks import even_odd_transit, lombscargle
     import numpy as np
     import pandas as pd 
     from tqdm import tqdm 
     import os
-
-    key_df = pd.read_csv(key)
-    tic_ids = np.array(key_df['TIC_ID'])
-
-    #download_log = pd.read_csv(download_log_file)
+    import pickle 
+    from sunnyhills.plotting import tls_validation_mosaic
+    from sunnyhills.false_alarm_checks import tls_even_odd, transit_outliers_fap_test, check_lombscargle
+    from sunnyhills.pipeline_functions import download_pipeline
 
     if plots_dir!=None: 
         if plots_dir[-1]!='/': 
@@ -154,34 +147,24 @@ def beta_routine(key:str, data_dir:str, download_log_file:str=None, output_log:s
     if data_dir[-1]!='/':
         data_dir+='/'
 
-    flag_dicts = []
+    if cache_dir[-1]!='/': 
+        cache_dir+='/'
 
-    index = 0
+    if tic_ids==None: 
+        key_df = pd.read_csv(key)
+        tic_ids = np.array(key_df['TIC_ID'])
 
-    import os 
-    tic_ids = [i.replace('.csv','') for i in os.listdir('/ar1/PROJ/fjuhsd/shared/github/sunnyhills/data/current/processed/two_min_lightcurves') if i!='.gitkeep']
+        extant_tic_ids = [i.replace('.csv','') for i in os.listdir(data_dir) if i!='.gitkeep']
 
-    tic_ids = []
-    cadences = []
+        tic_ids = np.setdiff1d(ar1=tic_ids, ar2=extant_tic_ids)
 
-    for file in os.listdir(data_dir): 
-        
-        if file!='.gitkeep': 
-            
-            path = data_dir+file 
-            
-            df = pd.read_csv(path).dropna()
-            cadences.append(len(df['clean_time']))
-            tic_ids.append(file.replace('.csv', ''))
+    # DOWNLOAD AND PLOTS FOR MISSING IDS # 
+    download_pipeline(tic_ids=tic_ids, download_dir=data_dir, download_log=download_log)
 
-    tic_ids, cadences = (np.array(i) for i in [tic_ids, cadences])
-    idx = np.argsort(cadences)
-    tic_ids, cadences = (i[idx] for i in [tic_ids, cadences])
+    download_log = pd.read_csv(download_log)
 
-    tic_ids = np.array(tic_ids)[np.where(cadences<np.percentile(cadences, 40))[0]]
-
-    result_keys_to_save = ['SDE', 'period', 'T0', 'duration', 'depth', 'rp_rs', 'snr']
-    
+    result_keys = ['SDE', 'period', 'T0', 'duration', 'depth', 'rp_rs', 'snr']
+    flags_appended_to_key = False  
     result_lines = []
 
     for tic_id in tqdm(tic_ids): 
@@ -191,24 +174,56 @@ def beta_routine(key:str, data_dir:str, download_log_file:str=None, output_log:s
             data = pd.read_csv(data_path) 
             clean_time = np.array(data['clean_time'])
             clean_flux = np.array(data['clean_flux'])
+        
+            if os.path.exists(cache_dir+tic_id+'_tls-model.pickle'): 
+                pickle_results = cache_dir+tic_id+'_tls-results.pickle'
+                print(pickle_results)
+                with open(pickle_results, 'rb') as file: 
+                    tls_results = pickle.load(file)
 
-            tls_best_params, results, tls_model = run_tls(tic_id=tic_id, time=clean_time, flux=clean_flux)
+                pickle_model = cache_dir+tic_id+'_tls-model.pickle'
+                with open(pickle_model, 'rb') as file: 
+                    tls_model = pickle.load(file)
+            
+            else: 
 
-            result_list = [tic_id]+[results[key] for key in result_keys_to_save]
+                tls_results, tls_model = run_tls(tic_id=tic_id, time=clean_time, flux=clean_flux, cache_dir=cache_dir) 
+
+            result_list = [tic_id]+[tls_results[key] for key in result_keys]
+            
+            tls_validation_mosaic(tic_id=tic_id, data=data_path, tls_results=tls_results, tls_model=tls_model, plot_dir=plot_dir)
+            
+            # FALSE ALARM CHECKS # 
+
+            lombscargle_dict = check_lombscargle(tic_id=tic_id, tls_results=tls_results, download_log=download_log) 
+            even_odd_dict = tls_even_odd(tls_results=tls_results)
+            transit_outliers_dict = transit_outliers_fap_test(tls_results=tls_results)
+
+            # ADDING RESULTS TO LIST # 
+            if not flags_appended_to_key: 
+                result_keys += list(lombscargle_dict.keys()) + list(even_odd_dict.keys()) + list(transit_outliers_dict.keys())
+                flags_appended_to_key = True 
+
+            result_list += list(lombscargle_dict.values()) + list(even_odd_dict.values()) + list(transit_outliers_dict.values())
+
             result_line = ','.join([str(i) for i in result_list])
 
             result_lines.append(result_line)
+            
         #except: 
         #    continue 
         
     with open(output_log, 'a') as f: 
+        f.write(','.join(result_keys)+'\n')
+        
         for line in result_lines: 
             print(f)
             f.write(line+'\n')
 
 
 key = 'data/current/current_key.csv'
-data_dir = '/ar1/PROJ/fjuhsd/shared/github/sunnyhills/data/current/processed/two_min_lightcurves/'
+data_dir = '/ar1/PROJ/fjuhsd/shared/github/sunnyhills/routines/alpha_tls/data/two_min_lightcurves'
+download_log = '/ar1/PROJ/fjuhsd/shared/github/sunnyhills/routines/alpha_tls/data/download_log.txt'
 output_log = '/ar1/PROJ/fjuhsd/shared/github/sunnyhills/personal_epochs/thaddaeus/june/weekly/second_week/tls_routine/output_log.txt'
 beta_routine(key=key, data_dir=data_dir, output_log=output_log) 
 
