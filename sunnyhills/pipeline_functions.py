@@ -196,8 +196,6 @@ def preprocess(
 
         no_flare_raw_time = np.concatenate((no_flare_raw_time, cleaned_time_temp))
         no_flare_raw_flux = np.concatenate((no_flare_raw_flux, cleaned_flux_temp))
-
-        
         
         no_flare_num_obs += len(no_flare_raw_time)
 
@@ -383,13 +381,6 @@ def download_pipeline(tic_ids:str, download_dir:str, download_log:str):
 
     from sunnyhills.pipeline_functions import download_and_preprocess 
     from sunnyhills.misc import lombscargle
-
-    r'''
-    completed_ids = np.array([i.replace('.csv', '') for i in os.listdir(download_dir) if i.split('.')[-1]=='csv'])
-    completed_ids = np.array([int(i.split('_')[-1]) for i in completed_ids])
-
-    ids = np.setdiff1d(tic_ids, completed_ids)
-    '''
 
     np.random.shuffle(tic_ids)
 
