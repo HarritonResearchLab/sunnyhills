@@ -713,4 +713,4 @@ def plot_detrend_validation(tic_id, data_dir:str, plot_dir:str=None):
 
         plot_path = plot_dir+tic_id+'.png'
         plt.savefig(plot_path, dpi=250)
-        plt.savefig(path + tic_id+'.pdf', dpi=dpi,format='pdf')
+        #plt.savefig(path + tic_id+'.pdf', dpi=dpi,format='pdf')

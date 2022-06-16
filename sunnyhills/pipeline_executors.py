@@ -182,7 +182,7 @@ def beta_routine(key:str, data_dir:str, download_log:str=None, output_log:str=No
             clean_flux = np.array(data['clean_flux'])
 
             if detrend_plot_dir!=None: 
-                plot_detrend_validation(tic_id=tic_id, data_dir=data_path, plot_dir=detrend_plot_dir)
+                plot_detrend_validation(tic_id=tic_id, data_dir=data_dir, plot_dir=detrend_plot_dir)
         
             if os.path.exists(cache_dir+tic_id+'_tls-model.pickle'): 
                 pickle_results = cache_dir+tic_id+'_tls-results.pickle'
