@@ -415,9 +415,7 @@ def download_pipeline(tic_ids:str, download_dir:str, download_log:str):
         lc_df, counts = (None, None)
 
         data_path= download_dir + tic_id + '.csv'
-        print(pd.read_csv(data_path))
         if os.path.exists(data_path): 
-            print(data_path)
             lc_df = pd.read_csv(data_path)
             counts = [len(lc_df['clean_time'].dropna()), 
                       len(lc_df['no_flare_raw_time'].dropna()), 

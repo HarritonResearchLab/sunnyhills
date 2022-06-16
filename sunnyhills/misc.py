@@ -274,11 +274,38 @@ def download_and_append_status(path_to_csv:str,lc_dir,save_dir:str):
     append_download_status(path_to_csv,lc_dir,save_dir)
 
     return np.abs((time-transit_time+hp) % period - hp) < .5*duration
-
-def merge_pdf(pdfs_dir:str,pages_per_pdf:int=5):
-    import os
-    import PyPDF2
-
-    pdfs = os.listdir(pdfs)
-
     
+def merge_pdfs(pdf_batch:list,pdf_dir:str):
+    from PyPDF2 import PdfMerger
+
+    merger = PdfMerger()
+    name = ""
+
+    for pdf in pdf_batch:
+      print(pdf)
+      merger.append(pdf_dir +'/'+pdf)
+      print('adding')
+      name += ('-' + pdf.replace('.pdf',''))
+    merger.write(name+'.pdf')
+    merger.close()
+
+def merge_pdf_runner(pdfs_dir:str,pages_per_pdf:int=5):
+    
+    '''
+    Merges a set of pdfs into one pdf file
+    args:
+    pdfs_dir: directory that the pdfs are located in
+    pages_per_pdf: the amount of pdfs in a merged page
+    '''
+    import os
+
+    iter = 1
+    batch = []
+    for pdf in os.listdir(pdfs_dir):
+      if iter == pages_per_pdf:
+        merge_pdfs(batch,pdfs_dir)
+        batch =[]
+        iter = 1
+      else:
+        iter+=1
+      batch.append(pdf)
