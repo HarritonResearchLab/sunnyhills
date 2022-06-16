@@ -63,10 +63,11 @@ def check_lombscargle(tic_id, tls_results, download_log):
         df = pd.read_csv(download_log)
 
     index = np.where(df['TIC_ID']==tic_id)[0]
-    top_ls_period = float(df['top_ls_period'][index])  
+    top_ls_period = df['top_ls_period'][index]  
+    print(top_ls_period)
 
     ls_flag = False
     if 0.99<tls_results.period/top_ls_period<1.01: 
         ls_flag = True 
 
-    return {'ls_top_period_test', ls_flag}
+    return {'ls_top_period_test':ls_flag}

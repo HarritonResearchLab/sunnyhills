@@ -140,9 +140,9 @@ def beta_routine(key:str, data_dir:str, download_log:str=None, output_log:str=No
     from sunnyhills.false_alarm_checks import tls_even_odd, transit_outliers_fap_test, check_lombscargle
     from sunnyhills.pipeline_functions import download_pipeline
 
-    if plots_dir!=None: 
-        if plots_dir[-1]!='/': 
-            plots_dir+='/'
+    if plot_dir!=None: 
+        if plot_dir[-1]!='/': 
+            plot_dir+='/'
 
     if data_dir[-1]!='/':
         data_dir+='/'
@@ -177,7 +177,6 @@ def beta_routine(key:str, data_dir:str, download_log:str=None, output_log:str=No
         
             if os.path.exists(cache_dir+tic_id+'_tls-model.pickle'): 
                 pickle_results = cache_dir+tic_id+'_tls-results.pickle'
-                print(pickle_results)
                 with open(pickle_results, 'rb') as file: 
                     tls_results = pickle.load(file)
 
@@ -217,15 +216,19 @@ def beta_routine(key:str, data_dir:str, download_log:str=None, output_log:str=No
         f.write(','.join(result_keys)+'\n')
         
         for line in result_lines: 
-            print(f)
             f.write(line+'\n')
 
 
 key = 'data/current/current_key.csv'
 data_dir = '/ar1/PROJ/fjuhsd/shared/github/sunnyhills/routines/alpha_tls/data/two_min_lightcurves'
 download_log = '/ar1/PROJ/fjuhsd/shared/github/sunnyhills/routines/alpha_tls/data/download_log.txt'
-output_log = '/ar1/PROJ/fjuhsd/shared/github/sunnyhills/personal_epochs/thaddaeus/june/weekly/second_week/tls_routine/output_log.txt'
-beta_routine(key=key, data_dir=data_dir, output_log=output_log) 
+output_log = '/ar1/PROJ/fjuhsd/shared/github/sunnyhills/routines/alpha_tls/routine-output.txt'
+plot_dir = '/ar1/PROJ/fjuhsd/shared/github/sunnyhills/routines/alpha_tls/plots/tls_validation'
 
-        
-        
+
+import os 
+full_set = [i.replace('.csv', '') for i in os.listdir('data/current/processed/two_min_lightcurves') if i!='.gitkeep']
+
+single_id = ['TIC_190885165']
+
+beta_routine(tic_ids=single_id, key=key, data_dir=data_dir, download_log=download_log, output_log=output_log, plot_dir=plot_dir) 

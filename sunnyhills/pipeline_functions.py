@@ -416,12 +416,13 @@ def download_pipeline(tic_ids:str, download_dir:str, download_log:str):
 
         # counts = [clean_num_obs, no_flare_num_obs, raw_num_obs]
 
-        lc_df = lc_df[['no_flare_raw_time', 'no_flare_raw_flux']].dropna()
 
         no_flare_time, no_flare_flux = (np.array(i) for i in [lc_df['no_flare_raw_time'], lc_df['no_flare_raw_flux']])
+        mask = np.isfinite(no_flare_time)
+        no_flare_time, no_flare_flux = (i[mask] for i in [no_flare_time, no_flare_flux])
 
         # noise steps 
-        no_flare_lc = lk.LighCurve(time=no_flare_time, flux=no_flare_flux)
+        no_flare_lc = lk.LightCurve(time=no_flare_time, flux=no_flare_flux)
         cdpp = no_flare_lc.estimate_cdpp()
 
         no_flare_sigma = np.std(no_flare_flux)
@@ -441,7 +442,7 @@ def download_pipeline(tic_ids:str, download_dir:str, download_log:str):
 
         line_list = [tic_id] + counts + [no_flare_sigma, no_flare_diff_sigma, cdpp]
         line_list += [top_ls_period, top_ls_power, fap_95, top_ls_period_sub_harmonic, top_ls_period_harmonic]
-        line_list += four_other_periods + four_other_powers
+        line_list += list(four_other_periods) + list(four_other_powers)
 
         # catalog info from TLS #
         tls_catalog_info = catalog_info(TIC_ID=int(tic_id.replace('TIC_', ''))) 
@@ -632,7 +633,7 @@ def run_tls(tic_id:str, time, flux,
     ab, mass, mass_min, mass_max, radius, radius_min, radius_max = catalog_info(TIC_ID=int(tic_id.replace('TIC_',''))) 
     
     tls_results = tls_model.power(period_min=tls_params['min_per'],period_max=tls_params['max_per'],
-                              verbose=False, show_progress_bar=True, use_threads=num_cores, u=ab)
+                              verbose=False, show_progress_bar=False, use_threads=num_cores, u=ab)
     
     if cache_dir!=None: 
         if cache_dir[-1]!='/': 
