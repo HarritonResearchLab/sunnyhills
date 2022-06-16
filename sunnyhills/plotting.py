@@ -21,6 +21,8 @@ from astropy.table import Table
 import numpy as np
 import warnings
 
+from sunnyhills.misc import phase, rebin
+
 #from sunnyhills.paths import DATADIR, EPOCHSDIR
 
 def plot_kerr21_XY(outdir, colorkey=None):
@@ -255,6 +257,7 @@ def plot_star_detrending(
     fig.savefig(plotpath, bbox_inches='tight', dpi=400)
     print(f"Made {plotpath}")
 
+import numpy as np
 def bls_validation_mosaic(tic_id:str, clean_time:np.array, clean_flux:np.array, 
                           trend_time:np.array, trend_flux:np.array,
                           raw_time:np.array, raw_flux:np.array, 
@@ -275,11 +278,14 @@ def bls_validation_mosaic(tic_id:str, clean_time:np.array, clean_flux:np.array,
         dpi: dpi of saved plot
     returns: 
     '''
+
     import matplotlib.pyplot as plt
     from matplotlib.gridspec import GridSpec
-    from sunnyhills.borrowed import tls_intransit_stats
-    from sunnyhills.misc import phase, rebin
+
+    import astropy.units as units
+    from lightkurve.periodogram import Periodogram
     import numpy as np
+    from sunnyhills.pipeline_functions import rebin,phase
 
     plt.rcParams['font.family']='serif'
     plt.style.use('seaborn-darkgrid')
@@ -305,7 +311,7 @@ def bls_validation_mosaic(tic_id:str, clean_time:np.array, clean_flux:np.array,
     t0 = best_params[1]
     duration = best_params[2]  
 
-    params = {
+    params_dict = {
       'power': bls_model.max_power.value,
       'period': period,
       't0': t0,
@@ -326,12 +332,12 @@ def bls_validation_mosaic(tic_id:str, clean_time:np.array, clean_flux:np.array,
     # phase folded
     ax3.scatter(phased_time, phased_flux, s=3, c='grey')
 
-    #binned_x, binned_flux, success = rebin(phased_time, phased_flux)
+    binned_x, binned_flux, success = rebin(phased_time, phased_flux)
     
  
     #x3.plot(x.value, f.value, color='red', alpha=0.5)
-    #if success: 
-    #    ax3.scatter(binned_x, binned_flux, c='orange', s=40, edgecolor='black')
+    if success: 
+        ax3.scatter(binned_x, binned_flux, c='orange', s=40, edgecolor='black')
 
     ax3.set(xlim=(-0.2, 0.2))
 
@@ -342,11 +348,12 @@ def bls_validation_mosaic(tic_id:str, clean_time:np.array, clean_flux:np.array,
 
     # periodogram 
     bls_model.plot(ax=ax4,xlabel='Period (d)',ylabel='Power',style='seaborn-darkgrid')
+    ax4.vlines(period, min(bls_model.power), max(bls_model.power), color='red', lw=1, alpha=0.5, zorder=0)
 
     ax5.tick_params(labelbottom=False, labelleft=False, axis='both', which='both', length=0)
 
     text_info = []
-    for key_name,val in params.items(): 
+    for key_name,val in params_dict.items(): 
       val = round(float(val),5)
       result = key_name
       if type(result)!=str: 
@@ -361,7 +368,7 @@ def bls_validation_mosaic(tic_id:str, clean_time:np.array, clean_flux:np.array,
     if path==None:
         plt.show()
     else: 
-        plt.savefig(path, dpi=dpi)
+        plt.savefig(path + tic_id+'.pdf', dpi=dpi,format='pdf')
 
 def tls_validation_mosaic(tic_id:str, data, tls_model, tls_results,
                           plot_dir:str=None, dpi:int=150): 
@@ -706,3 +713,4 @@ def plot_detrend_validation(tic_id, data_dir:str, plot_dir:str=None):
 
         plot_path = plot_dir+tic_id+'.png'
         plt.savefig(plot_path, dpi=250)
+        plt.savefig(path + tic_id+'.pdf', dpi=dpi,format='pdf')
