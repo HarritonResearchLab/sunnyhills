@@ -1,3 +1,5 @@
+import lightkurve as lk
+
 def tls_intransit_stats(t, y, transit_times, transit_duration_in_days):
     """
     Return all intransit odd and even flux points
