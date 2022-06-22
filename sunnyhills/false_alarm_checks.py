@@ -1,6 +1,3 @@
-from sunnyhills.pipeline_functions import download
-
-
 def tls_even_odd(tls_results): 
     
     '''
