@@ -1,0 +1,7 @@
+name,description
+sptype,all fields related with the spectral type
+morphtype,all fields related to the morphological type
+rot,Stellar Rotational Velocities
+v*,variable stars parameters
+
+'sptype','rv_value','otype','otype(opt)','otypes'

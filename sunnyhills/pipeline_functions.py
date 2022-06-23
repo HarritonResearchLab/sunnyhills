@@ -467,6 +467,56 @@ def download_pipeline(tic_ids:str, download_dir:str, download_log:str):
         for line in lines: 
             f.write(line)
 
+def query_simbad(tic_id:str):
+    r'''
+    tic_id : e.g. TIC_122134241
+    '''
+    
+    from astroquery.simbad import Simbad
+    import pandas as pd
+
+    customSimbad = Simbad()
+    customSimbad.add_votable_fields('sptype','mt', 'mt_qual','otype','otype(opt)','otypes') 
+
+    results_header = []
+    results_line = [] 
+
+    otypes_key = pd.read_csv('./data/current/catalog_info/simbad_otypes_key.txt')
+    otypes_dict = dict(zip(otypes_key['otype'], otypes_key['new_label']))
+    
+    try: 
+        
+        tab = customSimbad.query_object(tic_id.replace('_', ' ')) 
+        
+        otypes = tab['OTYPES'][0]
+        otypes_list = list(set(otypes.split('|')))
+        otypes_list = [otypes_dict[i] for i in otypes_list if i!='**' and i!='*']
+        otypes = '|'.join(otypes_list)
+
+        results_line.append(otypes)
+        results_header.append('OTYPES')
+
+        try: 
+            sp_type = tab['SP_TYPE'][0]
+            results_header.append('sp_type')
+            results_line.append(sp_type)
+        
+        except: 
+            pass 
+
+        try: 
+            results_line.append(otypes_dict[tab['OTYPE_opt'][0]])
+            results_header.append('Main OTYPE')
+        except: 
+            pass 
+
+    except: 
+        pass 
+        
+    customSimbad = None 
+
+    return results_header, results_line
+
 ## PERIOD SEARCH ROUTINES ##
 
 ## BLS ##
