@@ -529,7 +529,7 @@ def tls_validation_mosaic(tic_id:str, data, tls_model, tls_results,
     else: 
         if plot_dir[-1]!='/': 
             plot_dir += '/'
-        plot_path = plot_dir + tic_id + '.png'
+        plot_path = plot_dir + tic_id + '.pdf'
         plt.savefig(plot_path, dpi=dpi)
         plt.clf()
         plt.close()
@@ -715,7 +715,7 @@ def plot_detrend_validation(tic_id, data_dir:str, plot_dir:str=None):
         if plot_dir[-1]!='/': 
             plot_dir+='/'
 
-        plot_path = plot_dir+tic_id+'.png'
+        plot_path = plot_dir+tic_id+'.pdf'
         plt.savefig(plot_path, dpi=250)
         #plt.savefig(path + tic_id+'.pdf', dpi=dpi,format='pdf')
 
@@ -724,22 +724,75 @@ def transit_plots(export_dir:str,tic_id:str,time,flux,results):
     import matplotlib.pyplot as plt
 
     plt.style.use('seaborn-darkgrid')
-    f,ax = plt.subplots(round(len(results.transit_times)/2),2,figsize=(20,7))
+    f,axis = plt.subplots(round(len(results.transit_times)/2),2,figsize=(20,7))
     f.suptitle(tic_id.replace('_',' '))
     col = 0
     row = 0
-
     in_transit = transit_mask(time,results.period,results.duration,results.T0)
-
-    for transit,depth in zip(results.transit_times,results.transit_depths): 
-      ax[col,row].scatter(time[in_transit], flux[in_transit], color='red', s=30, zorder=2)
-      ax[col,row].scatter(time[~in_transit], flux[~in_transit], s=30,zorder=2)
-      ax[col,row].set_xlim(transit-.25,transit+.25)
-      ax[col,row].set_ylim(depth-.01,depth+.02)
-      if col ==1:
-        row+=1
-        col =0
-      else:
+    if len(results.transit_times)<3:
+      for transit,depth in zip(results.transit_times,results.transit_depths): 
+        axis[col].scatter(time[in_transit], flux[in_transit], color='red', s=30, zorder=2)
+        axis[col].scatter(time[~in_transit], flux[~in_transit], s=30,zorder=2)
+        axis[col].set_xlim(transit-.25,transit+.25)
+        axis[col].set_ylim(depth-.035,depth+.035)
         col +=1
+    else:
+      for transit,depth in zip(results.transit_times,results.transit_depths): 
+        axis[col,row].scatter(time[in_transit], flux[in_transit], color='red', s=30, zorder=2)
+        axis[col,row].scatter(time[~in_transit], flux[~in_transit], s=30,zorder=2)
+        axis[col,row].set_xlim(transit-.25,transit+.25)
+        axis[col,row].set_ylim(depth-.035,depth+.035)
+        axis[col,row].set_xlabel('Time (days)')
+        axis[col,row].set_ylabel('Flux (e-/s)')
+        
+        if col ==1:
+          row+=1
+          col =0
+        else:
+          col +=1
 
     plt.savefig(export_dir+'/'+tic_id+'.pdf')
+
+    plt.savefig(export_dir+'/'+tic_id+'.pdf')
+
+def ls_subplots(tic_id,plot_dir,time,flux):
+  import matplotlib.pyplot as plt
+  import lightkurve as lk
+  import numpy as np
+
+  fix,ax = plt.subplots(2)
+  lc = lk.LightCurve(np.array(time),np.array(flux))
+
+  ls = lc.to_periodogram(method='ls',minimum_frequency=1/15,maximum_frequency=1/.1)
+  ls.plot(ax=ax[0])
+  lc.fold(period=ls.period_at_max_power).scatter(ax=ax[1])
+  ax[0].set_title('Lomb Scargle Periodogram')
+  ax[1].set_title('Phase Folded')
+  plt.savefig(plot_dir+tic_id+'.pdf')
+  
+  def generate_cutout(tic_id:str='',large_size:int=20,small_size:int=10,desired_sector:int=None,plot_dir:str='routines/alpha_tls/plots'):
+    import matplotlib.pyplot as plt
+    import lightkurve as lk
+    from matplotlib.patches import Rectangle
+    import os
+    import eleanor
+
+    data = eleanor.Source(tic=int(tic_id.replace('TIC', ''))) 
+    data = eleanor.TargetData(data)
+    vis = eleanor.Visualize(data)
+    result = lk.search_tesscut(tic_id)
+    print(tic_id.replace('_',' '))
+    if desired_sector != None:
+      for sector, index in zip(result.table['mission'],result.table['#']):
+        sector = sector.replace('TESS Sector ','') 
+        if desired_sector == int(sector):
+          large_tpf = result[index].download(cutout_size=large_size)
+          break
+    else:
+      large_tpf = result.download(cutout_size=large_size)
+               
+    fig, ax = plt.subplots()
+    aperture_mask = large_tpf.create_threshold_mask(threshold=10)
+    ax = vis.plot_gaia_overlay(int(tic_id.replace('TIC ','')),large_tpf,magnitude_limit=15)
+    large_tpf.plot(ax=ax,aperture_mask=aperture_mask,mask_color='white')
+    plt.savefig(plot_dir+tic_id+'.pdf')
