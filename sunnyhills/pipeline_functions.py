@@ -619,7 +619,8 @@ def run_tls(tic_id:str, time, flux,
         flux: flux array
         tls_params: don't worry about it lol 
     returns: 
-        
+        tls_results
+        tls_model 
     '''
 
     import numpy as np
