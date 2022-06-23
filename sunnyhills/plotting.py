@@ -718,3 +718,28 @@ def plot_detrend_validation(tic_id, data_dir:str, plot_dir:str=None):
         plot_path = plot_dir+tic_id+'.png'
         plt.savefig(plot_path, dpi=250)
         #plt.savefig(path + tic_id+'.pdf', dpi=dpi,format='pdf')
+
+def transit_plots(export_dir:str,tic_id:str,time,flux,results):
+    from wotan import transit_mask
+    import matplotlib.pyplot as plt
+
+    plt.style.use('seaborn-darkgrid')
+    f,ax = plt.subplots(round(len(results.transit_times)/2),2,figsize=(20,7))
+    f.suptitle(tic_id.replace('_',' '))
+    col = 0
+    row = 0
+
+    in_transit = transit_mask(time,results.period,results.duration,results.T0)
+
+    for transit,depth in zip(results.transit_times,results.transit_depths): 
+      ax[col,row].scatter(time[in_transit], flux[in_transit], color='red', s=30, zorder=2)
+      ax[col,row].scatter(time[~in_transit], flux[~in_transit], s=30,zorder=2)
+      ax[col,row].set_xlim(transit-.25,transit+.25)
+      ax[col,row].set_ylim(depth-.01,depth+.02)
+      if col ==1:
+        row+=1
+        col =0
+      else:
+        col +=1
+
+    plt.savefig(export_dir+'/'+tic_id+'.pdf')
