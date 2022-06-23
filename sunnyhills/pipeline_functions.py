@@ -610,7 +610,7 @@ def run_tls(tic_id:str, time, flux,
             tls_params: dict = {'min_per':0.5, 'max_per':15, 
                                 'minimum_n_transit':3, 
                                 'freq_factor':1,
-                                'core_fraction':0.66}): 
+                                'core_fraction':0.66}, show_progress_bar:bool=False): 
 
     r'''
     args: 
@@ -635,7 +635,7 @@ def run_tls(tic_id:str, time, flux,
     ab, mass, mass_min, mass_max, radius, radius_min, radius_max = catalog_info(TIC_ID=int(tic_id.replace('TIC_',''))) 
     
     tls_results = tls_model.power(period_min=tls_params['min_per'],period_max=tls_params['max_per'],
-                              verbose=False, show_progress_bar=False, use_threads=num_cores, u=ab)
+                              verbose=False, show_progress_bar=show_progress_bar, use_threads=num_cores, u=ab)
     
     if cache_dir!=None: 
         if cache_dir[-1]!='/': 
