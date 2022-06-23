@@ -76,10 +76,10 @@ def the_huns(tic_id:str):
 
     ab, mass, mass_min, mass_max, radius, radius_min, radius_max = catalog_info(TIC_ID=int(tic_id.replace('TIC_','')))
     ls_tls_model = transitleastsquares(ls_clean_time, ls_clean_flux, verbose=False)
-    ls_tls_results = ls_tls_model.power(period_min=0.1,period_max=1,
+    ls_tls_results = ls_tls_model.power(period_min=0.1,period_max=0.6,
                               verbose=False, show_progress_bar=False, use_threads=25, u=ab)
     wotan_tls_model = transitleastsquares(time, detrend_flux, verbose=False)
-    wotan_tls_results = wotan_tls_model.power(period_min=0.1,period_max=1,
+    wotan_tls_results = wotan_tls_model.power(period_min=0.1,period_max=0.6,
                               verbose=False, show_progress_bar=False, use_threads=25, u=ab)
 
     flat = np.concatenate((ls_tls_results.power, wotan_tls_results.power))
