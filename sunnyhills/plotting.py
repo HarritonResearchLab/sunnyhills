@@ -262,7 +262,7 @@ def bls_validation_mosaic(tic_id:str, clean_time:np.array, clean_flux:np.array,
                           trend_time:np.array, trend_flux:np.array,
                           raw_time:np.array, raw_flux:np.array, 
                           best_params:list, bls_model, in_transit, bls_stats, 
-                          path:str=None, dpi:int=150): 
+                          path:str=None, plot_path:str=None, dpi:int=150): 
 
     '''
     arguments: 
@@ -365,13 +365,16 @@ def bls_validation_mosaic(tic_id:str, clean_time:np.array, clean_flux:np.array,
 
     ax1.set_title('TIC: '+str(tic_id).replace('_','')+' PERIOD: '+str(round(period, 5)), size='xx-large')
 
-    if path==None:
+    if path is None and plot_path is None:
         plt.show()
-    else: 
+    elif path is not None: 
         plt.savefig(path + tic_id+'.pdf', dpi=dpi,format='pdf')
+    elif plot_path is not None: 
+        plt.savefig(plot_path, dpi=200)
 
 def tls_validation_mosaic(tic_id:str, data, tls_model, tls_results,
-                          plot_dir:str=None, dpi:int=150): 
+                          plot_dir:str=None, plot_path:str=None, dpi:int=150, clean_time=None, clean_flux=None, 
+                          trend_time=None, trend_flux=None, raw_time=None, raw_flux=None): 
 
     '''
     arguments: 
@@ -400,17 +403,19 @@ def tls_validation_mosaic(tic_id:str, data, tls_model, tls_results,
         transit_mask
     )
     
-    df = pd.read_csv(data)
-    clean_time, clean_flux = (np.array(df[i]) for i in ['clean_time', 'clean_flux'])
-    clean_mask = np.isfinite(clean_time)
-    clean_time, clean_flux = (i[clean_mask] for i in [clean_time, clean_flux])
+    if data is not None: 
+        df = pd.read_csv(data)
+        clean_time, clean_flux = (np.array(df[i]) for i in ['clean_time', 'clean_flux'])
+        clean_mask = np.isfinite(clean_time)
+        clean_time, clean_flux = (i[clean_mask] for i in [clean_time, clean_flux])
+        raw_time, raw_flux = (np.array(df[i]) for i in ['no_flare_raw_time','no_flare_raw_flux'])
+        trend_time, trend_flux = (np.array(df[i]) for i in ['trend_time','trend_flux'])
+        trend_mask = np.isfinite(trend_time)
+        trend_time, trend_flux = (i[trend_mask] for i in [trend_time, trend_flux])
+
     in_transit = transit_mask(clean_time, tls_results.period, tls_results.duration, tls_results.T0)
 
-    raw_time, raw_flux = (np.array(df[i]) for i in ['no_flare_raw_time','no_flare_raw_flux'])
-
-    trend_time, trend_flux = (np.array(df[i]) for i in ['trend_time','trend_flux'])
-    trend_mask = np.isfinite(trend_time)
-    trend_time, trend_flux = (i[trend_mask] for i in [trend_time, trend_flux])
+    
 
     split_axes = False
     break_index = None 
@@ -569,15 +574,20 @@ def tls_validation_mosaic(tic_id:str, data, tls_model, tls_results,
     ax7.spines['right'].set_visible(False)
     ax1.set_title('TIC: '+str(tic_id).replace('_','')+' PERIOD: '+str(round(tls_results.period, 5)), size='xx-large')
 
-    if plot_dir==None:
+    if plot_dir is None and plot_path is None:
         plt.show()
         plt.clf()
         plt.close()
     else: 
-        if plot_dir[-1]!='/': 
-            plot_dir += '/'
-        plot_path = plot_dir + tic_id + '.pdf'
-        plt.savefig(plot_path, dpi=dpi)
+        if plot_dir is not None: 
+            if plot_dir[-1]!='/': 
+                plot_dir += '/'
+            plot_path = plot_dir + tic_id + '.pdf'
+            plt.savefig(plot_path, dpi=dpi)
+
+        elif plot_path is not None: 
+            plt.savefig(plot_path, dpi=dpi)
+        
         plt.clf()
         plt.close()
 
