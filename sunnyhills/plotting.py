@@ -402,6 +402,8 @@ def tls_validation_mosaic(tic_id:str, data, tls_model, tls_results,
         catalog_info,
         transit_mask
     )
+
+    from sunnyhills.pipeline_functions import query_simbad
     
     if data is not None: 
         df = pd.read_csv(data)
@@ -565,9 +567,21 @@ def tls_validation_mosaic(tic_id:str, data, tls_model, tls_results,
                     tls_results.SDE, tls_results.snr, tls_results.rp_rs, tls_results.transit_count, 
                     tls_results.distinct_transit_count]
 
+    simbad_header, simbad_values = query_simbad(tic_id=tic_id)
+
+    labels+=simbad_header 
+
+    values+=simbad_values
+
     text_info = []
     for label, value in zip(labels, values):
-        text_info.append(label+'='+str(round(value, 5)))
+        if type(value) is str and '|' in value: 
+            value = '\n'+value.replace('|','\n')
+        if type(value) is float or type(value) is int: 
+            value = str(round(value, 5))
+        else: 
+            value = str(value)
+        text_info.append(label+'='+value)
 
     ax7.text(x=0.1, y=0.5, s='\n\n'.join(str(i).replace('_',' ') for i in text_info), fontsize='xx-large', va='center', transform=ax7.transAxes)
     ax7.tick_params(labelbottom=False, labelleft=False, axis='both', which='both', length=0)

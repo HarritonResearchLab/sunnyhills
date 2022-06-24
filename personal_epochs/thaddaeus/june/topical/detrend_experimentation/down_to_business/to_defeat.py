@@ -72,14 +72,14 @@ def the_huns(tic_id:str):
     flat = np.concatenate((ls_tls_results.power, wotan_tls_results.power))
     ylim = (0, 1.15*np.max(flat))
 
-    ls_p = './personal_epochs/thaddaeus/june/topical/detrend_experimentation/down_to_business/fast_rotators/plots/ls_'
-    ls_path = ls_p+str(per)+tic_id+'_p='+str(per)+'rp='+str(rp)+'_.png'
+    ls_p = './personal_epochs/thaddaeus/june/topical/detrend_experimentation/down_to_business/fast_rotators/plots/'+tic_id+'_ls_'
+    ls_path = ls_p+'_p='+str(per)+'rp='+str(rp)+'.png'
 
     tls_validation_mosaic(tic_id, data=None, tls_results=ls_tls_results, tls_model=ls_tls_model, clean_time=ls_clean_time, clean_flux=ls_clean_flux, 
                           trend_time=time, trend_flux=flux/y_fit, raw_time=time, raw_flux=flux, plot_path=ls_path) 
 
-    wotan_p = './personal_epochs/thaddaeus/june/topical/detrend_experimentation/down_to_business/fast_rotators/plots/wotan_'
-    wotan_path = wotan_p+str(per)+tic_id+'_p='+str(per)+'rp='+str(rp)+'_.png'
+    wotan_p = './personal_epochs/thaddaeus/june/topical/detrend_experimentation/down_to_business/fast_rotators/plots/'+tic_id+'_wotan_'
+    wotan_path = wotan_p+'_p='+str(per)+'rp='+str(rp)+'.png'
 
     tls_validation_mosaic(tic_id, data=None, tls_model=wotan_tls_model, tls_results=wotan_tls_results, clean_time=clean_time, clean_flux=detrend_flux, 
                           trend_time=time, trend_flux=trend_flux, raw_time=time, raw_flux=flux, plot_path=wotan_path) 
