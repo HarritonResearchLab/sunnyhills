@@ -416,22 +416,39 @@ def tls_validation_mosaic(tic_id:str, data, tls_model, tls_results,
 
     in_transit = transit_mask(clean_time, tls_results.period, tls_results.duration, tls_results.T0)
 
-    
+    transit_times = np.array(tls_results.transit_times) 
+    transit_depths = tls_results.transit_depths
+    transits_not_nan_mask = np.isfinite(transit_depths)
+
+    transit_times = transit_times[transits_not_nan_mask]
+    transit_depths = transit_depths[transits_not_nan_mask]
 
     split_axes = False
     break_index = None 
+    last_break = None
 
     diff = np.diff(clean_time)
+    trend_diff = np.diff(trend_time)
+    raw_diff = np.diff(raw_time)
     if np.max(diff>50): 
         split_axes = True 
-        break_index = np.where(np.diff(clean_time)>50)[0][0]+1 # so it's [0:break_index), [break_index:]
-        break_index = int(break_index)  
+        break_indices = np.where(diff>50)[0]
+        first_clean_break = break_indices[0]
+        last_clean_break = break_indices[-1]+1
+
+        raw_idx = np.where(raw_diff>50)[0]
+        first_raw_break = raw_idx[0]
+        last_raw_break = raw_idx[-1]+1
+
+        trend_idx = np.where(trend_diff>50)[0]
+        first_trend_break = trend_idx[0]
+        last_trend_break = trend_idx[-1]+1
 
     ## PLOTTING ### 
 
     #plt.style.use('seaborn-darkgrid')
     plt.rcParams['font.family']='serif'
-    fig = plt.figure(constrained_layout=True, figsize=(18,12))
+    fig = plt.figure(constrained_layout=True, figsize=(21,12))
 
     gs = GridSpec(3, 5, figure=fig)
 
@@ -464,32 +481,46 @@ def tls_validation_mosaic(tic_id:str, data, tls_model, tls_results,
         ax2a = fig.add_subplot(gs[1, 0:2])
         ax2b = fig.add_subplot(gs[1, 2:-1])
         
-        ax1a.scatter(clean_time[0:break_index], clean_flux[0:break_index], s=1)
+        ax1a.scatter(clean_time[0:first_clean_break], clean_flux[0:first_clean_break], s=1)
 
-        ax1a.plot(tls_results.model_lightcurve_time[0:break_index], 
-                  tls_results.model_lightcurve_model[0:break_index], 
-                  alpha=0.5, color='red', zorder=1)
+        #ax1a.plot(tls_results.model_lightcurve_time[0:break_index], 
+        #          tls_results.model_lightcurve_model[0:break_index], 
+        #          alpha=0.5, color='red', zorder=1)
+
+        left_transits = transit_times[transit_times<=np.max(clean_time[0:first_clean_break])]
+        right_transits = transit_times[transit_times>=np.min(clean_time[last_clean_break:])]
 
         ax1a.set(ylabel='Detrended Flux')
         ax1a.set_title('TIC: '+str(tic_id).replace('_','')+' PERIOD: '+str(round(tls_results.period, 5)), size='xx-large')
         
-        ax1b.scatter(clean_time[break_index:], clean_flux[break_index:], s=1)
-        ax1b.plot(tls_results.model_lightcurve_time[break_index:], 
-                  tls_results.model_lightcurve_model[break_index:], 
-                  alpha=0.5, color='red', zorder=1)
+        ax1b.scatter(clean_time[last_clean_break:], clean_flux[last_clean_break:], s=1)
         
+        for left in left_transits: 
+            ax1a.axvline(x=left, color='red', alpha=0.4, lw=2)
+
+        for right in right_transits: 
+            ax1b.axvline(x=right, color='red', alpha=0.4, lw=2)
+
+        '''
+        ax1b.plot(tls_results.model_lightcurve_time[last_break:], 
+                  tls_results.model_lightcurve_model[last_break:], 
+                  alpha=0.5, color='red', zorder=1)
+        '''
+
+        # FIX THIS! IDK WHY I NEED TO ADD 10 TO BREAK INDEX!
+
         orient_split_axes(ax1a, ax1b, clean_flux)
 
-        ax2a.scatter(raw_time[0:break_index], raw_flux[0:break_index], s=1)
-        ax2a.plot(trend_time[0:break_index], trend_flux[0:break_index], lw=0.5, c='r')
+        ax2a.scatter(raw_time[0:first_raw_break], raw_flux[0:first_raw_break], s=1) 
+        ax2a.plot(trend_time[0:first_trend_break], trend_flux[0:first_trend_break], lw=2, c='r') 
         ax2a.set(ylabel='Flux')
-        ax2b.scatter(raw_time[break_index:], raw_flux[break_index:], s=1)
-        ax2b.plot(trend_time[break_index:], trend_flux[break_index:], lw=0.5, c='r')
+        ax2b.scatter(raw_time[last_raw_break:], raw_flux[last_raw_break:], s=1) 
+        ax2b.plot(trend_time[last_trend_break:], trend_flux[last_trend_break:], lw=2, c='r') 
         
-        orient_split_axes(ax2a, ax2b, raw_flux)
+        orient_split_axes(ax2a, ax2b, raw_flux) 
 
         for ax in [ax1a, ax1b, ax2a, ax2b]: 
-            ax.set(xlabel='Time (days)')
+            ax.set(xlabel='Time (days)') 
 
     else: 
         ax1 = fig.add_subplot(gs[0, 0:-1]) # detrended light curve
@@ -500,6 +531,10 @@ def tls_validation_mosaic(tic_id:str, data, tls_model, tls_results,
         ax1.plot(tls_results.model_lightcurve_time, 
                   tls_results.model_lightcurve_model, 
                   alpha=0.5, color='red', zorder=1)
+
+        for i in transit_times: 
+            ax1.axvline(x=i, color='red', alpha=0.5, lw=2)
+        
         ax1.set(ylabel='Detrended Flux')
         ax1.set_title('TIC: '+str(tic_id).replace('_','')+' PERIOD: '+str(round(tls_results.period, 5)), size='xx-large')
         
@@ -534,14 +569,9 @@ def tls_validation_mosaic(tic_id:str, data, tls_model, tls_results,
     ax3.set(xlim=(0.47, 0.53))
 
     # transit depths (odd, even)
-
-    transit_times = np.array(tls_results.transit_times) 
-    transit_depths = tls_results.transit_depths
     yerr = tls_results.transit_depths_uncertainties 
 
-    mask = np.isfinite(transit_depths)
-
-    transit_times, transit_depths, yerr = (i[mask] for i in [transit_times, transit_depths, yerr])
+    yerr = yerr[transits_not_nan_mask]
 
     ax4.errorbar(x=transit_times, y=transit_depths, yerr=yerr, fmt='o', color='red')
     transit_x = [clean_time.min(), clean_time.max()]
@@ -610,14 +640,12 @@ def tls_validation_mosaic(tic_id:str, data, tls_model, tls_results,
         if plot_dir is not None: 
             if plot_dir[-1]!='/': 
                 plot_dir += '/'
-            plot_path = plot_dir + tic_id + '.pdf'
-            plt.savefig(plot_path, dpi=dpi)
-
-        elif plot_path is not None: 
-            plt.savefig(plot_path, dpi=dpi)
+            
+            plot_path = plot_dir + tic_id + '.png'
         
-        plt.clf()
-        plt.close()
+            plt.savefig(plot_path, dpi=dpi)
+            plt.clf()
+            plt.close()
 
 def plot_detrend_validation(tic_id, data_dir:str, plot_dir:str=None): 
     
@@ -848,7 +876,7 @@ def ls_subplots(tic_id,plot_dir,time,flux):
   import numpy as np
 
   fix,ax = plt.subplots(2)
-  lc = lk.LightCurve(np.array(time),np.array(flux))
+  lc = lk.LightCurve(time=np.array(time), flux=np.array(flux))
 
   ls = lc.to_periodogram(method='ls',minimum_frequency=1/15,maximum_frequency=1/.1)
   ls.plot(ax=ax[0])

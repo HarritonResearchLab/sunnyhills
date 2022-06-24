@@ -186,7 +186,7 @@ def beta_routine(key:str, data_dir:str, download_log:str=None, output_log:str=No
     result_lines = []
 
     for tic_id in tqdm(tic_ids):    
-        try:      
+        try: 
             data_path = data_dir+tic_id+'.csv'
             if os.path.exists(data_path):
                 data = pd.read_csv(data_path) 
