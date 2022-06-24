@@ -805,20 +805,22 @@ def transit_plots(export_dir:str,tic_id:str,time,flux,results):
     row = 0
     in_transit = transit_mask(time,results.period,results.duration,results.T0)
     if len(results.transit_times)<3:
-      for transit,depth in zip(results.transit_times,results.transit_depths): 
-        axis[col].scatter(time[in_transit], flux[in_transit], color='red', s=30, zorder=2)
-        axis[col].scatter(time[~in_transit], flux[~in_transit], s=30,zorder=2)
-        axis[col].set_xlim(transit-.25,transit+.25)
-        axis[col].set_ylim(depth-.035,depth+.035)
+      for transit, depth in zip(results.transit_times,results.transit_depths): 
+        if np.isfinite(depth) and np.isfinite(transit): 
+            axis[col].scatter(time[in_transit], flux[in_transit], color='red', s=30, zorder=2)
+            axis[col].scatter(time[~in_transit], flux[~in_transit], s=30,zorder=2)
+            axis[col].set_xlim(transit-.25,transit+.25)
+            axis[col].set_ylim(depth-.035,depth+.035)
         col +=1
     else:
       for transit,depth in zip(results.transit_times,results.transit_depths): 
-        axis[col,row].scatter(time[in_transit], flux[in_transit], color='red', s=30, zorder=2)
-        axis[col,row].scatter(time[~in_transit], flux[~in_transit], s=30,zorder=2)
-        axis[col,row].set_xlim(transit-.25,transit+.25)
-        axis[col,row].set_ylim(depth-.035,depth+.035)
-        axis[col,row].set_xlabel('Time (days)')
-        axis[col,row].set_ylabel('Flux (e-/s)')
+        if np.isfinite(depth) and np.isfinite(transit):
+            axis[col,row].scatter(time[in_transit], flux[in_transit], color='red', s=30, zorder=2)
+            axis[col,row].scatter(time[~in_transit], flux[~in_transit], s=30,zorder=2)
+            axis[col,row].set_xlim(transit-.25,transit+.25)
+            axis[col,row].set_ylim(depth-.035,depth+.035)
+            axis[col,row].set_xlabel('Time (days)')
+            axis[col,row].set_ylabel('Flux (e-/s)')
         
         if col ==1:
           row+=1

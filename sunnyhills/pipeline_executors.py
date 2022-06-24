@@ -188,18 +188,15 @@ def beta_routine(key:str, data_dir:str, download_log:str=None, output_log:str=No
     for tic_id in tqdm(tic_ids):         
         data_path = data_dir+tic_id+'.csv'
         if os.path.exists(data_path):
-            print(tic_id)
             data = pd.read_csv(data_path) 
             clean_time = np.array(data['clean_time'])
             
             clean_flux = np.array(data['clean_flux'])
 
             if not os.path.exists(detrend_plot_dir+tic_id+'.png'): 
-                print('making detrend plot')
                 plot_detrend_validation(tic_id=tic_id, data_dir=data_dir, plot_dir=detrend_plot_dir)
                 
             if os.path.exists(cache_dir+tic_id+'_tls-model.pickle'): 
-                print('found tls data')
                 pickle_results = cache_dir+tic_id+'_tls-results.pickle'
                 with open(pickle_results, 'rb') as file: 
                     tls_results = pickle.load(file)
@@ -209,13 +206,13 @@ def beta_routine(key:str, data_dir:str, download_log:str=None, output_log:str=No
                     tls_model = pickle.load(file)
 
             else: 
-                print('running tls again')
                 tls_results, tls_model = run_tls(tic_id=tic_id, time=clean_time, flux=clean_flux, cache_dir=cache_dir)
 
             if not os.path.exists(tls_validation_dir+tic_id+'.png'): # look into pngs, maybe fix!
                 tls_validation_mosaic(tic_id=tic_id, data=data_path, tls_results=tls_results, tls_model=tls_model, plot_dir=tls_validation_dir)
             if not os.path.exists(transits_dir+tic_id+'.png'):
-                transit_plots(transits_dir,tic_id,clean_time,clean_flux,tls_results)
+                pass 
+                #transit_plots(transits_dir,tic_id,clean_time,clean_flux,tls_results)
 
             if not os.path.exists(ls_subplots_dir+tic_id+'.png'):
                 if len(clean_time) > 10000:
@@ -254,7 +251,7 @@ def beta_routine(key:str, data_dir:str, download_log:str=None, output_log:str=No
     # merge_plots(tic_id,plot_dir)
 
 data_dir = './routines/alpha_tls/data/two_min_lightcurves/'
-download_log = './data/current/download_log.txt'
+download_log = './routines/alpha_tls/data/download_log.csv'
 key = './data/current/current_key.csv'
 plot_dir = './routines/alpha_tls/plots/'
 cache_dir = './routines/alpha_tls/cache_dir/' 
