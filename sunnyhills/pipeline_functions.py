@@ -467,6 +467,8 @@ def download_pipeline(tic_ids:str, download_dir:str, download_log:str):
         for line in lines: 
             f.write(line)
 
+# query functions # 
+
 def query_simbad(tic_id:str):
     r'''
     tic_id : e.g. TIC_122134241
@@ -516,6 +518,23 @@ def query_simbad(tic_id:str):
     customSimbad = None 
 
     return results_header, results_line
+
+def query_tls_vizier(tic_id:str, radius_err_multiple:float=1, mass_err_multiple:float=1): 
+    
+    from transitleastsquares import catalog_info
+    
+    tic_id = tic_id.replace('_', ' ')
+    tic_id = int(tic_id.split(' ')[-1])
+
+    ab, mass, mass_min, mass_max, radius, radius_min, radius_max = catalog_info(TIC_ID=tic_id)
+
+    radius_max = radius+radius_max*radius_err_multiple 
+    radius_min = radius-radius_min*radius_err_multiple 
+    mass_min = mass-mass_min*mass_err_multiple 
+    mass_max = mass+mass_max*mass_err_multiple 
+
+    return ab, mass, mass_min, mass_max, radius, radius_min, radius_max
+
 
 ## PERIOD SEARCH ROUTINES ##
 
