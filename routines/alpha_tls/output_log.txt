@@ -1,0 +1,6 @@
+TIC_ID,SDE,period,T0,duration,depth,rp_rs,snr
+TIC_ID,SDE,period,T0,duration,depth,rp_rs,snr
+TIC_ID,SDE,period,T0,duration,depth,rp_rs,snr
+TIC_ID,SDE,period,T0,duration,depth,rp_rs,snr
+TIC_ID,SDE,period,T0,duration,depth,rp_rs,snr
+TIC_ID,SDE,period,T0,duration,depth,rp_rs,snr

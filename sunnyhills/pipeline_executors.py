@@ -1,3 +1,6 @@
+from sunnyhills.pipeline_functions import download
+
+
 def bls_alpha_routine(key:str, data_dir:str, download_log_file:str, output_log_file:str, plots_dir:str=None): 
     r'''
     Parameters
@@ -118,8 +121,7 @@ def bls_alpha_routine(key:str, data_dir:str, download_log_file:str, output_log_f
             f.write(','.join([str(i) for i in line])+'\n')
 
 def beta_routine(key:str, data_dir:str, download_log:str=None, output_log:str=None, plot_dir:str=None, 
-                 tic_ids=None, cache_dir:str='/ar1/PROJ/fjuhsd/shared/github/sunnyhills/routines/alpha_tls/cache_dir', 
-                 detrend_plot_dir:str='/ar1/PROJ/fjuhsd/shared/github/sunnyhills/routines/alpha_tls/plots/detrend_plots'):
+                 tic_ids=None, cache_dir:str='/ar1/PROJ/fjuhsd/shared/github/sunnyhills/routines/alpha_tls/cache_dir'):
     
     r'''
     Notes
@@ -131,8 +133,9 @@ def beta_routine(key:str, data_dir:str, download_log:str=None, output_log:str=No
         - It then saves tls run information with false alarm checks/info to output_log
     '''
     from sunnyhills.plotting import tls_validation_mosaic, plot_detrend_validation	
+    from sunnyhills.plotting import ls_subplots, transit_plots
     from sunnyhills.false_alarm_checks import tls_even_odd, transit_outliers_fap_test, check_lombscargle	
-    from sunnyhills.pipeline_functions import download_pipeline
+    from sunnyhills.pipeline_functions import download_pipeline, run_tls
     import numpy as np
     import pandas as pd 
     from tqdm import tqdm 
@@ -149,20 +152,31 @@ def beta_routine(key:str, data_dir:str, download_log:str=None, output_log:str=No
     if cache_dir[-1]!='/': 
         cache_dir+='/'
 
-    if detrend_plot_dir!=None: 
-        if detrend_plot_dir[-1]!='/': 
-            detrend_plot_dir+='/'
+    detrend_plot_dir = plot_dir+'detrend_plots/'
+    ls_subplots_dir = plot_dir+'ls_subplots/'
+    tls_validation_dir = plot_dir+'tls_validation/'
+    transits_dir = plot_dir+'individual_transits/'
 
+    plotting_dirs = [detrend_plot_dir, ls_subplots_dir, tls_validation_dir, transits_dir]
+    for dir in plotting_dirs: 
+        if not os.path.exists(dir): 
+            os.mkdir(dir)
+
+    '''
     if type(tic_ids)==type(None): 
         key_df = pd.read_csv(key)
         tic_ids = np.array(key_df['TIC_ID'])
 
         extant_tic_ids = [i.replace('.csv','') for i in os.listdir(data_dir) if i!='.gitkeep']
 
-        tic_ids = np.setdiff1d(ar1=tic_ids, ar2=extant_tic_ids)
+        tic_ids_to_download = np.setdiff1d(ar1=tic_ids, ar2=extant_tic_ids)
 
     # DOWNLOAD AND PLOTS FOR MISSING IDS # 
-    download_pipeline(tic_ids=tic_ids, download_dir=data_dir, download_log=download_log)
+    download_pipeline(tic_ids=tic_ids_to_download, download_dir=data_dir, download_log=download_log)
+    '''
+
+    tic_ids = [i.split('_tls')[0] for i in os.listdir(cache_dir) if i!='.gitkeep']
+    tic_ids = list(set(tic_ids))
 
     download_log = pd.read_csv(download_log)
 
@@ -171,74 +185,79 @@ def beta_routine(key:str, data_dir:str, download_log:str=None, output_log:str=No
     flags_appended_to_key = False  
     result_lines = []
 
-    for tic_id in tqdm(tic_ids): 
-        print(tic_id)
-        
-        try: 
-            data_path = data_dir+tic_id+'.csv'
-            if os.path.exists(data_path):
-                data = pd.read_csv(data_path) 
-                clean_time = np.array(data['clean_time'])
-                
-                clean_flux = np.array(data['clean_flux'])
-
-                if detrend_plot_dir!=None: 
-                    plot_detrend_validation(tic_id=tic_id, data_dir=data_dir, plot_dir=detrend_plot_dir+'detrend_plots/')
-                    
+    for tic_id in tqdm(tic_ids):         
+        data_path = data_dir+tic_id+'.csv'
+        if os.path.exists(data_path):
+            print(tic_id)
+            data = pd.read_csv(data_path) 
+            clean_time = np.array(data['clean_time'])
             
-                if os.path.exists(cache_dir+tic_id+'_tls-model.pickle'): 
+            clean_flux = np.array(data['clean_flux'])
 
-                    pickle_results = cache_dir+tic_id+'_tls-results.pickle'
-                    with open(pickle_results, 'rb') as file: 
-                        tls_results = pickle.load(file)
-
-                    pickle_model = cache_dir+tic_id+'_tls-model.pickle'
-                    with open(pickle_model, 'rb') as file: 
-                        tls_model = pickle.load(file)
-                    tls_validation_mosaic(tic_id=tic_id, data=data_path, tls_results=tls_results, tls_model=tls_model, plot_dir=plot_dir+'tls_validation/')
-                    transit_plots(plot_dir+'transit_plots/',tic_id,clean_time,clean_flux,tls_results)
-
-                    if len(clean_time) > 10000:
-                      ls_subplots(tic_id,plot_dir+'lomb_scargle/',clean_time[:10000],clean_flux[:10000])
-                    else:
-                      ls_subplots(tic_id,plot_dir+'lomb_scargle/',clean_time,clean_flux)
-                    
+            if not os.path.exists(detrend_plot_dir+tic_id+'.png'): 
+                print('making detrend plot')
+                plot_detrend_validation(tic_id=tic_id, data_dir=data_dir, plot_dir=detrend_plot_dir)
                 
-                else: 
+            if os.path.exists(cache_dir+tic_id+'_tls-model.pickle'): 
+                print('found tls data')
+                pickle_results = cache_dir+tic_id+'_tls-results.pickle'
+                with open(pickle_results, 'rb') as file: 
+                    tls_results = pickle.load(file)
 
-                    tls_results, tls_model = run_tls(tic_id=tic_id, time=clean_time, flux=clean_flux, cache_dir=cache_dir) 
+                pickle_model = cache_dir+tic_id+'_tls-model.pickle'
+                with open(pickle_model, 'rb') as file: 
+                    tls_model = pickle.load(file)
 
-                result_list = [tic_id]+[tls_results[key] for key in tls_result_keys]
-                
-                
+            else: 
+                print('running tls again')
+                tls_results, tls_model = run_tls(tic_id=tic_id, time=clean_time, flux=clean_flux, cache_dir=cache_dir)
 
-                
-                # FALSE ALARM CHECKS # 
+            if not os.path.exists(tls_validation_dir+tic_id+'.png'): # look into pngs, maybe fix!
+                tls_validation_mosaic(tic_id=tic_id, data=data_path, tls_results=tls_results, tls_model=tls_model, plot_dir=tls_validation_dir)
+            if not os.path.exists(transits_dir+tic_id+'.png'):
+                transit_plots(transits_dir,tic_id,clean_time,clean_flux,tls_results)
 
-                lombscargle_dict = check_lombscargle(tic_id=tic_id, tls_results=tls_results, download_log=download_log) 
-                even_odd_dict = tls_even_odd(tls_results=tls_results)
-                transit_outliers_dict = transit_outliers_fap_test(tls_results=tls_results)
-                
+            if not os.path.exists(ls_subplots_dir+tic_id+'.png'):
+                if len(clean_time) > 10000:
+                    ls_subplots(tic_id,ls_subplots_dir,clean_time[:10000],clean_flux[:10000])
+                else:
+                    ls_subplots(tic_id,ls_subplots_dir,clean_time,clean_flux) 
 
-                # ADDING RESULTS TO LIST # 
-                if not flags_appended_to_key: 
-                    result_keys += list(lombscargle_dict.keys()) + list(even_odd_dict.keys()) + list(transit_outliers_dict.keys())
-                    flags_appended_to_key = True 
-
-                result_list += list(lombscargle_dict.values()) + list(even_odd_dict.values()) + list(transit_outliers_dict.values())
-
-                result_line = ','.join([str(i) for i in result_list])
-
-                result_lines.append(result_line)
+            result_list = [tic_id]+[tls_results[key] for key in tls_result_keys]
             
-        except: 
-            continue  
+            # FALSE ALARM CHECKS # 
+
+            lombscargle_dict = check_lombscargle(tic_id=tic_id, tls_results=tls_results, download_log=download_log) 
+            even_odd_dict = tls_even_odd(tls_results=tls_results)
+            transit_outliers_dict = transit_outliers_fap_test(tls_results=tls_results)
+            
+            # ADDING RESULTS TO LIST # 
+            if not flags_appended_to_key: 
+                result_keys += list(lombscargle_dict.keys()) + list(even_odd_dict.keys()) + list(transit_outliers_dict.keys())
+                flags_appended_to_key = True 
+
+            result_list += list(lombscargle_dict.values()) + list(even_odd_dict.values()) + list(transit_outliers_dict.values())
+
+            result_line = ','.join([str(i) for i in result_list])
+
+            result_lines.append(result_line)
+            
     
-    generate_cutout(tic_id=tic_id,plot_dir=plot_dir+'tpfs/')
+    # generate_cutout(tic_id=tic_id,plot_dir=plot_dir+'tpfs/')
     
     with open(output_log, 'a') as f: 
         f.write(','.join(['TIC_ID']+result_keys)+'\n')
         
         for line in result_lines: 
             f.write(line+'\n')
-    merge_plots(tic_id,plot_dir)
+    
+    # merge_plots(tic_id,plot_dir)
+
+data_dir = './routines/alpha_tls/data/two_min_lightcurves/'
+download_log = './data/current/download_log.txt'
+key = './data/current/current_key.csv'
+plot_dir = './routines/alpha_tls/plots/'
+cache_dir = './routines/alpha_tls/cache_dir/' 
+output_log = './routines/alpha_tls/output_log.txt'
+
+beta_routine(key=key, data_dir=data_dir, plot_dir=plot_dir, cache_dir=cache_dir, download_log=download_log, output_log=output_log)

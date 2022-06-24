@@ -442,7 +442,9 @@ def tls_validation_mosaic(tic_id:str, data, tls_model, tls_results,
         ax_1.yaxis.tick_left()
         ax_2.yaxis.tick_right()
 
-        ylim = [0.95*np.min(flux), 1.05*np.max(flux)]
+        temp = flux[np.isfinite(flux)]
+
+        ylim = [0.95*np.min(temp), 1.05*np.max(temp)]
 
         ax_1.set(ylim=ylim)
 
@@ -465,6 +467,8 @@ def tls_validation_mosaic(tic_id:str, data, tls_model, tls_results,
         
         ax1a.scatter(clean_time[0:break_index], clean_flux[0:break_index], s=1)
         ax1a.set(ylabel='Detrended Flux')
+        ax1a.set_title('TIC: '+str(tic_id).replace('_','')+' PERIOD: '+str(round(tls_results.period, 5)), size='xx-large')
+        
         ax1b.scatter(clean_time[break_index:], clean_flux[break_index:], s=1)
         
         orient_split_axes(ax1a, ax1b, clean_flux)
@@ -487,6 +491,7 @@ def tls_validation_mosaic(tic_id:str, data, tls_model, tls_results,
         # detrend light curve 
         ax1.scatter(clean_time, clean_flux, s=1)
         ax1.set(ylabel='Detrended Flux')
+        ax1.set_title('TIC: '+str(tic_id).replace('_','')+' PERIOD: '+str(round(tls_results.period, 5)), size='xx-large')
         
         # raw and trend light curve # 
         ax2.scatter(raw_time, raw_flux, s=1)
@@ -586,7 +591,6 @@ def tls_validation_mosaic(tic_id:str, data, tls_model, tls_results,
     ax7.text(x=0.1, y=0.5, s='\n\n'.join(str(i).replace('_',' ') for i in text_info), fontsize='xx-large', va='center', transform=ax7.transAxes)
     ax7.tick_params(labelbottom=False, labelleft=False, axis='both', which='both', length=0)
     ax7.spines['right'].set_visible(False)
-    ax1.set_title('TIC: '+str(tic_id).replace('_','')+' PERIOD: '+str(round(tls_results.period, 5)), size='xx-large')
 
     if plot_dir is None and plot_path is None:
         plt.show()
