@@ -37,6 +37,7 @@ def bls_check(table_path:str,lc_dir:str,display_mosaics:bool=False):
   import numpy as np
   import matplotlib.pyplot as plt
   from tqdm import tqdm
+  from sunnyhills.pipeline_functions import run_bls
 
   error = np.array([])
   df = filter_data(table_path)
@@ -82,3 +83,56 @@ def bls_check(table_path:str,lc_dir:str,display_mosaics:bool=False):
 
 def bls_check_runner(display_validation_plots:bool=False):
   bls_check('personal_epochs/veronica/june/current_key.csv','data/current/processed/known_two_min',display_validation_plots)
+
+
+def tls_check(table_path:str,lc_dir:str):
+  from sunnyhills.pipeline_functions import run_tls    
+  import pandas as pd    
+  import numpy as np
+  import matplotlib.pyplot as plt
+  from tqdm import tqdm
+
+
+
+  error = np.array([])
+  df = filter_data(table_path)
+  modified_dir = lc_dir + '/'
+  stellar_rads = np.array([])
+  planet_rads = np.array([])
+  graphed_error = np.array([])
+  for item,real_per,stellar_rad,planet_rad in tqdm(zip(df['tic_id'],df['pl_orbper'],df['st_rad'],df['pl_rade'])):
+    item = item.replace(' ','_')
+    print(item)
+    lc = pd.read_csv(modified_dir+item+'.csv')
+    lc = lc.dropna(subset=['clean_time','clean_flux','trend_time','trend_flux'])
+    time = lc['clean_time']
+    flux = lc['clean_flux']
+    results,model = run_tls(item,time, flux)
+    per = results.period
+    error = np.append(error,(real_per-per)/real_per)
+    if stellar_rad != np.NaN and planet_rad != np.NaN:
+      graphed_error = np.append(graphed_error,(real_per-per)/real_per)
+      stellar_rads = np.append(stellar_rads,stellar_rad)    
+      planet_rads = np.append(planet_rads,planet_rad*109)
+  plt.figure(112)
+  plt.title('radius vs error')
+  plt.scatter(np.divide(planet_rads,stellar_rads),np.log(100*np.absolute(graphed_error)))
+  plt.xlabel('ratio of planetary radius to stellar radius')
+  plt.ylabel('log error percentage')
+  plt.savefig('data/tls_check/error_vs_radius_scatter.png')
+  plt.figure(122)
+  plt.title('error histogram')
+  plt.hist(100*np.absolute(error),50)
+  plt.xticks(np.arange(0, 350, 25))
+  plt.xlabel('error percentage')
+  plt.ylabel('frequency')
+
+  error = 100*np.mean(np.absolute(error))
+  print("average error for all the samples is: ", error)
+  plt.legend([str(error)])
+  plt.savefig('data/tls_check/percentage_histogram.png')
+
+  return error
+
+def tls_check_runner():
+  tls_check('personal_epochs/veronica/june/current_key.csv','data/current/processed/known_two_min')

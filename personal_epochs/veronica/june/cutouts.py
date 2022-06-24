@@ -1,4 +1,4 @@
-def generate_cutout(tic_id:str='',large_size:int=30,small_size:int=5,desired_sector:int=None):
+def generate_cutout(tic_id:str='',large_size:int=20,small_size:int=10,desired_sector:int=None):
     import matplotlib.pyplot as plt
     import lightkurve as lk
     from matplotlib.patches import Rectangle
@@ -25,14 +25,15 @@ def generate_cutout(tic_id:str='',large_size:int=30,small_size:int=5,desired_sec
                
 
     fig, ax = plt.subplots()
-    aperture_mask = small_tpf.create_threshold_mask(threshold=2)
+    aperture_mask = small_tpf.create_threshold_mask(threshold=10)
     small_tpf.plot(ax=ax,aperture_mask=aperture_mask)
     rect_x = ax.get_xlim()[1]-ax.get_xlim()[0]
     rect_y = ax.get_ylim()[1]-ax.get_ylim()[0]
     plt.savefig('temp/small.pdf')
     fig1, ax1 = plt.subplots()
-    large_tpf.plot(ax=ax1)
+    aperture_mask = large_tpf.create_threshold_mask(threshold=10)
     ax1 = vis.plot_gaia_overlay(int(tic_id.replace('TIC ','')),large_tpf,magnitude_limit=15)
+    large_tpf.plot(ax=ax1,aperture_mask=aperture_mask,mask_color='white')
     ax1.add_patch(Rectangle((ax.get_xlim()[0],ax.get_ylim()[0]),rect_x,rect_y,fc='none',linewidth=1,ec='yellow',ls='--'))
     plt.savefig('temp/large.pdf')
 
@@ -45,3 +46,10 @@ def generate_cutout(tic_id:str='',large_size:int=30,small_size:int=5,desired_sec
     os.remove('temp/small.pdf')
     os.remove('temp/large.pdf')
     os.rmdir('temp/')
+
+generate_cutout('TIC 6663331')
+
+
+
+
+
