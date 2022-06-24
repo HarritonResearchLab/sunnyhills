@@ -257,7 +257,6 @@ def plot_star_detrending(
     fig.savefig(plotpath, bbox_inches='tight', dpi=400)
     print(f"Made {plotpath}")
 
-import numpy as np
 def bls_validation_mosaic(tic_id:str, clean_time:np.array, clean_flux:np.array, 
                           trend_time:np.array, trend_flux:np.array,
                           raw_time:np.array, raw_flux:np.array, 
@@ -466,10 +465,18 @@ def tls_validation_mosaic(tic_id:str, data, tls_model, tls_results,
         ax2b = fig.add_subplot(gs[1, 2:-1])
         
         ax1a.scatter(clean_time[0:break_index], clean_flux[0:break_index], s=1)
+
+        ax1a.plot(tls_results.model_lightcurve_time[0:break_index], 
+                  tls_results.model_lightcurve_model[0:break_index], 
+                  alpha=0.5, color='red', zorder=1)
+
         ax1a.set(ylabel='Detrended Flux')
         ax1a.set_title('TIC: '+str(tic_id).replace('_','')+' PERIOD: '+str(round(tls_results.period, 5)), size='xx-large')
         
         ax1b.scatter(clean_time[break_index:], clean_flux[break_index:], s=1)
+        ax1b.plot(tls_results.model_lightcurve_time[break_index:], 
+                  tls_results.model_lightcurve_model[break_index:], 
+                  alpha=0.5, color='red', zorder=1)
         
         orient_split_axes(ax1a, ax1b, clean_flux)
 
@@ -490,6 +497,9 @@ def tls_validation_mosaic(tic_id:str, data, tls_model, tls_results,
     
         # detrend light curve 
         ax1.scatter(clean_time, clean_flux, s=1)
+        ax1.plot(tls_results.model_lightcurve_time, 
+                  tls_results.model_lightcurve_model, 
+                  alpha=0.5, color='red', zorder=1)
         ax1.set(ylabel='Detrended Flux')
         ax1.set_title('TIC: '+str(tic_id).replace('_','')+' PERIOD: '+str(round(tls_results.period, 5)), size='xx-large')
         
