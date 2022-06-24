@@ -535,7 +535,6 @@ def query_tls_vizier(tic_id:str, radius_err_multiple:float=1, mass_err_multiple:
 
     return ab, mass, mass_min, mass_max, radius, radius_min, radius_max
 
-
 ## PERIOD SEARCH ROUTINES ##
 
 ## BLS ##
@@ -679,7 +678,8 @@ def run_tls(tic_id:str, time, flux,
             tls_params: dict = {'min_per':0.5, 'max_per':15, 
                                 'minimum_n_transit':3, 
                                 'freq_factor':1,
-                                'core_fraction':0.66}, show_progress_bar:bool=False): 
+                                'core_fraction':0.66}, show_progress_bar:bool=False, 
+            verbose:bool=False, catalog_params:bool=True): 
 
     r'''
     args: 
@@ -694,22 +694,31 @@ def run_tls(tic_id:str, time, flux,
 
     import numpy as np
     from transitleastsquares import transitleastsquares
-    from transitleastsquares import transit_mask, catalog_info
+    from transitleastsquares import transit_mask
     from transitleastsquares.stats import intransit_stats
     import multiprocessing 
+    from sunnyhills.pipeline_functions import query_tls_vizier
     import pickle 
 
     num_cores = int(tls_params['core_fraction']*multiprocessing.cpu_count())
     tls_model = transitleastsquares(time, flux, verbose=False)
     
-    ab, mass, mass_min, mass_max, radius, radius_min, radius_max = catalog_info(TIC_ID=int(tic_id.replace('TIC_',''))) 
+    ab, mass, mass_min, mass_max, radius, radius_min, radius_max = query_tls_vizier(tic_id=tic_id) 
     
-    tls_results = tls_model.power(period_min=tls_params['min_per'],period_max=tls_params['max_per'],
-                              verbose=False, show_progress_bar=show_progress_bar, use_threads=num_cores, u=ab)
+    if catalog_params: 
+        tls_results = tls_model.power(period_min=tls_params['min_per'],period_max=tls_params['max_per'],
+                              show_progress_bar=show_progress_bar, verbose=verbose, use_threads=num_cores, u=ab,
+                              M_star=mass, M_star_min=mass_min, M_star_max=mass_max, R_star=radius, 
+                              R_star_min=radius_min, R_star_max=radius_max)
+    
+    else: 
+        tls_results = tls_model.power(period_min=tls_params['min_per'],period_max=tls_params['max_per'],
+                                      show_progress_bar=show_progress_bar, verbose=verbose, 
+                                      use_threads=num_cores)
     
     if cache_dir!=None: 
         if cache_dir[-1]!='/': 
-            cache_dir+='/'
+            cache_dir+='/' 
 
         tls_model_cache_file = cache_dir+tic_id+'_tls-model.pickle'
         tls_results_cache_file = cache_dir+tic_id+'_tls-results.pickle'

@@ -2,6 +2,7 @@ import matplotlib.pylab as plt
 import numpy as np
 from matplotlib.gridspec import GridSpec
 import pandas as pd 
+from sunnyhills.pipeline_functions import run_tls 
 
 tic_id = 'TIC_466265409'
 
@@ -19,6 +20,8 @@ trend_time, trend_flux = (i[trend_mask] for i in [trend_time, trend_flux])
 
 split_axes = False
 break_index = None 
+
+run_tls(tic_id, clean_time, clean_flux, verbose=True)
 
 diff = np.diff(clean_time)
 if np.max(diff>50): 
