@@ -156,6 +156,9 @@ def beta_routine(key:str, data_dir:str, download_log:str=None, output_log:str=No
     ls_subplots_dir = plot_dir+'ls_subplots/'
     tls_validation_dir = plot_dir+'tls_validation/'
     transits_dir = plot_dir+'individual_transits/'
+    cutout_dir = plot_dir+'cutouts/'
+    
+    combined_dir = plot_dir+'combined_plots/'
 
     plotting_dirs = [detrend_plot_dir, ls_subplots_dir, tls_validation_dir, transits_dir]
     for dir in plotting_dirs: 
@@ -211,6 +214,7 @@ def beta_routine(key:str, data_dir:str, download_log:str=None, output_log:str=No
 
                 if not os.path.exists(tls_validation_dir+tic_id+'.png'): # look into pngs, maybe fix!
                     tls_validation_mosaic(tic_id=tic_id, data=data_path, tls_results=tls_results, tls_model=tls_model, plot_dir=tls_validation_dir)
+                
                 if not os.path.exists(transits_dir+tic_id+'.png'):
                     pass 
                     #transit_plots(transits_dir,tic_id,clean_time,clean_flux,tls_results)
