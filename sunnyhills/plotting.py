@@ -23,6 +23,8 @@ import warnings
 
 from sunnyhills.misc import phase, rebin
 
+plt.style.use('https://raw.githubusercontent.com/HarritonResearchLab/sunnyhills/main/sunnyhills/science.mplstyle?token=GHSAT0AAAAAABV7RWBNNCNHHJAP2QKX4RIMYVYPPZA')
+
 #from sunnyhills.paths import DATADIR, EPOCHSDIR
 
 def plot_kerr21_XY(outdir, colorkey=None):
@@ -695,10 +697,14 @@ def plot_detrend_validation(tic_id, data_dir:str, plot_dir:str=None):
 
     num_sectors = len(inclusive_time_ranges)
 
+    r'''
     plt.style.use('seaborn-darkgrid')
     font = {'family' : 'serif', 'size' : 5}
 
     matplotlib.rc('font', **font)
+    '''
+
+    plt.style.use('https://raw.githubusercontent.com/HarritonResearchLab/sunnyhills/main/sunnyhills/science.mplstyle?token=GHSAT0AAAAAABV7RWBNNCNHHJAP2QKX4RIMYVYPPZA')
 
     fig, axs = plt.subplots(3,num_sectors, figsize=(num_sectors*3.5, 4))
 

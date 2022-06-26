@@ -55,9 +55,11 @@ def ls_detrend():
         
         raw_time, raw_flux = (np.array(initial_data[i]) for i in ['raw_time', 'raw_flux'])
 
-        mask = np.isfinite(initial_data['no_flare_flux'])
+        mask = np.isfinite(initial_data['no_flare_raw_flux'])
 
-        no_flare_time, no_flare_flux = (i[mask] for i in [raw_time, raw_flux])
+        no_flare_time, no_flare_flux = (np.array(initial_data[i]) for i in ['no_flare_raw_time', 'no_flare_raw_flux'])
+
+        no_flare_time, no_flare_flux = (i[mask] for i in [no_flare_time, no_flare_flux])
 
         periodogram = LombScargle(no_flare_time, no_flare_flux, nterms=3)
 
