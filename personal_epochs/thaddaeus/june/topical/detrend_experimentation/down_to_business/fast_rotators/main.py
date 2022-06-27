@@ -61,7 +61,7 @@ def ls_detrend():
 
         no_flare_time, no_flare_flux = (i[mask] for i in [no_flare_time, no_flare_flux])
 
-        periodogram = LombScargle(no_flare_time, no_flare_flux, nterms=3)
+        periodogram = LombScargle(no_flare_time, no_flare_flux, nterms=2)
 
         frequencies, powers = periodogram.autopower(minimum_frequency=1/15, maximum_frequency=1/0.1, method='fastchi2')
 
@@ -88,6 +88,6 @@ def ls_detrend():
         out_df.to_csv(outfile, index=False)
 
         plot_dir = './personal_epochs/thaddaeus/june/topical/detrend_experimentation/down_to_business/fast_rotators/plots/detrend_testing/'
-        plot_detrend_validation(tic_id=tic_id, data_dir=data_dir, plot_dir=plot_dir)
+        plot_detrend_validation(tic_id=tic_id, data_dir=data_dir, plot_dir=plot_dir, plot_type='png')
 
 ls_detrend()

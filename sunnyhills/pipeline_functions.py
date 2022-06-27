@@ -558,12 +558,12 @@ def query_tls_vizier(tic_id:str, radius_err_multiple:float=1, mass_err_multiple:
 ## PERIOD SEARCH ROUTINES ##
 
 ## TLS ##
-def run_tls(tic_id:str, time, flux, 
+def run_tls(tic_id:str, time:np.array, flux:np.array, 
             cache_dir:str=None, 
             tls_params: dict = {'min_per':0.5, 'max_per':15, 
                                 'minimum_n_transit':3, 
                                 'freq_factor':1,
-                                'core_fraction':0.66}, show_progress_bar:bool=False, 
+                                'core_fraction':0.75}, show_progress_bar:bool=False, 
             verbose:bool=False, catalog_params:bool=True): 
 
     r'''
@@ -613,8 +613,6 @@ def run_tls(tic_id:str, time, flux,
 
         with open(tls_results_cache_file, 'wb') as file: 
             pickle.dump(tls_results, file, protocol=pickle.HIGHEST_PROTOCOL)
-
-   
 
     return tls_results, tls_model 
 
