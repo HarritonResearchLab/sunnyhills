@@ -241,18 +241,20 @@ def download_and_preprocess(
     ticstr: str = '',
     outdir: str = 'none', 
     logdir: str = 'none', 
+    download_log: str = 'none',
     dtrdict: dict = {'method':'biweight',
                      'window_length':0.5,
                      'cval':5.0,
                      "break_tolerance":1.0}
     ): 
-    
+
     '''
     Args: 
         ticstr: e.g. 'TIC 441420236'
         outdir: dir to save light curve to. default is none
         logdir: dir to save log file to. default is none
         dtrdict: detrending dictionary 
+
         
     Returns: 
         lc_list: list of light curve ojects that have met all criteria, been removed of outliers, normalized, and flattened. 
@@ -262,12 +264,30 @@ def download_and_preprocess(
     '''
 
     import numpy as np
+    import pandas as pd
     import warnings 
 
     raw_list, data_found = download(ticstr=ticstr, logdir=logdir) 
 
     if data_found: 
         lc_df, counts = preprocess(raw_list=raw_list, ticstr=ticstr, outdir=outdir, dtrdict=dtrdict)
+
+        if download_log!='none':
+            log = pd.read_csv(download_log)
+            
+            diffs = np.diff(lc_df['raw_time'])
+            start_indices = np.where(diffs>25)[0]
+            num_sectors = len(start_indices)+1
+
+            log['TIC_ID'].loc[log['TIC_ID'].index.max()+1] = ticstr.replace(' ','_')
+            log['num_sectors'].loc[log['num_sectors'].index.max()+1] = num_sectors
+
+            log.to_csv(download_log)
+
+
+
+        
+        #except: 
 
     else: 
         lc_df, counts = (None, None)
