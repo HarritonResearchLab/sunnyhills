@@ -42,3 +42,4 @@ savefig.pad_inches : 0.05
 # font.serif : Times
 font.family : serif
 mathtext.fontset : dejavuserif
+#font.size : 'small'
