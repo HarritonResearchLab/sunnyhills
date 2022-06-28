@@ -203,7 +203,7 @@ def lombscargle(time,flux,flux_err:np.array=None,min_per:float=.1,max_per:int=15
     periods = 1/frequencies
 
     if calc_fap:
-        fap_levels = periodogram.false_alarm_probability(probabilities)
+        fap_levels = periodogram.false_alarm_level(probabilities)
 
     sorted = np.argsort(powers)[::-1] #descending order
     powers = powers[sorted]
@@ -216,39 +216,6 @@ def lombscargle(time,flux,flux_err:np.array=None,min_per:float=.1,max_per:int=15
     return powers, periods, best_period, best_period_power, fap_levels
 
 
-def inject(time, flux, per:np.random.uniform(0.75,15), rp:float=0.08, t0:float=None):
-    r'''
-    
-    Notes
-    -----
-        t0 : if t0 is not defined/None, then the algo will choose random time less than 0.1*max(time) to be t0
-    
-    '''
-    
-    import batman 
-    import random 
-
-    if t0 is None: 
-        percentiles = np.percentile(time, [0,10])
-        t0 = random.uniform(percentiles[0], percentiles[1])
-
-    params = batman.TransitParams()
-    params.t0 = t0                     #time of inferior conjunction
-    params.per = per                      #orbital period
-    params.rp = rp                   #planet radius (in units of stellar radii)
-    params.a = 15.                       #semi-major axis (in units of stellar radii)
-    params.inc = 87.                     #orbital inclination (in degrees)
-    params.ecc = 0.                      #eccentricity
-    params.w = 90.                       #longitude of periastron (in degrees)
-    params.u = [0.1, 0.3]                #limb darkening coefficients [u1, u2]
-    params.limb_dark = "quadratic"       #limb darkening model
-
-    m = batman.TransitModel(params, time)    #initializes model
-    transit_flux = m.light_curve(params)-1   
-
-    flux = flux+transit_flux
-
-    return time, flux, (per, rp, t0)
 
 ## BELOW FUNCTIONS ARE VERONICA'S FOR STARS WITH CONFIRMED PLANETS ##
 

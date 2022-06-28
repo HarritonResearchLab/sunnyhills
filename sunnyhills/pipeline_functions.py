@@ -132,7 +132,7 @@ def preprocess(
     ticstr: str = '',
     outdir: str = "none", 
     dtrdict: dict = {'method':'biweight',
-                     'window_length':0.5,
+                     'window_length':0.25,
                      'cval':5.0,
                      "break_tolerance":1.0}, 
     lower_sigma: int = 10
@@ -283,9 +283,6 @@ def download_and_preprocess(
             log['num_sectors'].loc[log['num_sectors'].index.max()+1] = num_sectors
 
             log.to_csv(download_log)
-
-
-
         
         #except: 
 
@@ -397,7 +394,7 @@ def download_pipeline(tic_ids:str, download_dir:str, download_log:str):
     import lightkurve as lk 
     from transitleastsquares import catalog_info
     from tqdm import tqdm 
-    from sunnyhills.pipeline_functions import download_and_preprocess 
+    from sunnyhills.pipeline_functions import download_and_preprocess, query_simbad
     from sunnyhills.misc import lombscargle
 
     np.random.shuffle(tic_ids)
@@ -412,6 +409,8 @@ def download_pipeline(tic_ids:str, download_dir:str, download_log:str):
     tls_catalog_cols = ['ab', 'mass', 'mass_min', 'mass_max', 'radius', 'radius_min', 'radius_max']
     cols += tls_catalog_cols
     cols += ['num_sectors']
+
+    cols += ['OTYPES', 'SP_TYPE', 'Main OTYPE']
 
     if not os.path.exists(download_log): 
         with open(download_log, 'w') as f:
@@ -462,6 +461,7 @@ def download_pipeline(tic_ids:str, download_dir:str, download_log:str):
         line_list = [tic_id] + counts + [no_flare_sigma, no_flare_diff_sigma, cdpp]
         line_list += [top_ls_period, top_ls_power, fap_95, top_ls_period_sub_harmonic, top_ls_period_harmonic]
         line_list += list(four_other_periods) + list(four_other_powers)
+        line_list += query_simbad(tic_id=tic_id)[1]
 
         # catalog info from TLS #
         tls_catalog_info = catalog_info(TIC_ID=int(tic_id.replace('TIC_', ''))) 
@@ -500,37 +500,41 @@ def query_simbad(tic_id:str):
     customSimbad = Simbad()
     customSimbad.add_votable_fields('sptype','mt', 'mt_qual','otype','otype(opt)','otypes') 
 
-    results_header = []
+    results_header = ['OTYPES', 'SP_TYPE', 'Main OTYPE']
     results_line = [] 
 
     otypes_key = pd.read_csv('./data/current/catalog_info/simbad_otypes_key.txt')
     otypes_dict = dict(zip(otypes_key['otype'], otypes_key['new_label']))
     
+    results_header.append('sp_type') 
+
     try: 
         
         tab = customSimbad.query_object(tic_id.replace('_', ' ')) 
         
-        otypes = tab['OTYPES'][0]
-        otypes_list = list(set(otypes.split('|')))
-        otypes_list = [otypes_dict[i] for i in otypes_list if i!='**' and i!='*']
-        otypes = '|'.join(otypes_list)
+        try: 
+            otypes = tab['OTYPES'][0]
+            otypes_list = list(set(otypes.split('|')))
+            otypes_list = [otypes_dict[i] for i in otypes_list if i!='**' and i!='*']
+            otypes = '|'.join(otypes_list)
 
-        results_line.append(otypes)
-        results_header.append('OTYPES')
+            results_line.append(otypes)
+
+        except: 
+            results_line.append('None')
 
         try: 
             sp_type = tab['SP_TYPE'][0]
-            results_header.append('sp_type')
+            
             results_line.append(sp_type)
         
         except: 
-            pass 
+            results_line.append('None')
 
         try: 
             results_line.append(otypes_dict[tab['OTYPE_opt'][0]])
-            results_header.append('Main OTYPE')
         except: 
-            pass 
+            results_line.append('None') 
 
     except: 
         pass 
@@ -539,7 +543,7 @@ def query_simbad(tic_id:str):
 
     return results_header, results_line
 
-def query_tls_vizier(tic_id:str, radius_err_multiple:float=1, mass_err_multiple:float=1): 
+def query_tls_vizier(tic_id:str, radius_err_multiple:float=3, mass_err_multiple:float=3): 
     
     from transitleastsquares import catalog_info
     
@@ -586,7 +590,7 @@ def run_tls(tic_id:str, time:np.array, flux:np.array,
     import pickle 
 
     num_cores = int(tls_params['core_fraction']*multiprocessing.cpu_count())
-    tls_model = transitleastsquares(time, flux, verbose=False)
+    tls_model = transitleastsquares(time, flux, verbose=verbose)
     
     ab, mass, mass_min, mass_max, radius, radius_min, radius_max = query_tls_vizier(tic_id=tic_id) 
     
@@ -594,12 +598,12 @@ def run_tls(tic_id:str, time:np.array, flux:np.array,
         tls_results = tls_model.power(period_min=tls_params['min_per'],period_max=tls_params['max_per'],
                               show_progress_bar=show_progress_bar, verbose=verbose, use_threads=num_cores, u=ab,
                               M_star=mass, M_star_min=mass_min, M_star_max=mass_max, R_star=radius, 
-                              R_star_min=radius_min, R_star_max=radius_max)
-    
+                              R_star_min=radius_min, R_star_max=radius_max, oversampling_factor=tls_params['freq_factor'])
+
     else: 
         tls_results = tls_model.power(period_min=tls_params['min_per'],period_max=tls_params['max_per'],
                                       show_progress_bar=show_progress_bar, verbose=verbose, 
-                                      use_threads=num_cores)
+                                      use_threads=num_cores, oversampling_factor=tls_params['freq_factor'])
     
     if cache_dir is not None: 
         if cache_dir[-1]!='/': 
