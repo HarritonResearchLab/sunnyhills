@@ -23,7 +23,7 @@ import warnings
 
 from sunnyhills.misc import phase, rebin
 
-plt.style.use('./sunnyhills/science.mplstyle')
+plt.style.use('https://gist.githubusercontent.com/thissop/44b6f15f8f65533e3908c2d2cdf1c362/raw/fab353d758a3f7b8ed11891e27ae4492a3c1b559/science.mplstyle')
 
 #from sunnyhills.paths import DATADIR, EPOCHSDIR
 
