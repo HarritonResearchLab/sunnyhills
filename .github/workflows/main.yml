@@ -5,7 +5,7 @@ name: CI
 on:
   
   schedule: 
-    - cron: 0 0 1 ? * TUE,THU,SUN * # three times a week 
+    - cron: 0 16 ? * 1 * # one time a week 
     
   issues:
     types: [opened, edited] # run when issue is opened or edited 
