@@ -46,14 +46,14 @@ def inject(tic_id:str, time:np.array, flux:np.array, per:float=None, rp:float=No
         ab = [] #limb darkening coefficients [u1, u2]
     params.limb_dark = "quadratic"       #limb darkening model
 
-    m = batman.TransitModel(params, time)    #initializes model
-    transit_flux = m.light_curve(params)-1   
+    model = batman.TransitModel(params, time)    #initializes model
+    transit_flux = model.light_curve(params)-1   
 
     flux = flux+transit_flux
 
     return time, flux, (per, rp, t0)
 
-def inject_pipeline(ids:list, original_data_dir:str, new_data_dir:str, injection_key:str): 
+def inject_pipeline(ids:list, original_data_dir:str, new_data_dir:str, injection_key:str, rp:float=0.10045): 
     r'''
     injection_key : path for csv file to save injection info (i.e. log of all injected periods for all TIC_IDs)
     '''
@@ -91,7 +91,12 @@ def inject_pipeline(ids:list, original_data_dir:str, new_data_dir:str, injection
                 break_index = np.where(np.diff(raw_time)>75)[0][0]+1 # diff returns index of last item before break, so add one to this
                 raw_time, raw_flux = (i[0:break_index] for i in [raw_time, raw_flux])
 
-            time, flux, (per, rp, t0) = inject(tic_id=tic_id, time=raw_time, flux=raw_flux)
+            per = np.random.uniform(1,15)
+            percentiles = np.percentile(raw_time, [0,5])
+            t0 = np.random.uniform(percentiles[0], percentiles[1])
+
+            time, flux, (per, rp, t0) = inject(tic_id=tic_id, time=raw_time, flux=raw_flux, rp=rp, per=per, t0=t0)
+
             injected_tic_ids.append(tic_id)
             injected_periods.append(per)
             injected_t0s.append(t0)
@@ -156,12 +161,12 @@ def inject_pipeline(ids:list, original_data_dir:str, new_data_dir:str, injection
         injection_df = pd.DataFrame(np.array([injected_tic_ids, injected_periods, injected_t0s]).T, columns=['TIC_ID', 'PER', 'T0'])
         injection_df.to_csv(injection_key)
 
-'''
+r'''
 import os
-orig_dir = './routines/alpha_tls/data/two_min_lightcurves/'
-injection_key = './routines/first_bulk_injected/injection_key.csv'
+orig_dir = './routines/real/alpha_tls/data/two_min_lightcurves/'
+injection_key = './routines/simulations/second_bulk_injected/injection_key.csv'
 ids = [i.replace('.csv','') for i in os.listdir(orig_dir) if i!='.gitkeep']
-inject_pipeline(ids=ids, original_data_dir=orig_dir, new_data_dir='./routines/first_bulk_injected/data/', injection_key=injection_key)
+inject_pipeline(ids=ids, original_data_dir=orig_dir, new_data_dir='./routines/simulations/second_bulk_injected/data/', injection_key=injection_key)
 '''
 
 def recover_injected_routine(injection_key:str, data_dir:str, plot_dir:str, report_path:str, cache_dir:str=None):
@@ -212,9 +217,9 @@ def recover_injected_routine(injection_key:str, data_dir:str, plot_dir:str, repo
     report = pd.DataFrame(np.array([out_ids, out_periods, out_SDEs]).T, columns=['TIC_ID', 'PER', 'SDE'])
     report.to_csv(report_path, index=False)
 
-key = './routines/first_bulk_injected/injection_key.csv'
-data_dir = './routines/first_bulk_injected/data/'
-plots_dir = './routines/first_bulk_injected/plots/'
-report_path = './routines/first_bulk_injected/results.csv'
-cache_dir = './routines/first_bulk_injected/cache_dir/'
+key = './routines/simulations/second_bulk_injected/injection_key.csv'
+data_dir = './routines/simulations/second_bulk_injected/data/'
+plots_dir = './routines/simulations/second_bulk_injected/plots/'
+report_path = './routines/simulations/second_bulk_injected/results.csv'
+cache_dir = './routines/simulations/second_bulk_injected/cache_dir/'
 recover_injected_routine(injection_key=key, data_dir=data_dir, plot_dir=plots_dir, report_path=report_path, cache_dir=cache_dir)

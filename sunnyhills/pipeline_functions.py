@@ -572,11 +572,14 @@ def run_tls(tic_id:str, time:np.array, flux:np.array,
 
     r'''
     args: 
+    ----
         tic_id: obvious
         time: time array
         flux: flux array
         tls_params: don't worry about it lol 
-    returns: 
+    
+    returns:
+    ------- 
         tls_results
         tls_model 
     '''

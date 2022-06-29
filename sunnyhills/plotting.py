@@ -243,7 +243,7 @@ def bls_validation_mosaic(tic_id:str, clean_time:np.array, clean_flux:np.array,
 
 def tls_validation_mosaic(tic_id:str, data, tls_model, tls_results,
                           plot_dir:str=None, plot_path:str=None, dpi:int=150, clean_time=None, clean_flux=None, 
-                          trend_time=None, trend_flux=None, raw_time=None, raw_flux=None, plot_type:str='pdf'): 
+                          trend_time=None, trend_flux=None, raw_time=None, raw_flux=None, plot_type:str='pdf', even_odd_option:str='separate'): 
 
     '''
     arguments: 
@@ -257,8 +257,18 @@ def tls_validation_mosaic(tic_id:str, data, tls_model, tls_results,
         best_params, bls_results, bls_model, in_transit, bls_stats: the items returned by the run_bls function in pipeline_functions.py (NOTE: in run_bls, stats must be set to be calculated!)
         path: if defined, plot will be saved as the provided path. Otherwise, it will be displayed
         dpi: dpi of saved plot
+ 
 
     returns: 
+    
+    notes 
+    -----
+
+        if data is defined, you don't need to define all the individual arrays! I just added the option to do the individual arrays for some testing I was doing at one point 
+
+        Also, if plot_type is pdf, it will save the file as pdf, otherwise if it's png the plot will get saved as png
+
+        Finally, even_odd_option can be 'separate' which plots odd transit with time [0,1] and even transit with time [1,2], or 'together' which plots them over each other. 
     '''
 
     import matplotlib.pyplot as plt
@@ -273,6 +283,7 @@ def tls_validation_mosaic(tic_id:str, data, tls_model, tls_results,
     )
 
     from sunnyhills.pipeline_functions import query_simbad
+    from sunnyhills.misc import normalize 
     
     if data is not None: 
         df = pd.read_csv(data)
@@ -455,10 +466,14 @@ def tls_validation_mosaic(tic_id:str, data, tls_model, tls_results,
     # even odd transits # 
 
     even_transit_time_folded, even_transit_flux, odd_transit_time_folded, odd_transit_flux, even_indices, odd_indices = even_odd_phase_folded(time=clean_time, flux=clean_flux, results=tls_results)    
+    
+    if even_odd_option == 'separate': 
+        even_transit_time_folded = normalize(even_transit_time_folded, output_range=[1,2])
+
+        odd_transit_time_folded = normalize(odd_transit_time_folded)
+
     ax5.scatter(even_transit_time_folded, even_transit_flux, label='Even')
-    max_even = np.max(even_transit_time_folded)
-    shifted_odd_time = odd_transit_time_folded+max_even
-    ax5.scatter(shifted_odd_time, odd_transit_flux, label='Odd')
+    ax5.scatter(odd_transit_time_folded, odd_transit_flux, label='Odd')
     ax5.get_xaxis().set_ticks([])
     ax5.set(xlabel='Time (d)', ylabel='Detrended Flux')
     ax5.legend()

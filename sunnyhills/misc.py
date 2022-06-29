@@ -188,7 +188,6 @@ def even_odd_phase_folded(time, flux, results):
 
     return np.abs(even_transit_time_folded), even_transit_flux, np.abs(odd_transit_time_folded), odd_transit_flux, all_even_indices_in_transit, all_odd_indices_in_transit
 
-
 def lombscargle(time,flux,flux_err:np.array=None,min_per:float=.1,max_per:int=15,calc_fap:bool=True,probabilities:list=[.1,.05,.01]):
     import numpy as np
     from astropy.timeseries import LombScargle
@@ -215,7 +214,13 @@ def lombscargle(time,flux,flux_err:np.array=None,min_per:float=.1,max_per:int=15
 
     return powers, periods, best_period, best_period_power, fap_levels
 
+def normalize(X:np.array, output_range:list=[0, 1]):
+    MIN = np.min(X)
+    MAX = np.max(X)
+    X_std = (X - MIN) / (MAX - MIN)
+    X_scaled = X_std * (output_range[1] - output_range[0]) + output_range[0]
 
+    return X_scaled 
 
 ## BELOW FUNCTIONS ARE VERONICA'S FOR STARS WITH CONFIRMED PLANETS ##
 
@@ -276,7 +281,7 @@ def download_and_append_status(path_to_csv:str,lc_dir,save_dir:str):
     append_download_status(path_to_csv,lc_dir,save_dir)
 
     return np.abs((time-transit_time+hp) % period - hp) < .5*duration
-    
+
 def merge_plots(tic_id:str='',plot_dir:str='routines/alpha_tls/plots/',plots:list=['lomb_scargle/','detrend_plots/','tls_validation/','tpfs/','transit_plots/']):
   from PyPDF2 import PdfMerger
   plots = [plot_dir +  dir+tic_id +'.pdf' for dir in plots]
