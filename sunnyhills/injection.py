@@ -159,7 +159,7 @@ def inject_pipeline(ids:list, original_data_dir:str, new_data_dir:str, injection
             out_df.to_csv(outpath, index=False)
 
         injection_df = pd.DataFrame(np.array([injected_tic_ids, injected_periods, injected_t0s]).T, columns=['TIC_ID', 'PER', 'T0'])
-        injection_df.to_csv(injection_key)
+        injection_df.to_csv(injection_key, index=False)
 
 r'''
 import os
@@ -206,7 +206,11 @@ def recover_injected_routine(injection_key:str, data_dir:str, plot_dir:str, repo
             else: 
                 tls_results, tls_model = run_tls(tic_id=tic_id, time=clean_time, flux=clean_flux, cache_dir=cache_dir, tls_params={'min_per':0.5, 'max_per':15, 'minimum_n_transit':3, 'freq_factor':5,'core_fraction':.95})
             
-            tls_validation_mosaic(tic_id=tic_id, data=data_path, tls_model=tls_model, tls_results=tls_results, plot_dir=plot_dir, plot_type='png')        
+            if os.path.exists(plot_dir+tic_id+'.png'): 
+                pass 
+            else: 
+                tls_validation_mosaic(tic_id=tic_id, data=data_path, tls_model=tls_model, tls_results=tls_results, plot_dir=plot_dir, plot_type='png')        
+            
             out_ids.append(tic_id)
             out_periods.append(tls_results.period)
             out_SDEs.append(np.max(tls_results.power))

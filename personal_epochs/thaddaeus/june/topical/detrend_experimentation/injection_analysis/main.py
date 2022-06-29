@@ -3,8 +3,8 @@ import pandas as pd
 import matplotlib.pyplot as plt 
 plt.style.use('https://gist.githubusercontent.com/thissop/44b6f15f8f65533e3908c2d2cdf1c362/raw/fab353d758a3f7b8ed11891e27ae4492a3c1b559/science.mplstyle')
 
-def initial_plot(true:str='./routines/first_bulk_injected/injection_key.csv', 
-                 predicted:str='./routines/first_bulk_injected/results.csv'): 
+def initial_plot(true:str='./routines/simulations/second_bulk_injected/injection_key.csv', 
+                 predicted:str='./routines/simulations/second_bulk_injected/results.csv'): 
     pass 
     true_df = pd.read_csv(true)       
     predicted_df = pd.read_csv(predicted)
@@ -39,12 +39,12 @@ def initial_plot(true:str='./routines/first_bulk_injected/injection_key.csv',
     axs[1].set(xlabel='True Period (d)', ylabel='TLS Period (d)', title='SDE > 0', xlim=(0.1, 17), ylim=(0.1, 17))
     axs[1].legend()
 
-    plt.savefig('./personal_epochs/thaddaeus/june/topical/detrend_experimentation/injection_analysis/results.png')
+    plt.savefig('./personal_epochs/thaddaeus/june/topical/detrend_experimentation/injection_analysis/RJ=1_results.png')
 
-#initial_plot()
+initial_plot()
 
-def high_sde_poor_predictions(true:str='./routines/simulations/first_bulk_injected/injection_key.csv', 
-                 predicted:str='./routines/simulations/first_bulk_injected/results.csv'): 
+def high_sde_poor_predictions(true:str='./routines/simulations/second_bulk_injected/injection_key.csv', 
+                              predicted:str='./routines/simulations/second_bulk_injected/results.csv'): 
     pass 
     true_df = pd.read_csv(true)       
     predicted_df = pd.read_csv(predicted)
@@ -58,7 +58,7 @@ def high_sde_poor_predictions(true:str='./routines/simulations/first_bulk_inject
     mask = np.where(predicted_df['TLS_PER']<2)
     merged = merged.iloc[mask]
 
-    merged.to_csv('./personal_epochs/thaddaeus/june/topical/detrend_experimentation/injection_analysis/to_look_into.csv', index=False)
+    merged.to_csv('./personal_epochs/thaddaeus/june/topical/detrend_experimentation/injection_analysis/RJ=1_to_look_into.csv', index=False)
 
 high_sde_poor_predictions()
 
