@@ -18,7 +18,11 @@ def tls_even_odd(tls_results):
     even = tls_results.depth_mean_odd
     even = [even[0]-even[1], even[0]+even[1]]
 
-    temp = np.sort([even, odd])
+    idx = np.argsort([even[0], odd[0]])
+
+    temp = np.array([even, odd])[idx]
+
+    print(temp)
 
     if temp[0][1]>temp[1][0]: 
         eb_flag = False
