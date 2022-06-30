@@ -249,13 +249,14 @@ def download_and_append_status(path_to_csv:str,lc_dir,save_dir:str):
 
     #return np.abs((time-transit_time+hp) % period - hp) < .5*duration
     
-def merge_plots(tic_id:str='',plot_dir:str='routines/alpha_tls/plots/',plots:list=['lomb_scargle/','detrend_plots/','tls_validation/','tpfs/','transit_plots/']):
-  from PyPDF2 import PdfMerger
-  plots = [plot_dir +  dir+tic_id +'.pdf' for dir in plots]
-  merger = PdfMerger()
 
-  for pdf in plots:
-    merger.append(pdf)
-  merger.write(plot_dir+tic_id+'_master.pdf')
-  merger.close()
-  print('successfully generated: ' + tic_id + ' report!')
+def merge_plots(tic_id:str='',plot_dir:str='routines/alpha_tls/plots/',export_dir:str='',plots:list=['ls_subplots/','detrend_plots/','tls_validation/','cutouts/','individual_transits/','harmonics_dir/']):
+    from PyPDF2 import PdfMerger
+    plots = [plot_dir +  dir+tic_id +'.pdf' for dir in plots]
+    merger = PdfMerger()
+
+    for pdf in plots:
+      merger.append(pdf)
+    merger.write(export_dir+tic_id+'.pdf')
+    merger.close()
+    print('successfully generated: ' + tic_id + ' report!')

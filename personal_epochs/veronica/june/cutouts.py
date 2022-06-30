@@ -47,9 +47,30 @@ def generate_cutout(tic_id:str='',large_size:int=20,small_size:int=10,desired_se
     os.remove('temp/large.pdf')
     os.rmdir('temp/')
 
-generate_cutout('TIC 6663331')
+def gen_cutout(tic_id:str='',large_size:int=20,small_size:int=10,plot_dir:str='routines/alpha_tls/plots'):
+  import matplotlib.pyplot as plt
+  import lightkurve as lk
+  from matplotlib.patches import Rectangle
+  import os
+  import eleanor
+  
+  if plot_dir[-1]!='/':
+        plot_dir +='/'
 
+  print(tic_id.replace('_',' '))
 
+  data = eleanor.Source(tic=int(tic_id.replace('TIC ',''))) 
+  data = eleanor.TargetData(data)
+  vis = eleanor.Visualize(data)
+  result = lk.search_targetpixelfile(tic_id, mission="TESS")
+  large_tpf = result[0].download(quality_bitmask='default',author='SPOC')
+  print(tic_id.replace('_',' '))
+             
+  fig, ax = plt.subplots()
+  ax = vis.plot_gaia_overlay(int(tic_id.replace('TIC ','')),large_tpf,magnitude_limit=15)
+  large_tpf.plot(ax=ax,aperture_mask=large_tpf.pipeline_mask,mask_color='white')
+  plt.savefig(plot_dir+tic_id+'.pdf')
+gen_cutout('TIC 6663331')
 
 
 

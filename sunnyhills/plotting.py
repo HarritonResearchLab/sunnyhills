@@ -766,68 +766,89 @@ def plot_detrend_validation(tic_id, data_dir:str, plot_dir:str=None,plot_type:st
         plt.savefig(plot_path, dpi=250)
         #plt.savefig(path + tic_id+'.pdf', dpi=dpi,format='pdf')
 
-def transit_plots(export_dir:str,tic_id:str,time,flux,results, plot_type:str='pdf'):
+def transit_plots(plot_dir:str,tic_id:str,time,flux,results):
     from wotan import transit_mask
     import matplotlib.pyplot as plt
+    import pandas as pd
 
-    f,axis = plt.subplots(round(len(results.transit_times)/2),2,figsize=(20,7))
+    plt.style.use('seaborn-darkgrid')
+
+    transit_times = pd.Series(results.transit_times,name='times')
+    transit_depths = pd.Series(results.transit_depths,name='depths')
+
+    df = pd.merge(transit_times,transit_depths,right_index=True,left_index=True)
+    df = df.dropna()
+    transit_times = df['times']
+    transit_depths = df['depths']
+    
+
+    if len(transit_times) > 10 and len(transit_depths) >10:
+        transit_times = transit_times[:10]
+        transit_depths = transit_depths[:10]
+    
+    f,axis = plt.subplots(round(len(transit_times)/2),2,figsize=(20,7))
     f.suptitle(tic_id.replace('_',' '))
     col = 0
-    row = 0 
+    row = 0
     in_transit = transit_mask(time,results.period,results.duration,results.T0)
     if len(results.transit_times)<3:
-      for transit, depth in zip(results.transit_times,results.transit_depths): 
-        if np.isfinite(depth) and np.isfinite(transit): 
-            axis[col].scatter(time[in_transit], flux[in_transit], color='red', s=30, zorder=2)
-            axis[col].scatter(time[~in_transit], flux[~in_transit], s=30,zorder=2)
-            axis[col].set_xlim(transit-.25,transit+.25)
-            axis[col].set_ylim(depth-.035,depth+.035)
-        col +=1
+      for transit,depth in zip(transit_times,transit_depths): 
+        try:
+          axis[col].scatter(time[in_transit], flux[in_transit], color='red', s=30, zorder=2)
+          axis[col].scatter(time[~in_transit], flux[~in_transit], s=30,zorder=2)
+          axis[col].set_xlim(transit-.25,transit+.25)
+          axis[col].set_ylim(depth-.035,depth+.035)
+          col +=1
+        except:
+          continue
     else:
-      for transit,depth in zip(results.transit_times,results.transit_depths): 
-        if np.isfinite(depth) and np.isfinite(transit):
-            axis[col,row].scatter(time[in_transit], flux[in_transit], color='red', s=30, zorder=2)
-            axis[col,row].scatter(time[~in_transit], flux[~in_transit], s=30,zorder=2)
-            axis[col,row].set_xlim(transit-.25,transit+.25)
-            axis[col,row].set_ylim(depth-.035,depth+.035)
-            axis[col,row].set_xlabel('Time (days)')
-            axis[col,row].set_ylabel('Flux (e-/s)')
+      for transit,depth in zip(transit_times,transit_depths): 
+        try:
+          axis[row,col].scatter(time[in_transit], flux[in_transit], color='red', s=30, zorder=2)
+          axis[row,col].scatter(time[~in_transit], flux[~in_transit], s=30,zorder=2)
+          axis[row,col].set_xlim(transit-.25,transit+.25)
+          axis[row,col].set_ylim(depth-.035,depth+.035)
+          axis[row,col].set_xlabel('Time (days)')
+          axis[row,col].set_ylabel('Flux (e-/s)')
+        except:
+          continue
         
         if col ==1:
-          row+=1
           col =0
+          row+=1
         else:
           col +=1
 
-    if export_dir[-1] != '/': 
-        export_dir += '/'
-
-    if plot_type=='png' or plot_type == 'pdf': 
-        plot_path = export_dir + tic_id + '.'+plot_type 
-    else: 
-        plot_path = export_dir + tic_id + '.png'
+    plt.savefig(plot_dir+tic_id+'.pdf')
+    print(plot_dir+tic_id+'.pdf')
+    plt.close()
     
-    plt.savefig(plot_path, dpi=150)
-
 def ls_subplots(tic_id,plot_dir,time,flux, plot_type:str='pdf'):
     import matplotlib.pyplot as plt
     import lightkurve as lk
     import numpy as np
 
-    fix,ax = plt.subplots(2)
-    lc = lk.LightCurve(time=np.array(time), flux=np.array(flux))
+    fig,ax = plt.subplots(2)
+    lc = lk.LightCurve(np.array(time),np.array(flux))
 
     ls = lc.to_periodogram(method='ls',minimum_frequency=1/15,maximum_frequency=1/.1)
     ls.plot(ax=ax[0])
     lc.fold(period=ls.period_at_max_power).scatter(ax=ax[1])
+    plt.subplots_adjust(hspace=.35)
     ax[0].set_title('Lomb Scargle Periodogram')
     ax[1].set_title('Phase Folded')
+    plt.savefig(plot_dir+tic_id+'.pdf')
+    plt.close()
 
     if plot_type=='png' or plot_type == 'pdf': 
         plot_path = plot_dir + tic_id + '.'+plot_type 
     else: 
         plot_path = plot_dir + tic_id + '.png'
-      
+  
+    plt.savefig(plot_path)
+    plt.close()
+
+    
 def phased_aliase_plots(tic_id:str, time, flux, tls_results, plot_path:str, dpi=dpi):
     r'''   
 
@@ -931,4 +952,25 @@ def phased_aliase_plots(tic_id:str, time, flux, tls_results, plot_path:str, dpi=
         plt.savefig(plot_path, dpi=dpi)
 
 
+def gen_cutout(tic_id:str='',large_size:int=20,small_size:int=10,plot_dir:str='routines/alpha_tls/plots'):
+    import matplotlib.pyplot as plt
+    import lightkurve as lk
+    import eleanor
+  
+    if plot_dir[-1]!='/':
+          plot_dir +='/'
 
+    print(tic_id.replace('_',' '))
+
+    data = eleanor.Source(tic=int(tic_id.replace('TIC ',''))) 
+    data = eleanor.TargetData(data)
+    vis = eleanor.Visualize(data)
+    result = lk.search_targetpixelfile(tic_id, mission="TESS")
+    large_tpf = result[0].download(quality_bitmask='default',author='SPOC')
+    print(tic_id.replace('_',' '))
+               
+    fig, ax = plt.subplots()
+    ax = vis.plot_gaia_overlay(int(tic_id.replace('TIC ','')),large_tpf,magnitude_limit=15)
+    large_tpf.plot(ax=ax,aperture_mask=large_tpf.pipeline_mask,mask_color='white')
+    plt.savefig(plot_dir+tic_id+'.pdf')
+    plt.close()
