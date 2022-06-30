@@ -174,7 +174,8 @@ def recover_injected_routine(injection_key:str, data_dir:str, plot_dir:str, repo
     from sunnyhills.plotting import tls_validation_mosaic
     from tqdm import tqdm 
     import os 
-    import pickle 
+    import pickle
+    from sunnyhills.false_alarm_checks import check_lombscargle, tls_even_odd 
 
     download_log = './routines/real/alpha_tls/data/download_log.csv'
 
@@ -182,7 +183,8 @@ def recover_injected_routine(injection_key:str, data_dir:str, plot_dir:str, repo
 
     tic_ids = np.array(key['TIC_ID'])
 
-    true_periods = np.array(key[''])
+    true_periods = np.array(key['INJECTED_PER'])
+    true_t0s = np.array(key['INJECTED_T0'])
 
     out_ids = []
     out_periods = []
@@ -214,16 +216,23 @@ def recover_injected_routine(injection_key:str, data_dir:str, plot_dir:str, repo
                 pass 
             else: 
 
-                from sunnyhills.false_alarm_checks import check_lombscargle, tls_even_odd
-
                 false_alarm_dict = {}
 
                 false_alarm_dict.update(check_lombscargle(tic_id, tls_results, download_log))
                 false_alarm_dict.update(tls_even_odd(tls_results))
 
-                true_per = 
+                per_idx = np.where(tic_ids==tic_id)[0]
+                true_per = true_periods[per_idx][0]
+                true_t0 = true_t0s[per_idx][0]
 
-                tls_validation_mosaic(tic_id=tic_id, data=data_path, tls_model=tls_model, tls_results=tls_results, plot_dir=plot_dir, plot_type='png', false_alarms_dictionary=false_alarm_dict)        
+                true_transits = np.arange(true_t0, np.max(clean_time), step=true_per)
+
+                if len(true_transits)<1: 
+                    true_transits=None 
+
+                validation_path = plot_dir+'PER='+str(round(true_per,3))+'_'+tic_id+'.png'
+
+                tls_validation_mosaic(tic_id=tic_id, data=data_path, tls_model=tls_model, tls_results=tls_results, plot_path=validation_path, false_alarms_dictionary=false_alarm_dict, true_transit_times=true_transits)        
             
             out_ids.append(tic_id)
             out_periods.append(tls_results.period)

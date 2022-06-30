@@ -1,3 +1,4 @@
+from ast import excepthandler
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt 
@@ -48,6 +49,7 @@ def high_sde_poor_predictions(true:str='./routines/simulations/first_bulk_inject
 
     import shutil 
     from tqdm import tqdm 
+    import os 
 
     true_df = pd.read_csv(true)       
     predicted_df = pd.read_csv(predicted)
@@ -61,13 +63,18 @@ def high_sde_poor_predictions(true:str='./routines/simulations/first_bulk_inject
     mask = np.where(predicted_df['TLS_PER']<2)
     merged = merged.iloc[mask]
 
-    merged.to_csv('./personal_epochs/thaddaeus/june/topical/detrend_experimentation/injection_analysis/RJ=1_to_look_into.csv', index=False)
+    merged.to_csv('./personal_epochs/thaddaeus/june/topical/detrend_experimentation/injection_analysis/RJ=0.5_to_look_into.csv', index=False)
 
-    for tic_id in tqdm(merged['TIC_ID']): 
-        old_plot = './routines/simulations/first_bulk_injected/plots/'+tic_id+'.png'
-        new_plot = './personal_epochs/thaddaeus/june/topical/detrend_experimentation/injection_analysis/currently_looking_at/'+tic_id+'.png'
+    old_dir = './routines/simulations/first_bulk_injected/plots/'
+    extant_plots = os.listdir(old_dir)
+    for plot in tqdm(extant_plots): 
+        
+        for tic_id in merged['TIC_ID']: 
+            if plot.split()
+
+        new_dir = './personal_epochs/thaddaeus/june/topical/detrend_experimentation/injection_analysis/currently_looking_at_R=0.5J/'
         try: 
-            shutil.copyfile(old_plot, new_plot)
+            shutil.copyfile(old_dir+plot, new_dir+plot)
         except: 
             continue 
         

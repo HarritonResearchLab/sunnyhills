@@ -77,4 +77,4 @@ def check_lombscargle(tic_id, tls_results, download_log):
     if 0.99<tls_results.period/top_ls_period<1.01: 
         ls_flag = True 
 
-    return {'ls_top_period_test':ls_flag}
+    return {'ls_top_period_test':ls_flag, 'ls_period':top_ls_period}

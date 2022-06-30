@@ -245,7 +245,8 @@ def bls_validation_mosaic(tic_id:str, clean_time:np.array, clean_flux:np.array,
 
 def tls_validation_mosaic(tic_id:str, data, tls_model, tls_results, false_alarms_dictionary:dict,
                           plot_dir:str=None, plot_path:str=None, dpi:int=150, clean_time=None, clean_flux=None, 
-                          trend_time=None, trend_flux=None, raw_time=None, raw_flux=None, plot_type:str='pdf', even_odd_option:str='separate'): 
+                          trend_time=None, trend_flux=None, raw_time=None, raw_flux=None, plot_type:str='pdf', 
+                          even_odd_option:str='separate', true_transit_times:np.array=None): 
 
     '''
     arguments: 
@@ -372,8 +373,10 @@ def tls_validation_mosaic(tic_id:str, data, tls_model, tls_results, false_alarms
         #          tls_results.model_lightcurve_model[0:break_index], 
         #          alpha=0.5, color='red', zorder=1)
 
-        left_transits = transit_times[transit_times<=np.max(clean_time[0:first_clean_break])]
-        right_transits = transit_times[transit_times>=np.min(clean_time[last_clean_break:])]
+        max_left = np.max(clean_time[0:first_clean_break])
+        min_right = np.min(clean_time[last_clean_break:])
+        left_transits = transit_times[transit_times<=max_left]
+        right_transits = transit_times[transit_times>=min_right]
 
         ax1a.set(ylabel='Detrended Flux')
         ax1a.set_title('TIC: '+str(tic_id).replace('_','')+' PERIOD: '+str(round(tls_results.period, 5)), size='xx-large')
@@ -385,6 +388,18 @@ def tls_validation_mosaic(tic_id:str, data, tls_model, tls_results, false_alarms
 
         for right in right_transits: 
             ax1b.axvline(x=right, color='red', alpha=0.4, lw=2)
+
+        if true_transit_times is not None: 
+            left_true_transits = true_transit_times[true_transit_times<=max_left]
+            right_true_transits = true_transit_times[true_transit_times>=min_right]
+
+            for left in left_true_transits: 
+                ax1a.axvline(x=left, color='orange', alpha=0.4, lw=2)
+
+            for right in right_true_transits: 
+                ax1b.axvline(x=right, color='orange', alpha=0.4, lw=2)
+
+
 
         '''
         ax1b.plot(tls_results.model_lightcurve_time[last_break:], 
@@ -423,6 +438,10 @@ def tls_validation_mosaic(tic_id:str, data, tls_model, tls_results, false_alarms
         ax1.set(ylabel='Detrended Flux')
         ax1.set_title('TIC: '+str(tic_id).replace('_','')+' PERIOD: '+str(round(tls_results.period, 5)), size='xx-large')
         
+        if true_transit_times is not None: 
+            for true_transit_time in true_transit_times: 
+                ax1.axvline(x=true_transit_time, color='orange', alpha=0.4, lw=2)
+
         # raw and trend light curve # 
         ax2.scatter(raw_time, raw_flux, s=1)
         ax2.plot(trend_time, trend_flux, lw=0.5, c='r')
@@ -535,8 +554,11 @@ def tls_validation_mosaic(tic_id:str, data, tls_model, tls_results, false_alarms
         plt.show()
         plt.clf()
         plt.close()
+    
     else: 
-        if plot_dir is not None: 
+        if plot_path is not None: 
+            plt.savefig(plot_path, dpi=dpi)
+        elif plot_dir is not None: 
             if plot_dir[-1]!='/': 
                 plot_dir += '/'
             
@@ -803,9 +825,7 @@ def ls_subplots(tic_id,plot_dir,time,flux, plot_type:str='pdf'):
         plot_path = plot_dir + tic_id + '.'+plot_type 
     else: 
         plot_path = plot_dir + tic_id + '.png'
-  
-
-    
+      
 def phased_aliase_plots(tic_id:str, time, flux, tls_results, plot_path:str, dpi=dpi):
     r'''   
 
