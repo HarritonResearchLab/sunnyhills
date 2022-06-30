@@ -775,34 +775,27 @@ def ls_subplots(tic_id,plot_dir,time,flux, plot_type:str='pdf'):
     else: 
         plot_path = plot_dir + tic_id + '.png'
   
-def generate_cutout(tic_id:str='',large_size:int=20,small_size:int=10,desired_sector:int=None,plot_dir:str='routines/alpha_tls/plots', plot_type:str='pdf'):
+def generate_cutout(tic_id:str='',large_size:int=20,small_size:int=10,plot_dir:str='routines/alpha_tls/plots'):
     import matplotlib.pyplot as plt
     import lightkurve as lk
     from matplotlib.patches import Rectangle
     import os
     import eleanor
+  
+    if plot_dir[-1]!='/':
+          plot_dir +='/'
 
-    data = eleanor.Source(tic=int(tic_id.replace('TIC', ''))) 
+    print(tic_id.replace('_',' '))
+
+    data = eleanor.Source(tic=int(tic_id.replace('TIC ',''))) 
     data = eleanor.TargetData(data)
     vis = eleanor.Visualize(data)
-    result = lk.search_tesscut(tic_id)
+    result = lk.search_targetpixelfile(tic_id, mission="TESS")
+    large_tpf = result[0].download(quality_bitmask='default',author='SPOC')
     print(tic_id.replace('_',' '))
-    if desired_sector != None:
-        for sector, index in zip(result.table['mission'],result.table['#']):
-            sector = sector.replace('TESS Sector ','') 
-            if desired_sector == int(sector):
-                large_tpf = result[index].download(cutout_size=large_size)
-                break
-    else:
-        large_tpf = result.download(cutout_size=large_size)
                
     fig, ax = plt.subplots()
-    aperture_mask = large_tpf.create_threshold_mask(threshold=10)
     ax = vis.plot_gaia_overlay(int(tic_id.replace('TIC ','')),large_tpf,magnitude_limit=15)
-    large_tpf.plot(ax=ax,aperture_mask=aperture_mask,mask_color='white')
-    
-    if plot_type == 'pdf' or plot_type == 'png': 
-        plt.savefig(plot_dir+tic_id+plot_type)
-    else: 
-        plt.savefig(plot_dir+tic_id+'.png')
+    large_tpf.plot(ax=ax,aperture_mask=large_tpf.pipeline_mask,mask_color='white')
+    plt.savefig(plot_dir+tic_id+'.pdf')
     
