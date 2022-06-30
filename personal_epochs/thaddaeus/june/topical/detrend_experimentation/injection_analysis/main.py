@@ -44,8 +44,8 @@ def initial_plot(true:str='./routines/simulations/second_bulk_injected/injection
 
 #initial_plot()
 
-def high_sde_poor_predictions(true:str='./routines/simulations/first_bulk_injected/injection_key.csv', 
-                              predicted:str='./routines/simulations/first_bulk_injected/results.csv'): 
+def high_sde_poor_predictions(true:str='./routines/simulations/second_bulk_injected/injection_key.csv', 
+                              predicted:str='./routines/simulations/second_bulk_injected/results.csv'): 
 
     import shutil 
     from tqdm import tqdm 
@@ -63,20 +63,19 @@ def high_sde_poor_predictions(true:str='./routines/simulations/first_bulk_inject
     mask = np.where(predicted_df['TLS_PER']<2)
     merged = merged.iloc[mask]
 
-    merged.to_csv('./personal_epochs/thaddaeus/june/topical/detrend_experimentation/injection_analysis/RJ=0.5_to_look_into.csv', index=False)
+    merged.to_csv('./personal_epochs/thaddaeus/june/topical/detrend_experimentation/injection_analysis/RJ=1.0_to_look_into.csv', index=False)
 
-    old_dir = './routines/simulations/first_bulk_injected/plots/'
+    old_dir = './routines/simulations/second_bulk_injected/plots/'
     extant_plots = os.listdir(old_dir)
     for plot in tqdm(extant_plots): 
         
         for tic_id in merged['TIC_ID']: 
-            if plot.split()
-
-        new_dir = './personal_epochs/thaddaeus/june/topical/detrend_experimentation/injection_analysis/currently_looking_at_R=0.5J/'
-        try: 
-            shutil.copyfile(old_dir+plot, new_dir+plot)
-        except: 
-            continue 
+            if 'TIC_'+plot.split('.png')[0].split('_TIC_')[-1] == tic_id: 
+                new_dir = './personal_epochs/thaddaeus/june/topical/detrend_experimentation/injection_analysis/currently_looking_at_R=1.0J/'
+                try: 
+                    shutil.copyfile(old_dir+plot, new_dir+plot)
+                except: 
+                    continue 
         
 high_sde_poor_predictions()
 

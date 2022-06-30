@@ -273,6 +273,7 @@ def tls_alpha_routine(key:str, data_dir:str, download_log:str=None, output_log:s
     
     # merge_plots(tic_id,plot_dir)
 
+r'''
 data_dir = './routines/real/alpha_tls/data/two_min_lightcurves/'
 download_log = './routines/real/alpha_tls/data/download_log.csv'
 key = './data/current/current_key.csv'
@@ -282,3 +283,31 @@ output_log = './routines/real/alpha_tls/output_log.txt'
 # NEED TO IMPLEMENT HARMONICS DIR 
 
 tls_alpha_routine(key=['TIC_316295827'], data_dir=data_dir, plot_dir=plot_dir, cache_dir=cache_dir, download_log=download_log, output_log=output_log)
+'''
+
+def tls_beta_routine(key:str, working_dir:str): 
+    r'''
+    arguments 
+    ---------
+    key : str
+        Path to "key" file that has column called "TIC_ID" for doing everything 
+    
+    working_dir : str
+        Path to working directory. All sub directories (such as data, plots, etc.) will be handled inside this function internally. 
+    '''
+
+    import os 
+
+    if working_dir[-1]!='/': 
+        working_dir+='/'
+
+    raw_data_dir = working_dir +'/data/raw_data/'
+
+    # make sure all dirs exist ... if not, make them 
+
+    for dir in [raw_data_dir]: 
+        full_dir = working_dir+dir 
+        if not os.path.exists(full_dir): 
+            os.makedir(full_dir)
+
+    # Download raw data first!   

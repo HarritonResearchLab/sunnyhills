@@ -73,8 +73,16 @@ def check_lombscargle(tic_id, tls_results, download_log):
     if len(top_ls_period)>0: 
         top_ls_period = top_ls_period[0]   
 
+    first_alias_ls_flag = False
+
     ls_flag = False
     if 0.99<tls_results.period/top_ls_period<1.01: 
         ls_flag = True 
+    
+    elif 0.99<(2*tls_results.period)/top_ls_period<1.01: 
+        first_alias_ls_flag = True 
 
-    return {'ls_top_period_test':ls_flag, 'ls_period':top_ls_period}
+    elif 0.99<(0.5*tls_results.period)/top_ls_period<1.01: 
+        first_alias_ls_flag = True 
+
+    return {'ls_top_period_test':ls_flag, 'ls_period':top_ls_period, 'n=2_harmonic_test':first_alias_ls_flag}

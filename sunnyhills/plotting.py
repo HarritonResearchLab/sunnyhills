@@ -558,6 +558,8 @@ def tls_validation_mosaic(tic_id:str, data, tls_model, tls_results, false_alarms
     else: 
         if plot_path is not None: 
             plt.savefig(plot_path, dpi=dpi)
+            plt.clf()
+            plt.close()
         elif plot_dir is not None: 
             if plot_dir[-1]!='/': 
                 plot_dir += '/'
