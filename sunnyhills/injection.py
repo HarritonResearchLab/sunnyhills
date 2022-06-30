@@ -176,6 +176,8 @@ def recover_injected_routine(injection_key:str, data_dir:str, plot_dir:str, repo
     import os 
     import pickle 
 
+    download_log = './routines/real/alpha_tls/data/download_log.csv'
+
     key = pd.read_csv(injection_key)
 
     tic_ids = np.array(key['TIC_ID'])
@@ -209,7 +211,15 @@ def recover_injected_routine(injection_key:str, data_dir:str, plot_dir:str, repo
             if os.path.exists(plot_dir+tic_id+'.png'): 
                 pass 
             else: 
-                tls_validation_mosaic(tic_id=tic_id, data=data_path, tls_model=tls_model, tls_results=tls_results, plot_dir=plot_dir, plot_type='png')        
+
+                from sunnyhills.false_alarm_checks import check_lombscargle, tls_even_odd
+
+                false_alarm_dict = {}
+
+                false_alarm_dict.update(check_lombscargle(tic_id, tls_results, download_log))
+                false_alarm_dict.update(tls_even_odd(tls_results))
+
+                tls_validation_mosaic(tic_id=tic_id, data=data_path, tls_model=tls_model, tls_results=tls_results, plot_dir=plot_dir, plot_type='png', false_alarms_dictionary=false_alarm_dict)        
             
             out_ids.append(tic_id)
             out_periods.append(tls_results.period)
@@ -221,9 +231,9 @@ def recover_injected_routine(injection_key:str, data_dir:str, plot_dir:str, repo
     report = pd.DataFrame(np.array([out_ids, out_periods, out_SDEs]).T, columns=['TIC_ID', 'PER', 'SDE'])
     report.to_csv(report_path, index=False)
 
-key = './routines/simulations/second_bulk_injected/injection_key.csv'
-data_dir = './routines/simulations/second_bulk_injected/data/'
-plots_dir = './routines/simulations/second_bulk_injected/plots/'
-report_path = './routines/simulations/second_bulk_injected/results.csv'
-cache_dir = './routines/simulations/second_bulk_injected/cache_dir/'
+key = './routines/simulations/first_bulk_injected/injection_key.csv'
+data_dir = './routines/simulations/first_bulk_injected/data/'
+plots_dir = './routines/simulations/first_bulk_injected/plots/'
+report_path = './routines/simulations/first_bulk_injected/results.csv'
+cache_dir = './routines/simulations/first_bulk_injected/cache_dir/'
 recover_injected_routine(injection_key=key, data_dir=data_dir, plot_dir=plots_dir, report_path=report_path, cache_dir=cache_dir)

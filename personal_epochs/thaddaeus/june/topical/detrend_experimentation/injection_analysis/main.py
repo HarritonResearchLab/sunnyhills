@@ -45,7 +45,10 @@ initial_plot()
 
 def high_sde_poor_predictions(true:str='./routines/simulations/second_bulk_injected/injection_key.csv', 
                               predicted:str='./routines/simulations/second_bulk_injected/results.csv'): 
-    pass 
+
+    import shutil 
+    from tqdm import tqdm 
+
     true_df = pd.read_csv(true)       
     predicted_df = pd.read_csv(predicted)
 
@@ -60,5 +63,13 @@ def high_sde_poor_predictions(true:str='./routines/simulations/second_bulk_injec
 
     merged.to_csv('./personal_epochs/thaddaeus/june/topical/detrend_experimentation/injection_analysis/RJ=1_to_look_into.csv', index=False)
 
+    for tic_id in tqdm(merged['TIC_ID']): 
+        old_plot = './routines/simulations/first_bulk_injected/plots/'+tic_id+'.png'
+        new_plot = './personal_epochs/thaddaeus/june/topical/detrend_experimentation/injection_analysis/currently_looking_at/'+tic_id+'.png'
+        try: 
+            shutil.copyfile(old_plot, new_plot)
+        except: 
+            continue 
+        
 high_sde_poor_predictions()
 

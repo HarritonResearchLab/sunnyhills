@@ -21,7 +21,9 @@ from astropy.table import Table
 import numpy as np
 import warnings
 
-from sunnyhills.misc import phase, rebin
+from sunnyhills.misc import phase
+
+dpi = 150
 
 plt.style.use('https://gist.githubusercontent.com/thissop/44b6f15f8f65533e3908c2d2cdf1c362/raw/fab353d758a3f7b8ed11891e27ae4492a3c1b559/science.mplstyle')
 
@@ -241,7 +243,7 @@ def bls_validation_mosaic(tic_id:str, clean_time:np.array, clean_flux:np.array,
     elif plot_path is not None: 
         plt.savefig(plot_path, dpi=200)
 
-def tls_validation_mosaic(tic_id:str, data, tls_model, tls_results,
+def tls_validation_mosaic(tic_id:str, data, tls_model, tls_results, false_alarms_dictionary:dict,
                           plot_dir:str=None, plot_path:str=None, dpi:int=150, clean_time=None, clean_flux=None, 
                           trend_time=None, trend_flux=None, raw_time=None, raw_flux=None, plot_type:str='pdf', even_odd_option:str='separate'): 
 
@@ -265,6 +267,8 @@ def tls_validation_mosaic(tic_id:str, data, tls_model, tls_results,
     -----
 
         if data is defined, you don't need to define all the individual arrays! I just added the option to do the individual arrays for some testing I was doing at one point 
+
+        false_alarms_dictionary: dictionary of false_alarm_name : False alarm value items from different false alarm tests. 
 
         Also, if plot_type is pdf, it will save the file as pdf, otherwise if it's png the plot will get saved as png
 
@@ -469,7 +473,7 @@ def tls_validation_mosaic(tic_id:str, data, tls_model, tls_results,
     
     if even_odd_option == 'separate': 
         even_transit_time_folded = normalize(even_transit_time_folded, output_range=[1,2])
-
+        # I'm really proud of this because I was having so many problems fixing left right ... sometimes they were negative, sometimes positive, sometimes mixed...sometimes adding the 1.1*max(time) variable would make them super spead out, etc. 
         odd_transit_time_folded = normalize(odd_transit_time_folded)
 
     ax5.scatter(even_transit_time_folded, even_transit_flux, label='Even')
@@ -503,14 +507,24 @@ def tls_validation_mosaic(tic_id:str, data, tls_model, tls_results,
 
     values+=simbad_values
 
+    if false_alarms_dictionary is not None: 
+        labels += list(false_alarms_dictionary.keys())
+        values += list(false_alarms_dictionary.values())
+
     text_info = []
     for label, value in zip(labels, values):
         if type(value) is str and '|' in value: 
             value = '\n'+value.replace('|','\n')
-        if type(value) is float or type(value) is int: 
-            value = str(round(value, 3))
-        else: 
+        
+        elif type(value) is bool: 
             value = str(value)
+        
+        else: 
+            try: 
+                value = str(round(value, 3))
+            except: 
+                value = str(value) 
+            
         text_info.append(label+'='+value)
 
     ax7.text(x=0.1, y=0.5, s='\n\n'.join(str(i).replace('_',' ') for i in text_info), fontsize='xx-large', va='center', transform=ax7.transAxes)
@@ -735,7 +749,7 @@ def transit_plots(export_dir:str,tic_id:str,time,flux,results, plot_type:str='pd
     f,axis = plt.subplots(round(len(results.transit_times)/2),2,figsize=(20,7))
     f.suptitle(tic_id.replace('_',' '))
     col = 0
-    row = 0
+    row = 0 
     in_transit = transit_mask(time,results.period,results.duration,results.T0)
     if len(results.transit_times)<3:
       for transit, depth in zip(results.transit_times,results.transit_depths): 
@@ -821,3 +835,107 @@ def generate_cutout(tic_id:str='',large_size:int=20,small_size:int=10,desired_se
     else: 
         plt.savefig(plot_dir+tic_id+'.png')
     
+def phased_aliase_plots(tic_id:str, time, flux, tls_results, plot_path:str, dpi=dpi):
+    r'''   
+
+    arguments
+    ---------
+
+    notes
+    -----
+
+    harmonic_n: phase folded diagrams for per/2 and 2*per will be plotted
+    n_additional: the number if additional highest SDE peak periods to plot, in addition to those plotted from harmonic_n
+
+    only plots per/2 alias if per/2 > 0.5 
+    only plots 2*per alias if 2*per < 15  
+    ''' 
+
+    from scipy.stats import binned_statistic
+
+    harmonic_n=2
+    n_additional=2
+
+    t0 = tls_results.T0 
+    depth = tls_results.depth 
+    per = tls_results.period 
+ 
+    powers = tls_results.power
+    sort_idx = np.argsort(powers) 
+    periods = tls_results.periods[sort_idx]
+    powers = powers[sort_idx]
+
+    def return_index(period, periods=periods): 
+        return np.argmin(np.abs(periods-period))
+
+    subharmonic = per/2
+    first_harmonic = 2*per 
+    harmonics = [subharmonic, first_harmonic]
+
+    if subharmonic < 0.5: 
+        subharmonic = None 
+
+    if first_harmonic > 15: 
+        first_harmonic = None 
+    
+    r'''
+    counter = 0
+    third_and_fourth = [] 
+    for i in periods: 
+        include = True
+        if counter<2:  
+            for j in harmonics:
+                quotient = i/j 
+                if quotient < 1.01 and quotient>0.99: 
+                    include = False
+
+            if include: 
+                if len(third_and_fourth)>0: 
+                    second_quotient = i/third_and_fourth[0]
+                    if second_quotient > 1.01 or second_quotient>0.99: 
+                        third_and_fourth.append(i)
+                        counter+=1 
+                else: 
+                    third_and_fourth.append(i)
+                    counter+=1
+
+    third_period = third_and_fourth[0] # third_NH = highest period after fundamental that is not sub or first harmonic (hence NH = Not Harmonic)
+    fourth_period = third_and_fourth[1] # fourth_NH = second highest period after fundamental that is not sub or first harmonic (hence NH = Not Harmonic)
+                        
+    fig, axs = plt.subplots(2,2, figsize=(7,7))
+
+    dict = {'subharmonic':subharmonic, 
+            'first_harmonic':first_harmonic, 
+            'third_NH':third_period, 
+            'fourth_NH':fourth_period}
+    '''
+
+    # fix above for later!! 
+
+    dict = {'subharmonic':subharmonic, 'first_harmonic':first_harmonic}
+
+    fig, axs = plt.subplots(1,2, figsize=(7.5, 3.5))
+
+    for per_name, ax in zip(dict, axs.flatten()): 
+        per = dict[per_name]
+        if per is not None: 
+            idx = return_index(per)
+
+            phased_time, phased_flux = phase(time=time, flux=flux, period=per, t0=t0, model_name='TLS')
+            ax.scatter(phased_time, phased_flux, s=1, color='grey')
+
+            binned_time = binned_statistic(phased_time, phased_time, bins=20)[0]
+            binned_flux = binned_statistic(phased_time, phased_flux, bins=20)[0]
+
+            ax.scatter(binned_time, binned_flux, s=35, c='orange', edgecolor='black')
+            
+            title_str = per_name+' (p='+str(round(per,2))+'; SDE='+str(round(powers[idx], 2))+')'
+            ax.set(title=title_str, xlabel='Folded Time', ylabel='Flux')
+
+    plt.subplots_adjust(wspace=0.35)
+
+    if plot_path is not None: 
+        plt.savefig(plot_path, dpi=dpi)
+
+
+

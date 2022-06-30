@@ -20,38 +20,6 @@ def skycoord_to_tic(ra,dec):
     tic_id = mast.tic_from_coords((ra,dec))
     return tic_id
 
-def get_best_period(periodogram):
-  import numpy as np
-  return periodogram.period[np.argmax(periodogram.power)]
-
-def rebin(x, y, num_bins:int=20): 
-    '''
-    arguments: 
-        x: time values 
-        y: corresponding flux values
-        num_bins: number of output points; default is 20
-    returns: 
-        x_rebinned: rebinned x 
-        y_rebinned: rebinned y 
-    '''
-    success = True
-    if len(x)>0: 
-        step = int(len(x)/num_bins)
-
-        ranges = []
-
-        for i in range(0, len(x)-step, step): 
-            ranges.append([i,i+step])
-
-        x_rebinned = np.array([np.mean(x[range[0]:range[1]]) for range in ranges])
-        y_rebinned = np.array([np.mean(y[range[0]:range[1]]) for range in ranges])
-
-    else: 
-        x_rebinned, y_rebinned = (x,y)
-        success=False
-
-    return x_rebinned, y_rebinned, success 
-
 def phase(time, flux, period:float, t0:float=None, duration:float=None, bls_model=None, model_name:str=None, tls_results=None, fraction:int=0.2): 
         '''
         Arguments: 
@@ -101,8 +69,7 @@ def phase(time, flux, period:float, t0:float=None, duration:float=None, bls_mode
 
                 return_list.append([t_fit, y_fit])
 
-        return np.array(return_list, dtype=object).flatten()
-
+        return return_list
 
 ## MISC ##
 
@@ -188,7 +155,7 @@ def even_odd_phase_folded(time, flux, results):
 
     return np.abs(even_transit_time_folded), even_transit_flux, np.abs(odd_transit_time_folded), odd_transit_flux, all_even_indices_in_transit, all_odd_indices_in_transit
 
-def lombscargle(time,flux,flux_err:np.array=None,min_per:float=.1,max_per:int=15,calc_fap:bool=True,probabilities:list=[.1,.05,.01]):
+def lombscargle(time,flux,flux_err:np.array=None,min_per:float=.1,max_per:int=15,calc_fap:bool=True,probabilities:list=[.1,.05,.01], n_terms:int=2):
     import numpy as np
     from astropy.timeseries import LombScargle
     
@@ -196,8 +163,8 @@ def lombscargle(time,flux,flux_err:np.array=None,min_per:float=.1,max_per:int=15
     best_period_power = 0
 
     fap_levels = None
-    periodogram = LombScargle(time,flux,flux_err)
-    frequencies,powers = periodogram.autopower(minimum_frequency=1/max_per, maximum_frequency=1/min_per)
+    periodogram = LombScargle(time,flux,flux_err, nterms=n_terms)
+    frequencies,powers = periodogram.autopower(minimum_frequency=1/max_per, maximum_frequency=1/min_per, method='fastchi2')
 
     periods = 1/frequencies
 

@@ -505,8 +505,6 @@ def query_simbad(tic_id:str):
 
     otypes_key = pd.read_csv('./data/current/catalog_info/simbad_otypes_key.txt')
     otypes_dict = dict(zip(otypes_key['otype'], otypes_key['new_label']))
-    
-    results_header.append('sp_type') 
 
     try: 
         
