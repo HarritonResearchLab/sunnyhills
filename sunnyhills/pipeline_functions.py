@@ -1,7 +1,6 @@
 # cSpell:ignore lightkurve, biweight, cval, dtrdict, detrended
 # cSpell: disable
 
-from tkinter.ttk import Progressbar
 import numpy as np
 
 ## DATA PROCESSING RELATED ##
@@ -28,6 +27,7 @@ def download(
     import os 
     import pickle 
     import warnings
+    import pandas as pd
 
     # get the light curve
     data_found = False
@@ -71,7 +71,7 @@ def download(
         for lc in raw_list:
           downloaded_sectors+=str(lc.sector)+','
           sector_start+=str(lc.time[0])+','
-          sector_stop += str(lc.time[-1])+','
+          sector_stop += str(lc.time[-1])+','    
         
         if len(raw_list) == 0: 
             data_found = False 
@@ -297,7 +297,7 @@ def download_and_preprocess(
     else: 
         lc_df, counts = (None, None)
     
-    return lc_df, counts 
+    return lc_df, counts,sectors,start,stop
 
 def remove_flares(time, flux, flux_err=np.array([]), sigma:int=3): 
     ''' 
@@ -419,6 +419,7 @@ def download_pipeline(tic_ids:str, download_dir:str, download_log:str):
     cols += ['num_sectors']
 
     cols += ['OTYPES', 'SP_TYPE', 'Main OTYPE']
+    cols += ['DOWNLOADED_SECTORS', 'SECTOR_START', 'SECTOR_STOP']
 
     if not os.path.exists(download_log): 
         with open(download_log, 'w') as f:
@@ -438,7 +439,7 @@ def download_pipeline(tic_ids:str, download_dir:str, download_log:str):
                       len(lc_df['raw_time'])]
 
         else: 
-            lc_df, counts = download_and_preprocess(tic_id, download_dir)
+            lc_df, counts,sector,start,stop = download_and_preprocess(tic_id, download_dir)
 
         # counts = [clean_num_obs, no_flare_num_obs, raw_num_obs]
 
@@ -484,6 +485,9 @@ def download_pipeline(tic_ids:str, download_dir:str, download_log:str):
         num_sectors = len(start_indices)+1
         
         line_list.append(num_sectors)
+        line_list.append(sector)
+        line_list.append(start)
+        line_list.append(stop)
 
         line = ','.join([str(i) for i in line_list])+'\n'
         lines.append(line)
