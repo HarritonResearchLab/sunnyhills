@@ -41,10 +41,10 @@ def initial_plot(true:str='./routines/simulations/second_bulk_injected/injection
 
     plt.savefig('./personal_epochs/thaddaeus/june/topical/detrend_experimentation/injection_analysis/RJ=1_results.png')
 
-initial_plot()
+#initial_plot()
 
-def high_sde_poor_predictions(true:str='./routines/simulations/second_bulk_injected/injection_key.csv', 
-                              predicted:str='./routines/simulations/second_bulk_injected/results.csv'): 
+def high_sde_poor_predictions(true:str='./routines/simulations/first_bulk_injected/injection_key.csv', 
+                              predicted:str='./routines/simulations/first_bulk_injected/results.csv'): 
 
     import shutil 
     from tqdm import tqdm 
