@@ -1,0 +1,10 @@
+'''
+NOTES:
+Both tables overlap this means that you need to build in a elif statement on the first try loop because its possible to have a gaia id that doesnt have an
+EOM of -1 in table2 but has an EOM -1 in table1....
+Additionally all stars can be referenced for their name with TLC but the TLC is negative -1 for some stars in the first table.
+int(match_id1)]=='-1' and 
+EOM_table2[int(match_id2)]=='-1' and
+
+int(TLC_table1[match_id1])
+'''

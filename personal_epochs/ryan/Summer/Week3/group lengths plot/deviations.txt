@@ -1,0 +1,7 @@
+90th percentile:31906
+95th percentile:35433
+99th percentile:51485.5
+99.9 percentile:82578.2
+99.99 percentile:125232.29699999
+
+Standard deviation:11412.555863643709
