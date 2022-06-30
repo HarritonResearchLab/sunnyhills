@@ -1,4 +1,5 @@
 import numpy as np
+import pandas as pd 
 
 def gaia_to_tic(gaia_ids):
     from astrobase.services.identifiers import gaiadr2_to_tic
@@ -334,17 +335,17 @@ def return_kerr_cluster(gaiaid: str):
         x=TLC_table1[match_id1]
         cluster_name=names[int(x)]
         breakcheck='elif_loop1'
-###########################################################################################################
+    ###################################################################################################
     elif(EOM_table2[match_id2].any()=='-1' and TLC_table1[match_id1].any()=='-1'):
         cluster_name='Field Star'
         breakcheck='elif_loop2'
     elif(EOM_table1[match_id1].any()=='-1' and TLC_table1[match_id1].any()=='-1'):
         cluster_name='Field Star'
         breakcheck='elif_loop3'
-############################################################################################################
+    ########################################################################################################
     else:
         cluster_name='NOT FOUND'
         breakcheck='else_loop1'
         
-#can return and print breakcheck for debugging reasons...
+    #can return and print breakcheck for debugging reasons...
     return cluster_name
