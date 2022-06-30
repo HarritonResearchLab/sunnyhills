@@ -297,6 +297,9 @@ def tls_beta_routine(key:str, working_dir:str):
     '''
 
     import os 
+    import pandas as pd 
+
+    key = pd.read_csv(key)
 
     if working_dir[-1]!='/': 
         working_dir+='/'
@@ -310,4 +313,5 @@ def tls_beta_routine(key:str, working_dir:str):
         if not os.path.exists(full_dir): 
             os.makedir(full_dir)
 
-    # Download raw data first!   
+    # Download raw data only first!   
+
