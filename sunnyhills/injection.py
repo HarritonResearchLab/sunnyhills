@@ -182,6 +182,8 @@ def recover_injected_routine(injection_key:str, data_dir:str, plot_dir:str, repo
 
     tic_ids = np.array(key['TIC_ID'])
 
+    true_periods = np.array(key[''])
+
     out_ids = []
     out_periods = []
     out_SDEs = []
@@ -218,6 +220,8 @@ def recover_injected_routine(injection_key:str, data_dir:str, plot_dir:str, repo
 
                 false_alarm_dict.update(check_lombscargle(tic_id, tls_results, download_log))
                 false_alarm_dict.update(tls_even_odd(tls_results))
+
+                true_per = 
 
                 tls_validation_mosaic(tic_id=tic_id, data=data_path, tls_model=tls_model, tls_results=tls_results, plot_dir=plot_dir, plot_type='png', false_alarms_dictionary=false_alarm_dict)        
             

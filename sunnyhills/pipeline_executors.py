@@ -281,4 +281,4 @@ cache_dir = './routines/real/alpha_tls/cache_dir/'
 output_log = './routines/real/alpha_tls/output_log.txt'
 # NEED TO IMPLEMENT HARMONICS DIR 
 
-tls_alpha_routine(key=key, data_dir=data_dir, plot_dir=plot_dir, cache_dir=cache_dir, download_log=download_log, output_log=output_log)
+tls_alpha_routine(key=['TIC_316295827'], data_dir=data_dir, plot_dir=plot_dir, cache_dir=cache_dir, download_log=download_log, output_log=output_log)
