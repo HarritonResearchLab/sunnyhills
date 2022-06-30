@@ -65,6 +65,14 @@ def download(
 
         raw_list = [_l for _l in raw_list if _l.meta['FLUX_ORIGIN']=='pdcsap_flux']
         
+        downloaded_sectors = ''
+        sector_start= ''
+        sector_stop = ''
+        for lc in raw_list:
+          downloaded_sectors+=str(lc.sector)+','
+          sector_start+=str(lc.time[0])+','
+          sector_stop += str(lc.time[-1])+','
+        
         if len(raw_list) == 0: 
             data_found = False 
 
@@ -267,7 +275,7 @@ def download_and_preprocess(
     import pandas as pd
     import warnings 
 
-    raw_list, data_found = download(ticstr=ticstr, logdir=logdir) 
+    raw_list, data_found,sectors,start,stop = download(ticstr=ticstr, logdir=logdir) 
 
     if data_found: 
         lc_df, counts = preprocess(raw_list=raw_list, ticstr=ticstr, outdir=outdir, dtrdict=dtrdict)
