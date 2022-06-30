@@ -120,7 +120,7 @@ def bls_alpha_routine(key:str, data_dir:str, download_log_file:str, output_log_f
             line = [logged_ids[index]] + list(results_dicts[index].values())+list(flag_dicts[index].values())
             f.write(','.join([str(i) for i in line])+'\n')
 
-def beta_routine(key:str, data_dir:str, download_log:str=None, output_log:str=None, plot_dir:str=None, 
+def tls_alpha_routine(key:str, data_dir:str, download_log:str=None, output_log:str=None, plot_dir:str=None, 
                  tic_ids=None, cache_dir:str='/ar1/PROJ/fjuhsd/shared/github/sunnyhills/routines/alpha_tls/cache_dir'):
     
     r'''
@@ -133,7 +133,7 @@ def beta_routine(key:str, data_dir:str, download_log:str=None, output_log:str=No
         - It then saves tls run information with false alarm checks/info to output_log
     '''
     from sunnyhills.plotting import tls_validation_mosaic, plot_detrend_validation	
-    from sunnyhills.plotting import ls_subplots, transit_plots
+    from sunnyhills.plotting import ls_subplots, transit_plots, phased_aliase_plots
     from sunnyhills.false_alarm_checks import tls_even_odd, transit_outliers_fap_test, check_lombscargle	
     from sunnyhills.pipeline_functions import download_pipeline, run_tls
     import numpy as np
@@ -156,11 +156,12 @@ def beta_routine(key:str, data_dir:str, download_log:str=None, output_log:str=No
     ls_subplots_dir = plot_dir+'ls_subplots/'
     tls_validation_dir = plot_dir+'tls_validation/'
     transits_dir = plot_dir+'individual_transits/'
+    harmonics_dir = plot_dir + 'harmonics_dir/'
     cutout_dir = plot_dir+'cutouts/'
     
     combined_dir = plot_dir+'combined_plots/'
 
-    plotting_dirs = [detrend_plot_dir, ls_subplots_dir, tls_validation_dir, transits_dir]
+    plotting_dirs = [detrend_plot_dir, ls_subplots_dir, tls_validation_dir, transits_dir, harmonics_dir, cutout_dir]
     for dir in plotting_dirs: 
         if not os.path.exists(dir): 
             os.mkdir(dir)
@@ -188,6 +189,13 @@ def beta_routine(key:str, data_dir:str, download_log:str=None, output_log:str=No
     flags_appended_to_key = False  
     result_lines = []
 
+    def check_in_dir(tic_id, dir): 
+        import os 
+
+        names = [i.split('.')[0] for i in os.listdir(dir) if i!='.gitkeep']
+
+        return tic_id in names 
+
     for tic_id in tqdm(tic_ids):    
         try: 
             data_path = data_dir+tic_id+'.csv'
@@ -197,7 +205,7 @@ def beta_routine(key:str, data_dir:str, download_log:str=None, output_log:str=No
                 
                 clean_flux = np.array(data['clean_flux'])
 
-                if not os.path.exists(detrend_plot_dir+tic_id+'.png'): 
+                if not check_in_dir(tic_id, dir=detrend_plot_dir): 
                     plot_detrend_validation(tic_id=tic_id, data_dir=data_dir, plot_dir=detrend_plot_dir)
                     
                 if os.path.exists(cache_dir+tic_id+'_tls-model.pickle'): 
@@ -212,26 +220,34 @@ def beta_routine(key:str, data_dir:str, download_log:str=None, output_log:str=No
                 else: 
                     tls_results, tls_model = run_tls(tic_id=tic_id, time=clean_time, flux=clean_flux, cache_dir=cache_dir)
 
-                if not os.path.exists(tls_validation_dir+tic_id+'.png'): # look into pngs, maybe fix!
-                    tls_validation_mosaic(tic_id=tic_id, data=data_path, tls_results=tls_results, tls_model=tls_model, plot_dir=tls_validation_dir)
+                all_false_alarms_dict = {}
+
+                lombscargle_dict = check_lombscargle(tic_id=tic_id, tls_results=tls_results, download_log=download_log) 
+                even_odd_dict = tls_even_odd(tls_results=tls_results)
+                transit_outliers_dict = transit_outliers_fap_test(tls_results=tls_results)
+
+                for alarm in [lombscargle_dict, even_odd_dict, transit_outliers_dict]: 
+                    all_false_alarms_dict.update(alarm)
+
+                if not check_in_dir(tic_id, dir=tls_validation_dir):
+                    tls_validation_mosaic(tic_id=tic_id, data=data_path, tls_results=tls_results, tls_model=tls_model, plot_dir=tls_validation_dir, false_alarms_dictionary=all_false_alarms_dict)
                 
                 if not os.path.exists(transits_dir+tic_id+'.png'):
                     pass 
                     #transit_plots(transits_dir,tic_id,clean_time,clean_flux,tls_results)
 
-                if not os.path.exists(ls_subplots_dir+tic_id+'.png'):
+                if not check_in_dir(tic_id, dir=ls_subplots_dir):
                     if len(clean_time) > 10000:
                         ls_subplots(tic_id,ls_subplots_dir,clean_time[:10000],clean_flux[:10000])
                     else:
                         ls_subplots(tic_id,ls_subplots_dir,clean_time,clean_flux) 
 
+                if not check_in_dir(tic_id, dir=harmonics_dir):
+                    phased_aliase_plots(tic_id=tic_id, time=clean_time, flux=clean_flux, plot_path=harmonics_dir+tic_id+'.pdf')
+
                 result_list = [tic_id]+[tls_results[key] for key in tls_result_keys]
                 
                 # FALSE ALARM CHECKS # 
-
-                lombscargle_dict = check_lombscargle(tic_id=tic_id, tls_results=tls_results, download_log=download_log) 
-                even_odd_dict = tls_even_odd(tls_results=tls_results)
-                transit_outliers_dict = transit_outliers_fap_test(tls_results=tls_results)
                 
                 # ADDING RESULTS TO LIST # 
                 if not flags_appended_to_key: 
@@ -257,11 +273,12 @@ def beta_routine(key:str, data_dir:str, download_log:str=None, output_log:str=No
     
     # merge_plots(tic_id,plot_dir)
 
-data_dir = './routines/alpha_tls/data/two_min_lightcurves/'
-download_log = './routines/alpha_tls/data/download_log.csv'
+data_dir = './routines/real/alpha_tls/data/two_min_lightcurves/'
+download_log = './routines/real/alpha_tls/data/download_log.csv'
 key = './data/current/current_key.csv'
-plot_dir = './routines/alpha_tls/plots/'
-cache_dir = './routines/alpha_tls/cache_dir/' 
-output_log = './routines/alpha_tls/output_log.txt'
+plot_dir = './routines/real/alpha_tls/plots/'
+cache_dir = './routines/real/alpha_tls/cache_dir/' 
+output_log = './routines/real/alpha_tls/output_log.txt'
+# NEED TO IMPLEMENT HARMONICS DIR 
 
-beta_routine(key=key, data_dir=data_dir, plot_dir=plot_dir, cache_dir=cache_dir, download_log=download_log, output_log=output_log)
+tls_alpha_routine(key=key, data_dir=data_dir, plot_dir=plot_dir, cache_dir=cache_dir, download_log=download_log, output_log=output_log)

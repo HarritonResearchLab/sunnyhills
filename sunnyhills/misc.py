@@ -20,38 +20,6 @@ def skycoord_to_tic(ra,dec):
     tic_id = mast.tic_from_coords((ra,dec))
     return tic_id
 
-def get_best_period(periodogram):
-  import numpy as np
-  return periodogram.period[np.argmax(periodogram.power)]
-
-def rebin(x, y, num_bins:int=20): 
-    '''
-    arguments: 
-        x: time values 
-        y: corresponding flux values
-        num_bins: number of output points; default is 20
-    returns: 
-        x_rebinned: rebinned x 
-        y_rebinned: rebinned y 
-    '''
-    success = True
-    if len(x)>0: 
-        step = int(len(x)/num_bins)
-
-        ranges = []
-
-        for i in range(0, len(x)-step, step): 
-            ranges.append([i,i+step])
-
-        x_rebinned = np.array([np.mean(x[range[0]:range[1]]) for range in ranges])
-        y_rebinned = np.array([np.mean(y[range[0]:range[1]]) for range in ranges])
-
-    else: 
-        x_rebinned, y_rebinned = (x,y)
-        success=False
-
-    return x_rebinned, y_rebinned, success 
-
 def phase(time, flux, period:float, t0:float=None, duration:float=None, bls_model=None, model_name:str=None, tls_results=None, fraction:int=0.2): 
         '''
         Arguments: 
@@ -101,8 +69,7 @@ def phase(time, flux, period:float, t0:float=None, duration:float=None, bls_mode
 
                 return_list.append([t_fit, y_fit])
 
-        return np.array(return_list, dtype=object).flatten()
-
+        return return_list
 
 ## MISC ##
 
@@ -188,8 +155,7 @@ def even_odd_phase_folded(time, flux, results):
 
     return np.abs(even_transit_time_folded), even_transit_flux, np.abs(odd_transit_time_folded), odd_transit_flux, all_even_indices_in_transit, all_odd_indices_in_transit
 
-
-def lombscargle(time,flux,flux_err:np.array=None,min_per:float=.1,max_per:int=15,calc_fap:bool=True,probabilities:list=[.1,.05,.01]):
+def lombscargle(time,flux,flux_err:np.array=None,min_per:float=.1,max_per:int=15,calc_fap:bool=True,probabilities:list=[.1,.05,.01], n_terms:int=2):
     import numpy as np
     from astropy.timeseries import LombScargle
     
@@ -197,13 +163,13 @@ def lombscargle(time,flux,flux_err:np.array=None,min_per:float=.1,max_per:int=15
     best_period_power = 0
 
     fap_levels = None
-    periodogram = LombScargle(time,flux,flux_err)
-    frequencies,powers = periodogram.autopower(minimum_frequency=1/max_per, maximum_frequency=1/min_per)
+    periodogram = LombScargle(time,flux,flux_err, nterms=n_terms)
+    frequencies,powers = periodogram.autopower(minimum_frequency=1/max_per, maximum_frequency=1/min_per, method='fastchi2')
 
     periods = 1/frequencies
 
     if calc_fap:
-        fap_levels = periodogram.false_alarm_probability(probabilities)
+        fap_levels = periodogram.false_alarm_level(probabilities)
 
     sorted = np.argsort(powers)[::-1] #descending order
     powers = powers[sorted]
@@ -215,40 +181,13 @@ def lombscargle(time,flux,flux_err:np.array=None,min_per:float=.1,max_per:int=15
 
     return powers, periods, best_period, best_period_power, fap_levels
 
+def normalize(X:np.array, output_range:list=[0, 1]):
+    MIN = np.min(X)
+    MAX = np.max(X)
+    X_std = (X - MIN) / (MAX - MIN)
+    X_scaled = X_std * (output_range[1] - output_range[0]) + output_range[0]
 
-def inject(time, flux, per:np.random.uniform(0.75,15), rp:float=0.08, t0:float=None):
-    r'''
-    
-    Notes
-    -----
-        t0 : if t0 is not defined/None, then the algo will choose random time less than 0.1*max(time) to be t0
-    
-    '''
-    
-    import batman 
-    import random 
-
-    if t0 is None: 
-        percentiles = np.percentile(time, [0,10])
-        t0 = random.uniform(percentiles[0], percentiles[1])
-
-    params = batman.TransitParams()
-    params.t0 = t0                     #time of inferior conjunction
-    params.per = per                      #orbital period
-    params.rp = rp                   #planet radius (in units of stellar radii)
-    params.a = 15.                       #semi-major axis (in units of stellar radii)
-    params.inc = 87.                     #orbital inclination (in degrees)
-    params.ecc = 0.                      #eccentricity
-    params.w = 90.                       #longitude of periastron (in degrees)
-    params.u = [0.1, 0.3]                #limb darkening coefficients [u1, u2]
-    params.limb_dark = "quadratic"       #limb darkening model
-
-    m = batman.TransitModel(params, time)    #initializes model
-    transit_flux = m.light_curve(params)-1   
-
-    flux = flux+transit_flux
-
-    return time, flux, (per, rp, t0)
+    return X_scaled 
 
 ## BELOW FUNCTIONS ARE VERONICA'S FOR STARS WITH CONFIRMED PLANETS ##
 
