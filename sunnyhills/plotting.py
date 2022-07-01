@@ -56,7 +56,7 @@ def plot_kerr21_XY(outdir, colorkey=None):
     kerrpath = os.path.join(DATADIR, "Kerr_2021_Table1.txt")
     df = Table.read(kerrpath, format='cds').to_pandas()
 
-    from sunnyhills.physical_positions import calculate_XYZ_given_RADECPLX
+    from sunnyhills.misc import calculate_XYZ_given_RADECPLX
     x,y,z = calculate_XYZ_given_RADECPLX(df.RAdeg, df.DEdeg, df.plx)
 
     #
@@ -251,6 +251,7 @@ def tls_validation_mosaic(tic_id:str, data, tls_model, tls_results, false_alarms
     '''
     arguments: 
         tic_id: tic id 
+        data: path to data csv 
         clean_time: detrended and flare removed time array
         clean_flux: flux values corresponding to clean_time arg
         trend_time: time values of the trend
@@ -851,7 +852,6 @@ def ls_subplots(tic_id,plot_dir,time,flux, plot_type:str='pdf'):
     plt.savefig(plot_path)
     plt.close()
 
-    
 def phased_aliase_plots(tic_id:str, time, flux, tls_results, plot_path:str, dpi=dpi):
     r'''   
 
@@ -953,7 +953,6 @@ def phased_aliase_plots(tic_id:str, time, flux, tls_results, plot_path:str, dpi=
 
     if plot_path is not None: 
         plt.savefig(plot_path, dpi=dpi)
-
 
 def gen_cutout(tic_id:str='',large_size:int=20,small_size:int=10,plot_dir:str='routines/alpha_tls/plots'):
     import matplotlib.pyplot as plt

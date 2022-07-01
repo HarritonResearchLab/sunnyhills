@@ -53,6 +53,59 @@ def inject(tic_id:str, time:np.array, flux:np.array, per:float=None, rp:float=No
 
     return time, flux, (per, rp, t0)
 
+def better_inject(tic_id:str, time:np.array, flux:np.array, per:float=None, rp:float=None, t0:float=None,core_fraction:float=0.5):
+    r'''
+    
+    Notes
+    -----
+        t0 : if t0 is not defined/None, then the algo will choose random time less than 0.05*max(time) to be t0
+    '''
+    
+    import batman 
+    import random 
+    from sunnyhills.pipeline_functions import query_tls_vizier
+    import multiprocessing
+
+    if t0 is None:     
+        percentiles = np.percentile(time, [0,5])
+        t0 = random.uniform(percentiles[0], percentiles[1])
+
+    R_J = 0.10045 # times R_S
+    ab, mass, mass_min, mass_max, radius, radius_min, radius_max = query_tls_vizier(tic_id=tic_id)
+    ab = list(ab)
+    
+    if rp is None: 
+        rp = 0.5*R_J     
+    
+    if per is None: 
+        per = np.random.uniform(1,15)
+
+    core_count = int(core_fraction*multiprocessing.cpu_count())
+
+    params = batman.TransitParams()
+    params.n_threads = core_count
+    params.t0 = t0                     #time of inferior conjunction
+    params.per = per                      #orbital period
+    params.rp = rp                   #planet radius (in units of stellar radii)
+    params.a = 15.                       #semi-major axis (in units of stellar radii) --> fix this sometime!
+    params.inc = 90.                     #orbital inclination (in degrees)
+    params.ecc = 0.                      #eccentricity
+    params.w = 90.                       #longitude of periastron (in degrees)
+    if ab is not None: 
+        params.u = ab  
+        
+    else: 
+        ab = [] #limb darkening coefficients [u1, u2]
+    params.limb_dark = "quadratic"       #limb darkening model
+
+    model = batman.TransitModel(params, time)    #initializes model
+    transit_flux = model.light_curve(params)-1   
+
+    flux = flux+transit_flux
+
+    return time, flux, (per, rp, t0)
+
+
 def inject_pipeline(ids:list, original_data_dir:str, new_data_dir:str, injection_key:str, rp:float=0.10045): 
     r'''
     injection_key : path for csv file to save injection info (i.e. log of all injected periods for all TIC_IDs)

@@ -250,11 +250,7 @@ def download_and_preprocess(
     outdir: str = 'none', 
     logdir: str = 'none', 
     download_log: str = 'none',
-    dtrdict: dict = {'method':'biweight',
-                     'window_length':0.5,
-                     'cval':5.0,
-                     "break_tolerance":1.0}
-    ): 
+    method:str='biweight',window_length:float=0.5,cval:float=5.0,break_tolerance:float=1.0): 
 
     '''
     Args: 

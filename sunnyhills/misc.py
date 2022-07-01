@@ -325,7 +325,6 @@ def return_kerr_cluster(gaiaid: str):
     match_id1=np.where(str(gaiaid)==id_table1)[0]
     match_id2=np.where(str(gaiaid)==id_table2)[0]
     #Use .any() to remove python warnings... Function still produces accurate results.
-      
         
     if(EOM_table2[match_id2].any()=='-1' and TLC_table2[match_id2].any()!='-1'):
         x=TLC_table2[match_id2]
