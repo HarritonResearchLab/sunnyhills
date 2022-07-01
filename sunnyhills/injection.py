@@ -53,7 +53,7 @@ def inject(tic_id:str, time:np.array, flux:np.array, per:float=None, rp:float=No
 
     return time, flux, (per, rp, t0)
 
-def better_inject(tic_id:str, time:np.array, flux:np.array, per:float=None, rp:float=None, t0:float=None,core_fraction:float=0.5):
+def better_inject(tic_id:str, time:np.array, flux:np.array, per:float=None, rp:float=0.5*0.10045, t0:float=None,core_fraction:float=0.5):
     r'''
     
     Notes
@@ -86,7 +86,7 @@ def better_inject(tic_id:str, time:np.array, flux:np.array, per:float=None, rp:f
     params.n_threads = core_count
     params.t0 = t0                     #time of inferior conjunction
     params.per = per                      #orbital period
-    params.rp = rp                   #planet radius (in units of stellar radii)
+    params.rp = rp*(1/radius)                   #planet radius (in units of stellar radii)
     params.a = 15.                       #semi-major axis (in units of stellar radii) --> fix this sometime!
     params.inc = 90.                     #orbital inclination (in degrees)
     params.ecc = 0.                      #eccentricity

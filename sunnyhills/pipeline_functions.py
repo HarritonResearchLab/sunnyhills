@@ -495,7 +495,76 @@ def download_pipeline(tic_ids:str, download_dir:str, download_log:str):
 # BETTER DOWNLOAD AND PREPROCESS METHDODS BELOW # 
 
 def better_download(tic_id:str, save_directory): 
-    pass 
+    import numpy as np 
+    import lightkurve as lk 
+    import os 
+    import pickle 
+    import warnings
+
+    # get the light curve
+    data_found = False
+    
+    lcc = lk.search_lightcurve(tic_id.replace('_', ' ')).download_all() # FIX THIS! 
+    if lcc != None: 
+        data_found = True 
+
+    # select only the two-minute cadence SPOC-reduced data; convert to a list.
+    # note that this conversion approach works for any LightCurveCollection
+    # returned by lightkurve -- no need to hand-pick the right ones.  the exact
+    # condition below says "if the interval is between 119 and 121 seconds,
+    # take it".
+
+    if data_found: 
+        raw_list = [_l for _l in lcc
+                if
+                _l.meta['ORIGIN']=='NASA/Ames'
+                and
+                np.isclose(
+                    120,
+                    np.nanmedian(np.diff(_l.remove_outliers().time.value))*24*60*60,
+                    atol=1
+                )
+        ]
+
+        raw_list = [_l for _l in raw_list if _l.meta['FLUX_ORIGIN']=='pdcsap_flux']
+        
+        downloaded_sectors = ''
+        sector_start= ''
+        sector_stop = ''
+        for lc in raw_list:
+          downloaded_sectors+=str(lc.sector)+','
+          sector_start+=str(lc.time[0])+','
+          sector_stop += str(lc.time[-1])+','
+        
+        if len(raw_list) == 0: 
+            data_found = False 
+
+        if data_found: 
+            new_raw_list = []
+
+            for lc in raw_list: 
+                time = lc.time.value
+                flux = lc.flux.value
+
+                nan_mask = np.isnan(flux)
+
+                time = time[~nan_mask]
+                flux = np.array(flux[~nan_mask], dtype=float) 
+
+                qual = lc.quality.value
+
+                # remove non-zero quality flags
+                sel = (qual[~nan_mask] == 0)
+
+                time = time[sel]
+                flux = flux[sel]
+
+                # normalize around 1
+                flux /= np.nanmedian(flux)
+
+                new_raw_list.append({'time':time, 'flux':flux})
+
+            raw_list = new_raw_list  
 
 def better_preprocess(tic_id:str, raw_data:str, 
                       method:str='biweight', window_length:float=0.5, cval:float=5.0, break_tolerance:float=1.0,
