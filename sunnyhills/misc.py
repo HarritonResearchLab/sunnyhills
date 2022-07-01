@@ -349,3 +349,18 @@ def return_kerr_cluster(gaiaid: str):
         
     #can return and print breakcheck for debugging reasons...
     return cluster_name
+
+def find_data_gap(array:np.array):
+    '''
+    finds if there is a gap in the timeseries
+    args:
+    array: the timeseries
+    return:
+    index: the index at which the gap occurs
+    '''
+    try:
+        differences = [j-i for i, j in zip(array[:-1], array[1:])]
+        index = int(np.where(t>75)[0])
+        return index+1
+    except:
+        return None

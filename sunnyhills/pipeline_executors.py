@@ -326,3 +326,195 @@ def tls_beta_routine(key:str, working_dir:str):
 
     # Download raw data only first!   
 
+def tls_beta_routine(key:str, data_dir:str, download_log:str=None, output_log:str=None, plot_dir:str=None, 
+                 tic_ids=None, cache_dir:str='/ar1/PROJ/fjuhsd/shared/github/sunnyhills/routines/alpha_tls/cache_dir'):
+    
+    r'''
+    Notes
+    -----
+        - This is the first TLS pipeline executor routine; only runs TLS
+        - It starts by downloading light curves and logging data for any objects in the key lacking data in the data directory. 
+        - In the process it creates detrend validation plots for downloaded data. 
+        - It then runs TLS on them if there is no cached TLS model/results for them, and caches these. It then makes tls validation plot
+        - It then saves tls run information with false alarm checks/info to output_log
+    '''
+
+    import numpy as np
+    import pandas as pd 
+    from tqdm import tqdm 
+    import os
+    import pickle 
+    from sunnyhills.plotting import tls_validation_mosaic, plot_detrend_validation		
+    from sunnyhills.plotting import ls_subplots, transit_plots, phased_aliase_plots,gen_cutout	
+    from sunnyhills.misc import merge_plots
+    from sunnyhills.false_alarm_checks import tls_even_odd, transit_outliers_fap_test, check_lombscargle		
+    from sunnyhills.pipeline_functions import download_pipeline, run_tls
+
+
+    if data_dir[-1]!='/':
+        data_dir+='/'
+
+    if cache_dir[-1]!='/': 
+        cache_dir+='/'
+
+    tic_ids = [i.split('_tls')[0] for i in os.listdir(cache_dir) if i!='.gitkeep']
+    tic_ids = list(set(tic_ids))
+
+    download_log = pd.read_csv(download_log)
+
+    result_keys = ['SDE', 'period', 'T0', 'duration', 'depth', 'rp_rs', 'snr']
+    tls_result_keys = ['SDE', 'period', 'T0', 'duration', 'depth', 'rp_rs', 'snr']
+    flags_appended_to_key = False  
+    result_lines = []
+
+
+    def check_in_dir(tic_id, dir): 
+        import os 
+
+        names = [i.split('.')[0] for i in os.listdir(dir) if i!='.gitkeep']
+
+        return tic_id in names 
+
+    for tic_id in tqdm(tic_ids):    
+        try: 
+            data_path = data_dir+tic_id+'.csv'
+            if os.path.exists(data_path):
+                data = pd.read_csv(data_path) 
+                data = data.dropna(subset=['clean_time','clean_flux'])
+                clean_time = np.array(data['clean_time'])
+                
+                clean_flux = np.array(data['clean_flux'])
+
+                gap_index = find_data_gap(np.array(clean_time))
+                
+                #if not check_in_dir(tic_id, dir=plotting_dirs[0]):
+                    #plot_detrend_validation(tic_id=tic_id, data_dir=data_dir, plot_dir=plotting_dirs[0])
+  
+                if os.path.exists(cache_dir+tic_id+'_tls-model.pickle'): 
+                    pickle_results = cache_dir+tic_id+'_tls-results.pickle'
+                    with open(pickle_results, 'rb') as file: 
+                        tls_results = pickle.load(file)
+                        
+                    pickle_model = cache_dir+tic_id+'_tls-model.pickle'
+                    with open(pickle_model, 'rb') as file: 
+                        tls_model = pickle.load(file)
+                        lombscargle_dict = check_lombscargle(tic_id=tic_id, tls_results=tls_results, download_log=download_log)  
+                        
+                  
+
+                else: 
+                    tls_results, tls_model = run_tls(tic_id=tic_id, time=clean_time, flux=clean_flux, cache_dir=cache_dir)
+
+                print(gap_index)
+                if gap_index!= None:
+                  run_routine(clean_time[:gap_index],clean_flux[:gap_index],tic_id,plot_dir,tls_results,tls_model,data_path)
+                  run_routine(clean_time[gap_index:-1],clean_flux[:gap_index:-1],tic_id,plot_dir+'/second_plot/',tls_results,tls_model,data_path)
+
+
+
+
+                else:
+                  run_routine(clean_time,clean_flux,tic_id,plot_dir,tls_results,tls_model,data_path)
+
+
+
+
+       
+        except: 
+            continue 
+    
+    #with open(output_log, 'a') as f: 
+      #f.write(','.join(['TIC_ID']+result_keys)+'\n')
+        
+      #for line in result_lines: 
+        #f.write(line+'\n')
+def run_routine(clean_time,clean_flux,tic_id,plot_dir,tls_results,tls_model,data_path):
+    import numpy as np
+    import pandas as pd 
+    from tqdm import tqdm 
+    import os
+    import pickle 
+    from sunnyhills.plotting import tls_validation_mosaic, plot_detrend_validation		
+    from sunnyhills.plotting import ls_subplots, transit_plots, phased_aliase_plots,gen_cutout	
+    from sunnyhills.misc import merge_plots
+    from sunnyhills.false_alarm_checks import tls_even_odd, transit_outliers_fap_test, check_lombscargle		
+    from sunnyhills.pipeline_functions import download_pipeline, run_tls
+
+
+    if plot_dir!=None: 
+        if plot_dir[-1]!='/': 
+            plot_dir+='/'
+
+
+
+    detrend_plot_dir = plot_dir+'detrend_plots/'
+    ls_subplots_dir = plot_dir+'ls_subplots/'
+    tls_validation_dir = plot_dir+'tls_validation/'
+    transits_dir = plot_dir+'individual_transits/' 
+    harmonics_dir = plot_dir + 'harmonics_dir/'
+    cutout_dir = plot_dir+'cutouts/'
+    
+    combined_dir = plot_dir+'combined_plots/'
+
+    plotting_dirs = [detrend_plot_dir, ls_subplots_dir, tls_validation_dir, transits_dir, harmonics_dir, cutout_dir,combined_dir]
+    for dir in plotting_dirs: 
+        if not os.path.exists(dir): 
+            os.mkdir(dir)
+    def check_in_dir(tic_id, dir): 
+        import os 
+
+        names = [i.split('.')[0] for i in os.listdir(dir) if i!='.gitkeep']
+
+        return tic_id in names 
+    all_false_alarms_dict = {}
+  
+                
+    lombscargle_dict = check_lombscargle(tic_id=tic_id, tls_results=tls_results, download_log=download_log)      
+    even_odd_dict = tls_even_odd(tls_results=tls_results)
+    transit_outliers_dict = transit_outliers_fap_test(tls_results=tls_results)
+                
+    for alarm in [lombscargle_dict, even_odd_dict, transit_outliers_dict]: 
+      all_false_alarms_dict.update(alarm)
+
+    if not check_in_dir(tic_id, dir=plotting_dirs[2]):
+      tls_validation_mosaic(tic_id=tic_id, data=data_path, tls_results=tls_results, tls_model=tls_model, plot_dir=plotting_dirs[2], false_alarms_dictionary=all_false_alarms_dict)
+                
+      #if not check_in_dir(tic_id,dir=plotting_dirs[3]):
+        #transit_plots(plotting_dirs[3],tic_id,clean_time,clean_flux,tls_results)
+
+    if not check_in_dir(tic_id, dir=plotting_dirs[1]):
+      ls_subplots(tic_id,plotting_dirs[1],clean_time,clean_flux)
+
+    
+    if not check_in_dir(tic_id,dir=plotting_dirs[5]):
+      gen_cutout(tic_id,plotting_dirs[5])
+
+    if not check_in_dir(tic_id, dir=plotting_dirs[4]):
+          phased_aliase_plots(tic_id=tic_id, time=clean_time, flux=clean_flux, plot_path=plotting_dirs[4]+tic_id+'.pdf',tls_results=tls_results)
+
+    #result_list = [tic_id]+[tls_results[key] for key in tls_result_keys]
+    
+      # FALSE ALARM CHECKS # 
+    
+      # ADDING RESULTS TO LIST # 
+    '''
+    if not flags_appended_to_key: 
+        result_keys += list(lombscargle_dict.keys()) + list(even_odd_dict.keys()) + list(transit_outliers_dict.keys())
+          flags_appended_to_key = True 
+
+      result_list += list(lombscargle_dict.values()) + list(even_odd_dict.values()) + list(transit_outliers_dict.values())
+
+      result_line = ','.join([str(i) for i in result_list])
+
+      result_lines.append(result_line)
+                  
+                  if not check_in_dir(tic_id, dir=plotting_dirs[6]):
+                    merge_plots(tic_id=tic_id,plot_dir=plot_dir,export_dir=plotting_dirs[6])
+
+                  plotting_dirs = [dir.replace(plot_dir,'') for dir in plotting_dirs]
+                  plotting_dirs = [plot_dir+'second_plot/'+dir for dir in plotting_dirs]
+                  print(plotting_dirs[0])
+                  for dir in plotting_dirs: 
+                    if not os.path.exists(dir): 
+                      os.mkdir(dir)
+      '''
