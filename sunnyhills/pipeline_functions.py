@@ -492,8 +492,35 @@ def download_pipeline(tic_ids:str, download_dir:str, download_log:str):
         for line in lines: 
             f.write(line)
 
-def preprocess_updated(raw_data, method:str='biweight'): 
+# BETTER DOWNLOAD AND PREPROCESS METHDODS BELOW # 
+
+def better_download(tic_id:str, save_directory): 
+    pass 
+
+def better_preprocess(tic_id:str, raw_data:str, 
+                      method:str='biweight', window_length:float=0.5, cval:float=5.0, break_tolerance:float=1.0,
+                      lower_sigma: int = 10): 
+    r'''
+    arguments 
+    ---------
+    tic_id : str
+        e.g. "TIC_232323111" 
+    raw_data : str 
+        path to csv file with columns "raw_time,raw_flux,raw_time_no_flare,raw_flux_no_flare" 
     
+    # detrending related 
+
+    method : str
+        default 'biweight'
+    window_length : float
+        default 0.5
+    cval : float
+        default 5.0
+    break_tolerance : float
+        default 1.0
+    lower_sigma: int 
+        default 10
+    '''
 
 
     import pandas as pd 
