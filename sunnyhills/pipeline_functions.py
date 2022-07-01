@@ -139,10 +139,7 @@ def preprocess(
     raw_list: list,
     ticstr: str = '',
     outdir: str = "none", 
-    dtrdict: dict = {'method':'biweight',
-                     'window_length':0.25,
-                     'cval':5.0,
-                     "break_tolerance":1.0}, 
+    method:str='biweight',window_length:float=0.5,cval:float=5.0,break_tolerance:float=1.0,
     lower_sigma: int = 10
     ):
 
@@ -209,10 +206,10 @@ def preprocess(
 
         detrended_flux_temp, trend_flux_temp = wotan.flatten(
             cleaned_time_temp, cleaned_flux_temp, return_trend=True,
-            method=dtrdict['method'],
-            break_tolerance=dtrdict['break_tolerance'],
-            window_length=dtrdict['window_length'],
-            cval=dtrdict['cval']
+            method=method,
+            break_tolerance=break_tolerance,
+            window_length=window_length,
+            cval=cval
         )
 
         (cleaned_time_temp, detrended_flux_temp, trend_flux_temp), (_, _, _) = remove_flares(cleaned_time_temp, detrended_flux_temp, trend_flux_temp)
@@ -274,7 +271,7 @@ def download_and_preprocess(
     raw_list, data_found,sectors,start,stop = download(ticstr=ticstr, logdir=logdir) 
 
     if data_found: 
-        lc_df, counts = preprocess(raw_list=raw_list, ticstr=ticstr, outdir=outdir, dtrdict=dtrdict)
+        lc_df, counts = preprocess(raw_list=raw_list, ticstr=ticstr, outdir=outdir, method='biweight', window_lengt=0.5,cval=5.0,break_tolerance=1.0)
 
         if download_log!='none':
             log = pd.read_csv(download_log)
@@ -494,6 +491,14 @@ def download_pipeline(tic_ids:str, download_dir:str, download_log:str):
     with open(download_log, 'a') as f: 
         for line in lines: 
             f.write(line)
+
+def preprocess_updated(raw_data, method:str='biweight'): 
+    
+
+
+    import pandas as pd 
+    
+    pass 
 
 # query functions # 
 

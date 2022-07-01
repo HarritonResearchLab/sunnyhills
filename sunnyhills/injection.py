@@ -309,4 +309,4 @@ data_dir = './routines/simulations/second_bulk_injected/data/'
 plots_dir = './routines/simulations/second_bulk_injected/plots/'
 report_path = './routines/simulations/second_bulk_injected/results.csv'
 cache_dir = './routines/simulations/second_bulk_injected/cache_dir/'
-recover_injected_routine(injection_key=key, data_dir=data_dir, plot_dir=plots_dir, report_path=report_path, cache_dir=cache_dir)
+#recover_injected_routine(injection_key=key, data_dir=data_dir, plot_dir=plots_dir, report_path=report_path, cache_dir=cache_dir)

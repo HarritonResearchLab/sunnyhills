@@ -1,0 +1,42 @@
+###TIC_ID###
+TIC_43451370
+stellar radius:  0.6892
+scale factor: 1.4509576320371445
+original R_P: 0.050225 R_SUN
+scaled R_P: 0.07287434706906558
+###TIC_ID###
+TIC_197005132
+stellar radius:  0.396046
+scale factor: 2.524959221908566
+original R_P: 0.050225 R_SUN
+scaled R_P: 0.12681607692035773
+###TIC_ID###
+TIC_436783866
+stellar radius:  0.437231
+scale factor: 2.2871205381137205
+original R_P: 0.050225 R_SUN
+scaled R_P: 0.11487062902676161
+###TIC_ID###
+TIC_266002317
+stellar radius:  0.491078
+scale factor: 2.036336386480355
+original R_P: 0.050225 R_SUN
+scaled R_P: 0.10227499501097584
+###TIC_ID###
+TIC_232965288
+stellar radius:  0.462106
+scale factor: 2.164005661038809
+original R_P: 0.050225 R_SUN
+scaled R_P: 0.10868718432567417
+###TIC_ID###
+TIC_372918535
+stellar radius:  0.373729
+scale factor: 2.675735626617148
+original R_P: 0.050225 R_SUN
+scaled R_P: 0.13438882184684625
+###TIC_ID###
+TIC_409372963
+stellar radius:  0.29265
+scale factor: 3.417051084913719
+original R_P: 0.050225 R_SUN
+scaled R_P: 0.17162139073979155

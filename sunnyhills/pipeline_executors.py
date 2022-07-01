@@ -159,7 +159,7 @@ def tls_alpha_routine(key:str, data_dir:str, download_log:str=None, output_log:s
     detrend_plot_dir = plot_dir+'detrend_plots/'
     ls_subplots_dir = plot_dir+'ls_subplots/'
     tls_validation_dir = plot_dir+'tls_validation/'
-    transits_dir = plot_dir+'individual_transits/'
+    transits_dir = plot_dir+'individual_transits/' 
     harmonics_dir = plot_dir + 'harmonics_dir/'
     cutout_dir = plot_dir+'cutouts/'
     combined_dir = plot_dir+'combined_plots/'
@@ -305,24 +305,37 @@ def tls_beta_routine(key:str, working_dir:str):
     
     working_dir : str
         Path to working directory. All sub directories (such as data, plots, etc.) will be handled inside this function internally. 
+    
+    notes
+    -----
+    user should run /ar1/PROJ/fjuhsd/shared/tessodyssey/routines/initialize_directory.py before running this routine executor! 
+
     '''
 
     import os 
     import pandas as pd 
+    import numpy as np
+    from tqdm import tqdm 
 
     key = pd.read_csv(key)
 
     if working_dir[-1]!='/': 
         working_dir+='/'
 
-    raw_data_dir = working_dir +'/data/raw_data/'
+    tic_ids = np.array(key['TIC_ID'])
 
-    # make sure all dirs exist ... if not, make them 
+    #try: 
+    for tic_id in tqdm(tic_ids): 
 
-    for dir in [raw_data_dir]: 
-        full_dir = working_dir+dir 
-        if not os.path.exists(full_dir): 
-            os.makedir(full_dir)
+        # 1. DETREND DATA IF IT HAS NOT BEEN DETRENDED # 
 
-    # Download raw data only first!   
+        
 
+        # 2. RUN TLS # 
+
+        # 3. PLOTS # 
+
+        # 4. LOGGING # 
+
+    #except: 
+    #   continue 
