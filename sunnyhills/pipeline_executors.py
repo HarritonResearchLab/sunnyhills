@@ -445,7 +445,9 @@ def run_routine(clean_time,clean_flux,tic_id,plot_dir,tls_results,tls_model,data
         if plot_dir[-1]!='/': 
             plot_dir+='/'
 
-
+    for dir in plotting_dirs: 
+      if not os.path.exists(dir): 
+        os.mkdir(dir)
 
     detrend_plot_dir = plot_dir+'detrend_plots/'
     ls_subplots_dir = plot_dir+'ls_subplots/'
@@ -481,6 +483,9 @@ def run_routine(clean_time,clean_flux,tic_id,plot_dir,tls_results,tls_model,data
                 
       #if not check_in_dir(tic_id,dir=plotting_dirs[3]):
         #transit_plots(plotting_dirs[3],tic_id,clean_time,clean_flux,tls_results)
+        
+    if not check_in_dir(tic_id, dir=plotting_dirs[0]):
+          plot_detrend_validation(tic_id=tic_id, data_dir=data_path, plot_dir=plotting_dirs[0])  
 
     if not check_in_dir(tic_id, dir=plotting_dirs[1]):
       ls_subplots(tic_id,plotting_dirs[1],clean_time,clean_flux)
