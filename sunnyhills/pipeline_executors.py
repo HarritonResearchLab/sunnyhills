@@ -357,7 +357,7 @@ def tls_beta_routine(key:str, data_dir:str, download_log:str=None, output_log:st
     import pickle 
     from sunnyhills.plotting import tls_validation_mosaic, plot_detrend_validation		
     from sunnyhills.plotting import ls_subplots, transit_plots, phased_aliase_plots,gen_cutout	
-    from sunnyhills.misc import merge_plots
+    from sunnyhills.misc import merge_plots,find_data_gap
     from sunnyhills.false_alarm_checks import tls_even_odd, transit_outliers_fap_test, check_lombscargle		
     from sunnyhills.pipeline_functions import download_pipeline, run_tls
 

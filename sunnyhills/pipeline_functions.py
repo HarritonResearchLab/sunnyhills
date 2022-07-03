@@ -670,7 +670,7 @@ def query_tls_vizier(tic_id:str, radius_err_multiple:float=3, mass_err_multiple:
 
 ## TLS ##
 def run_tls(tic_id:str, time:np.array, flux:np.array, 
-            cache_dir:str=None, 
+            cache_dir:str='/ar1/PROJ/fjuhsd/shared/tessodyssey/routines/real/tls_beta_run/cache_dir', 
             tls_params: dict = {'min_per':0.5, 'max_per':15, 
                                 'minimum_n_transit':3, 
                                 'freq_factor':1,
@@ -729,6 +729,7 @@ def run_tls(tic_id:str, time:np.array, flux:np.array,
             pickle.dump(tls_results, file, protocol=pickle.HIGHEST_PROTOCOL)
 
     return tls_results, tls_model 
+
 
 def iterative_tls_runner(time, flux, 
                      iterations: int=1, 
@@ -938,3 +939,75 @@ def iterative_bls_runner(time:np.array, flux:np.array,
 
     else: 
         return results_dict, models_dict, in_transits_dict
+
+def modified_run_tls(file_path:str, 
+            cache_dir:str='/ar1/PROJ/fjuhsd/shared/tessodyssey/routines/real/tls_beta_run/cache_dir', 
+            tls_params: dict = {'min_per':0.5, 'max_per':15, 
+                                'minimum_n_transit':3, 
+                                'freq_factor':1,
+                                'core_fraction':0.75}, show_progress_bar:bool=False, 
+            verbose:bool=False, catalog_params:bool=True): 
+
+    r'''
+
+    Modified tls which just grabs the file path and grabs the cleaned time, flux, and tic id from the file path. Will run tls on the object and automatically export to wh1's cache directory.
+    args: 
+    ----
+        file_path: path to the preprocessed data
+        cache_dir: the directory in which the pickle files will be stored in, by default is the cache directory on wh1
+        tls_params: parameters to run tls on, just leave it as default
+    
+    returns:
+    ------- 
+        tls_results
+        tls_model 
+    '''
+
+    import numpy as np
+    from transitleastsquares import transitleastsquares
+    import multiprocessing 
+    from sunnyhills.pipeline_functions import query_tls_vizier
+    import pickle 
+    import pandas as pd
+
+    directories = file_path.split('/')
+
+    lc_df = pd.read_csv(file_path)
+    lc_df = lc_df.dropna(subset=['clean_time','clean_flux'])
+
+    time = lc_df['clean_time']
+    flux = lc_df['clean_flux']
+
+    tic_id = directories[-1][2:].repalce('.csv','')
+    routine_iter = directories[-1][0]
+
+    num_cores = int(tls_params['core_fraction']*multiprocessing.cpu_count())
+    tls_model = transitleastsquares(time, flux, verbose=verbose)
+    
+    ab, mass, mass_min, mass_max, radius, radius_min, radius_max = query_tls_vizier(tic_id=tic_id) 
+    
+    if catalog_params: 
+        tls_results = tls_model.power(period_min=tls_params['min_per'],period_max=tls_params['max_per'],
+                              show_progress_bar=show_progress_bar, verbose=verbose, use_threads=num_cores, u=ab,
+                              M_star=mass, M_star_min=mass_min, M_star_max=mass_max, R_star=radius, 
+                              R_star_min=radius_min, R_star_max=radius_max, oversampling_factor=tls_params['freq_factor'])
+
+    else: 
+        tls_results = tls_model.power(period_min=tls_params['min_per'],period_max=tls_params['max_per'],
+                                      show_progress_bar=show_progress_bar, verbose=verbose, 
+                                      use_threads=num_cores, oversampling_factor=tls_params['freq_factor'])
+    
+    if cache_dir is not None:
+        if cache_dir[-1]!='/': 
+            cache_dir+='/' 
+
+        tls_model_cache_file = cache_dir+routine_iter+'_tls-model-'+tic_id+'-'+directories[-2]+'.pickle'
+        tls_results_cache_file = cache_dir+routine_iter+'_tls-routine-'+tic_id+'-'+directories[-2]+'.pickle'
+
+        with open(tls_model_cache_file, 'wb') as file: 
+            pickle.dump(tls_model, file, protocol=pickle.HIGHEST_PROTOCOL)
+
+        with open(tls_results_cache_file, 'wb') as file: 
+            pickle.dump(tls_results, file, protocol=pickle.HIGHEST_PROTOCOL)
+
+    return tls_results, tls_model 
