@@ -306,7 +306,6 @@ def merge_plots(tic_id:str='',plot_dir:str='routines/alpha_tls/plots/',export_di
     print('successfully generated: ' + tic_id + ' report!')
 
 
-    #note for some reason when making this csv with excel pandas returned a dtype warning. To fix this just specify the dtype as unicode
 
 def find_data_gap(array:np.array):
     '''
