@@ -25,4 +25,5 @@ def gaia_to_tic(gaia_ids):
 df=pd.read_csv('dummy.csv')
 GAIA_index=df['GAIA']
 x=gaia_to_tic(GAIA_index)
-print(x)
+masterdf['TIC_ID']=x
+masterdf.to_csv('output')
