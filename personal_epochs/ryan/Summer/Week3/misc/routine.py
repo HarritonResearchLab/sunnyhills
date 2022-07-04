@@ -27,4 +27,4 @@ GAIA_index=df['GAIA']
 z=str(GAIA_index[0])
 y='GDR2 '+str(GAIA_index[0])
 print(y)
-x=gaia_to_tic(z)
+x=gaia_to_tic(y)
