@@ -18,7 +18,7 @@ def gaia_to_tic(gaia_ids):
             continue 
 
 
-    return dict(zip(gaia_ids, tic_ids)), tic_ids
+    return tic_ids
 
 
 
