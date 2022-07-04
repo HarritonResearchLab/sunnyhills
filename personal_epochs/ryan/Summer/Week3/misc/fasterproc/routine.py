@@ -3,7 +3,7 @@ import pandas as pd
 import os
 import time
 dirindex=os.listdir()
-dirindex=dirindex.pop('routine.py')
+dirindex=dirindex.pop(22)
 print(dirindex)
 input('Correct dir listing?')
 masterdf=pd.DataFrame()
