@@ -25,6 +25,6 @@ def gaia_to_tic(gaia_ids):
 df=pd.read_csv('kerr1.csv')
 GAIA_index=df['GAIA']
 z=str(GAIA_index[0])
-y='GDR2 '+str(GAIA_index[0])
+y='gaiadr2 '+str(GAIA_index[0])
 print(y)
 x=gaia_to_tic(y)
