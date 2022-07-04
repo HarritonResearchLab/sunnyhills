@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
-
-
+masterdf=pd.DataFrame()
+TIC_index=[]
 def gaia_to_tic(gaia_ids):
     from astrobase.services.identifiers import gaiadr2_to_tic
     tic_ids = []
@@ -24,3 +24,4 @@ def gaia_to_tic(gaia_ids):
 
 df=pd.read_csv('kerr1.csv')
 GAIA_index=df['GAIA']
+x=gaia_to_tic(GAIA_index[0])
