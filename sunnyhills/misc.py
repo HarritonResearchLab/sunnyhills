@@ -3,23 +3,21 @@ import pandas as pd
 
 def gaia_to_tic(gaia_ids):
     from astrobase.services.identifiers import gaiadr2_to_tic
-    import numpy as np
     tic_ids = []
-    for id in gaia_ids:
-
+    for gaia_id in gaia_ids:
+        print(gaia_id)
         try: 
-
-            if id !=None:
-                tic_ids.append(gaiadr2_to_tic(id))
+            if gaia_id !=None:
+                tic_ids.append(str(gaiadr2_to_tic(gaia_id)))
 
             else: 
-                tic_ids.append(None)
+                tic_ids.append('')
         except: 
-            tic_ids.append(None)
+            tic_ids.append('')
             continue 
 
 
-    return dict(zip(gaia_ids, tic_ids))
+    return dict(zip(gaia_ids, tic_ids)), tic_ids
 
 def skycoord_to_tic(ra,dec):
     from astropy.coordinates import SkyCoord
@@ -300,7 +298,6 @@ def download_and_append_status(path_to_csv:str,lc_dir,save_dir:str):
 
     #return np.abs((time-transit_time+hp) % period - hp) < .5*duration
     
-
 def merge_plots(tic_id:str='',plot_dir:str='routines/alpha_tls/plots/',export_dir:str='',plots:list=['ls_subplots/','detrend_plots/','tls_validation/','cutouts/','individual_transits/','harmonics_dir/']):
     from PyPDF2 import PdfMerger
     plots = [plot_dir +  dir+tic_id +'.pdf' for dir in plots]

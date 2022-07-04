@@ -1,9 +1,9 @@
 import pandas as pd
 import numpy as np
 
-df = pd.read_csv('/ar1/PROJ/fjuhsd/shared/github/sunnyhills/data/archive/full_key.csv')
 
 def save_gaia_for_routine():
+    df = pd.read_csv('/ar1/PROJ/fjuhsd/shared/github/sunnyhills/data/archive/full_key.csv')
 
     probs = np.array(df['probability'])
 
@@ -22,7 +22,10 @@ def save_gaia_for_routine():
     routine_ids = gaia_ids[np.where(probs>=.68)[0]]
 
     df = pd.DataFrame(routine_ids.reshape(-1,1), columns=['GDR2_ID'])
+    print(df)
     df.to_csv('/ar1/PROJ/fjuhsd/shared/tessodyssey/routines/real/tls_beta_run/routine_ids.csv', index=False)
+
+save_gaia_for_routine()
 
 def make_base_catalog(): 
     '''
@@ -38,25 +41,9 @@ def make_base_catalog():
 
     df = pd.read_csv('/ar1/PROJ/fjuhsd/shared/github/sunnyhills/data/archive/full_key.csv')
 
+    import shutil 
 
-    probs = np.array(df['probability'])
-
-    gaia_ids = np.array(df['GDR2_ID'])
-    routine_ids = gaia_ids[np.where(probs>=.68)[0]]
-
-    _, mask, _ = np.intersect1d(gaia_ids, routine_ids, return_indices=True)
-    
-    df = df.iloc[mask]
-    
-    first_ls_period = []
-    second_ls_period = []
-    third_ls_period = []
-    first_ls_power = []
-    second_ls_power = []
-    third_ls_power = []
-    fap_95_level = []
-
-    for i in tqdm(df.index): 
-
+    shutil.copyfile('/ar1/PROJ/fjuhsd/shared/github/sunnyhills/data/archive/full_key.csv', 
+                    '/ar1/PROJ/fjuhsd/shared/tessodyssey/data/full_base_catalog_key.csv')
 
 make_base_catalog()

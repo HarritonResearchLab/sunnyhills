@@ -292,7 +292,7 @@ def download_and_preprocess(
     
     return lc_df, counts,sectors,start,stop
 
-def remove_flares(time, flux, flux_err=np.array([]), sigma:int=3): 
+def remove_flares(time, flux, flux_err:np.array=None, sigma:int=3): 
     ''' 
     Args:
         time: array-like (ideally Pandas.series) object of time values 
@@ -302,17 +302,17 @@ def remove_flares(time, flux, flux_err=np.array([]), sigma:int=3):
         two tuples (or three if an array was passed into flux_err); first tuple gives arrays that have been "cleaned" of flairs, and second gives the removed values. Array order in each tuple is time, flux, (flux_err)
     Additional Info: 
         Idea was taken from https://iopscience.iop.org/article/10.3847/1538-3881/ab5d3a
+
     '''
     import pandas as pd
     import numpy as np
-
 
     if isinstance(time, pd.Series) and isinstance(flux, pd.Series): 
         pass
     else: 
         time = pd.Series(time)
         flux = pd.Series(flux)
-        if len(flux_err)>0: 
+        if flux_err is not None: 
             flux_err = pd.Series(flux_err)
             removed_flux_err = np.array([])
 
@@ -344,7 +344,7 @@ def remove_flares(time, flux, flux_err=np.array([]), sigma:int=3):
             time = time.drop(remove_indices)
             flux = flux.drop(remove_indices)
 
-            if len(flux_err)>0: 
+            if flux_err is not None: 
                 removed_flux_err = np.concatenate((removed_flux_err, flux_err[remove_indices]))
                 flux_err = flux_err.drop(remove_indices)
             
@@ -370,14 +370,36 @@ def remove_flares(time, flux, flux_err=np.array([]), sigma:int=3):
             time = time.drop(remove_indices)
             flux = flux.drop(remove_indices)
 
-            if len(flux_err)>0: 
+            if flux_err is not None: 
                 removed_flux_err = np.concatenate((removed_flux_err, flux_err[remove_indices]))
                 flux_err = flux_err.drop(remove_indices)
 
-    if len(flux_err)>0: 
+    if flux_err is not None: 
         return (time.to_numpy(), flux.to_numpy(), flux_err.to_numpy()), (removed_time, removed_flux, removed_flux_err)
     else: 
         return (time.to_numpy(), flux.to_numpy()), (removed_time, removed_flux)
+
+def remove_extreme_dips(time:np.array, flux:np.array, sigma:int=10):
+    continue_clip = True
+    while continue_clip: 
+        cutoff = np.median(flux)+sigma*np.std(flux) 
+
+        remove_indices = [] 
+        for i in range(len(flux)): 
+            if flux[i]>cutoff: 
+                remove_indices.append(i) 
+
+        if len(remove_indices)==0: 
+            continue_clip = False 
+
+        else:     
+            removed_time = np.concatenate((removed_time, time[remove_indices]))
+            removed_flux = np.concatenate((removed_flux, flux[remove_indices]))
+
+            time = time.drop(remove_indices)
+            flux = flux.drop(remove_indices) 
+
+    return time, flux
 
 def download_pipeline(tic_ids:str, download_dir:str, download_log:str): 
     '''
@@ -494,12 +516,32 @@ def download_pipeline(tic_ids:str, download_dir:str, download_log:str):
 
 # BETTER DOWNLOAD AND PREPROCESS METHDODS BELOW # 
 
-def better_download(tic_id:str, save_directory): 
+def better_download(tic_id:str, save_directory:str=None): 
+    r'''
+    Arguments
+    ---------
+    tic_id : str
+        e.g. "TIC_232342342"
+    save_directory : str
+        If defined, the raw data file will be saved in this directory 
+
+    Returns 
+    -------
+    data_df : pd.DataFrame
+        raw data in dataframe
+    downloaded_sectors : str 
+        | deliminated sectors 
+    sector_starts : str
+        | deliminated dates for sector starts
+    sector_ends : str
+        | deliminated dates for sector ends
+    
+    '''
+    
     import numpy as np 
     import lightkurve as lk 
-    import os 
-    import pickle 
-    import warnings
+    import pandas as pd
+    from sunnyhills.pipeline_functions import remove_flares, remove_extreme_dips
 
     # get the light curve
     data_found = False
@@ -529,18 +571,21 @@ def better_download(tic_id:str, save_directory):
         raw_list = [_l for _l in raw_list if _l.meta['FLUX_ORIGIN']=='pdcsap_flux']
         
         downloaded_sectors = ''
-        sector_start= ''
-        sector_stop = ''
+        sector_starts = ''
+        sector_ends = ''
+
         for lc in raw_list:
-          downloaded_sectors+=str(lc.sector)+','
-          sector_start+=str(lc.time[0])+','
-          sector_stop += str(lc.time[-1])+','
+          downloaded_sectors += str(lc.sector)+'|'
+          sector_starts += str(lc.time[0])+'|'
+          sector_ends += str(lc.time[-1])+'|'
         
         if len(raw_list) == 0: 
             data_found = False 
 
         if data_found: 
-            new_raw_list = []
+            
+            raw_time = np.array([])
+            raw_flux = np.array([])
 
             for lc in raw_list: 
                 time = lc.time.value
@@ -562,23 +607,40 @@ def better_download(tic_id:str, save_directory):
                 # normalize around 1
                 flux /= np.nanmedian(flux)
 
-                new_raw_list.append({'time':time, 'flux':flux})
+                raw_time = np.concatenate((raw_time, time))
+                raw_flux = np.concatenate((raw_flux, flux)) 
 
-            raw_list = new_raw_list  
+        (no_flare_raw_time, no_flare_raw_flux), (_, _) = remove_flares(raw_time, raw_flux)
+        no_flare_raw_time, no_flare_raw_flux = remove_extreme_dips(no_flare_raw_time, no_flare_raw_flux)
+
+        cols = [raw_time, raw_flux, no_flare_raw_time, no_flare_raw_flux]
+        cols = [pd.Series(i) for i in cols]
+
+        col_names = ['raw_time', 'raw_flux', 'no_flare_raw_time', 'no_flare_raw_flux']
+    
+        dictionary = {}
+        for i in range(len(cols)):
+            dictionary.update({col_names[i]:cols[i]})
+
+        data_df = pd.DataFrame(dictionary)
+
+        if save_directory is not None:
+            if save_directory[-1]!='/': 
+                save_directory += '/'
+            save_path = save_directory+tic_id+'.csv' 
+            data_df.to_csv(save_path, index=False)
+
+        return data_df, downloaded_sectors, sector_starts, sector_ends
 
 def better_preprocess(tic_id:str, raw_data:str, 
-                      method:str='biweight', window_length:float=0.5, cval:float=5.0, break_tolerance:float=1.0,
-                      lower_sigma: int = 10): 
+                      method:str='biweight', window_length:float=0.5, cval:float=5.0, break_tolerance:float=1.0): 
     r'''
     arguments 
     ---------
     tic_id : str
         e.g. "TIC_232323111" 
     raw_data : str 
-        path to csv file with columns "raw_time,raw_flux,raw_time_no_flare,raw_flux_no_flare" 
-    
-    # detrending related 
-
+        path to csv file with columns "raw_time,raw_flux,no_flare_raw_time,no_flare_raw_flux" 
     method : str
         default 'biweight'
     window_length : float
@@ -587,8 +649,6 @@ def better_preprocess(tic_id:str, raw_data:str,
         default 5.0
     break_tolerance : float
         default 1.0
-    lower_sigma: int 
-        default 10
     '''
 
 
