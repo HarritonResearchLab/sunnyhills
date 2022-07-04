@@ -6,7 +6,7 @@ dirindex=os.listdir('.')
 dirindex.remove('routine.py')
 dirindex.remove('nohup.out')
 print(dirindex)
-input('Correct dir listing?')
+
 masterdf=pd.DataFrame()
 TIC_index=[]
 
