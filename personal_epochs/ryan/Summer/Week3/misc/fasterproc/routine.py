@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 import os
 import time
-print(os.listdir('.'))
+dirindex=os.listdir('.')
 dirindex=dirindex.pop(4)
 print(dirindex)
 input('Correct dir listing?')
