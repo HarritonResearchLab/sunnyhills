@@ -25670,3 +25670,948 @@
 [I 220704 18:43:00 gaia:737] request submitted successfully, current status is: EXECUTING. waiting for results...
 [I 220704 18:43:03 gaia:809] GAIA query completed, retrieving results...
 [I 220704 18:43:04 gaia:870] done. rows in result: 
+[I 220704 18:43:07 mast:245] query successful. nmatches: 1
+5811065741901283840
+[I 220704 18:43:07 gaia:550] using GAIA mirror TAP URL: https://gea.esac.esa.int/tap-server/tap/async, with table: gaiadr2.gaia_source
+[I 220704 18:43:07 gaia:555] submitting GAIA TAP query request for input params: {'REQUEST': 'doQuery', 'LANG': 'ADQL', 'FORMAT': 'csv', 'PHASE': 'RUN', 'JOBNAME': 'ab-gaia-1656974587', 'JOBDESCRIPTION': 'astrobase-gaia-tap-ADQL-query', 'QUERY': 'select source_id, ra, dec, phot_g_mean_mag, phot_bp_mean_mag, phot_rp_mean_mag, l, b, parallax, parallax_error, pmra, pmra_error, pmdec, pmdec_error from gaiadr2.gaia_source where source_id = 5811065741901283840'}
+[I 220704 18:43:08 gaia:737] request submitted successfully, current status is: EXECUTING. waiting for results...
+[I 220704 18:43:12 gaia:809] GAIA query completed, retrieving results...
+[I 220704 18:43:12 gaia:870] done. rows in result: 
+[I 220704 18:43:16 mast:245] query successful. nmatches: 8
+3226343084449003136
+[I 220704 18:43:16 gaia:550] using GAIA mirror TAP URL: https://gea.esac.esa.int/tap-server/tap/async, with table: gaiadr2.gaia_source
+[I 220704 18:43:16 gaia:555] submitting GAIA TAP query request for input params: {'REQUEST': 'doQuery', 'LANG': 'ADQL', 'FORMAT': 'csv', 'PHASE': 'RUN', 'JOBNAME': 'ab-gaia-1656974596', 'JOBDESCRIPTION': 'astrobase-gaia-tap-ADQL-query', 'QUERY': 'select source_id, ra, dec, phot_g_mean_mag, phot_bp_mean_mag, phot_rp_mean_mag, l, b, parallax, parallax_error, pmra, pmra_error, pmdec, pmdec_error from gaiadr2.gaia_source where source_id = 3226343084449003136'}
+[I 220704 18:43:17 gaia:737] request submitted successfully, current status is: EXECUTING. waiting for results...
+[I 220704 18:43:20 gaia:809] GAIA query completed, retrieving results...
+[I 220704 18:43:21 gaia:870] done. rows in result: 
+[I 220704 18:43:22 mast:245] query successful. nmatches: 3
+4721078629298085760
+[I 220704 18:43:22 gaia:550] using GAIA mirror TAP URL: https://gea.esac.esa.int/tap-server/tap/async, with table: gaiadr2.gaia_source
+[I 220704 18:43:22 gaia:555] submitting GAIA TAP query request for input params: {'REQUEST': 'doQuery', 'LANG': 'ADQL', 'FORMAT': 'csv', 'PHASE': 'RUN', 'JOBNAME': 'ab-gaia-1656974602', 'JOBDESCRIPTION': 'astrobase-gaia-tap-ADQL-query', 'QUERY': 'select source_id, ra, dec, phot_g_mean_mag, phot_bp_mean_mag, phot_rp_mean_mag, l, b, parallax, parallax_error, pmra, pmra_error, pmdec, pmdec_error from gaiadr2.gaia_source where source_id = 4721078629298085760'}
+[I 220704 18:43:23 gaia:737] request submitted successfully, current status is: EXECUTING. waiting for results...
+[I 220704 18:43:26 gaia:809] GAIA query completed, retrieving results...
+[I 220704 18:43:27 gaia:870] done. rows in result: 
+[I 220704 18:43:32 mast:245] query successful. nmatches: 3
+6010531238678187392
+[I 220704 18:43:32 gaia:550] using GAIA mirror TAP URL: https://gea.esac.esa.int/tap-server/tap/async, with table: gaiadr2.gaia_source
+[I 220704 18:43:32 gaia:555] submitting GAIA TAP query request for input params: {'REQUEST': 'doQuery', 'LANG': 'ADQL', 'FORMAT': 'csv', 'PHASE': 'RUN', 'JOBNAME': 'ab-gaia-1656974612', 'JOBDESCRIPTION': 'astrobase-gaia-tap-ADQL-query', 'QUERY': 'select source_id, ra, dec, phot_g_mean_mag, phot_bp_mean_mag, phot_rp_mean_mag, l, b, parallax, parallax_error, pmra, pmra_error, pmdec, pmdec_error from gaiadr2.gaia_source where source_id = 6010531238678187392'}
+[I 220704 18:43:33 gaia:737] request submitted successfully, current status is: EXECUTING. waiting for results...
+[I 220704 18:43:36 gaia:809] GAIA query completed, retrieving results...
+[I 220704 18:43:37 gaia:870] done. rows in result: 
+[I 220704 18:43:41 mast:245] query successful. nmatches: 33
+2969549291923536256
+[I 220704 18:43:41 gaia:550] using GAIA mirror TAP URL: https://gea.esac.esa.int/tap-server/tap/async, with table: gaiadr2.gaia_source
+[I 220704 18:43:41 gaia:555] submitting GAIA TAP query request for input params: {'REQUEST': 'doQuery', 'LANG': 'ADQL', 'FORMAT': 'csv', 'PHASE': 'RUN', 'JOBNAME': 'ab-gaia-1656974621', 'JOBDESCRIPTION': 'astrobase-gaia-tap-ADQL-query', 'QUERY': 'select source_id, ra, dec, phot_g_mean_mag, phot_bp_mean_mag, phot_rp_mean_mag, l, b, parallax, parallax_error, pmra, pmra_error, pmdec, pmdec_error from gaiadr2.gaia_source where source_id = 2969549291923536256'}
+[I 220704 18:43:42 gaia:737] request submitted successfully, current status is: EXECUTING. waiting for results...
+[I 220704 18:43:46 gaia:809] GAIA query completed, retrieving results...
+[I 220704 18:43:46 gaia:870] done. rows in result: 
+[I 220704 18:43:50 mast:245] query successful. nmatches: 3
+6010544226659577728
+[I 220704 18:43:50 gaia:550] using GAIA mirror TAP URL: https://gea.esac.esa.int/tap-server/tap/async, with table: gaiadr2.gaia_source
+[I 220704 18:43:50 gaia:555] submitting GAIA TAP query request for input params: {'REQUEST': 'doQuery', 'LANG': 'ADQL', 'FORMAT': 'csv', 'PHASE': 'RUN', 'JOBNAME': 'ab-gaia-1656974630', 'JOBDESCRIPTION': 'astrobase-gaia-tap-ADQL-query', 'QUERY': 'select source_id, ra, dec, phot_g_mean_mag, phot_bp_mean_mag, phot_rp_mean_mag, l, b, parallax, parallax_error, pmra, pmra_error, pmdec, pmdec_error from gaiadr2.gaia_source where source_id = 6010544226659577728'}
+[I 220704 18:43:51 gaia:737] request submitted successfully, current status is: EXECUTING. waiting for results...
+[I 220704 18:43:54 gaia:809] GAIA query completed, retrieving results...
+[I 220704 18:43:55 gaia:870] done. rows in result: 
+[I 220704 18:44:00 mast:245] query successful. nmatches: 24
+6010508698689256064
+[I 220704 18:44:00 gaia:550] using GAIA mirror TAP URL: https://gea.esac.esa.int/tap-server/tap/async, with table: gaiadr2.gaia_source
+[I 220704 18:44:00 gaia:555] submitting GAIA TAP query request for input params: {'REQUEST': 'doQuery', 'LANG': 'ADQL', 'FORMAT': 'csv', 'PHASE': 'RUN', 'JOBNAME': 'ab-gaia-1656974640', 'JOBDESCRIPTION': 'astrobase-gaia-tap-ADQL-query', 'QUERY': 'select source_id, ra, dec, phot_g_mean_mag, phot_bp_mean_mag, phot_rp_mean_mag, l, b, parallax, parallax_error, pmra, pmra_error, pmdec, pmdec_error from gaiadr2.gaia_source where source_id = 6010508698689256064'}
+[I 220704 18:44:01 gaia:737] request submitted successfully, current status is: EXECUTING. waiting for results...
+[I 220704 18:44:04 gaia:809] GAIA query completed, retrieving results...
+[I 220704 18:44:05 gaia:870] done. rows in result: 
+[I 220704 18:44:10 mast:245] query successful. nmatches: 21
+6010557175976468480
+[I 220704 18:44:10 gaia:550] using GAIA mirror TAP URL: https://gea.esac.esa.int/tap-server/tap/async, with table: gaiadr2.gaia_source
+[I 220704 18:44:10 gaia:555] submitting GAIA TAP query request for input params: {'REQUEST': 'doQuery', 'LANG': 'ADQL', 'FORMAT': 'csv', 'PHASE': 'RUN', 'JOBNAME': 'ab-gaia-1656974650', 'JOBDESCRIPTION': 'astrobase-gaia-tap-ADQL-query', 'QUERY': 'select source_id, ra, dec, phot_g_mean_mag, phot_bp_mean_mag, phot_rp_mean_mag, l, b, parallax, parallax_error, pmra, pmra_error, pmdec, pmdec_error from gaiadr2.gaia_source where source_id = 6010557175976468480'}
+[I 220704 18:44:10 gaia:737] request submitted successfully, current status is: EXECUTING. waiting for results...
+[I 220704 18:44:14 gaia:809] GAIA query completed, retrieving results...
+[I 220704 18:44:14 gaia:870] done. rows in result: 
+[I 220704 18:44:16 mast:245] query successful. nmatches: 28
+2969663400614835328
+[I 220704 18:44:16 gaia:550] using GAIA mirror TAP URL: https://gea.esac.esa.int/tap-server/tap/async, with table: gaiadr2.gaia_source
+[I 220704 18:44:16 gaia:555] submitting GAIA TAP query request for input params: {'REQUEST': 'doQuery', 'LANG': 'ADQL', 'FORMAT': 'csv', 'PHASE': 'RUN', 'JOBNAME': 'ab-gaia-1656974656', 'JOBDESCRIPTION': 'astrobase-gaia-tap-ADQL-query', 'QUERY': 'select source_id, ra, dec, phot_g_mean_mag, phot_bp_mean_mag, phot_rp_mean_mag, l, b, parallax, parallax_error, pmra, pmra_error, pmdec, pmdec_error from gaiadr2.gaia_source where source_id = 2969663400614835328'}
+[I 220704 18:44:17 gaia:737] request submitted successfully, current status is: EXECUTING. waiting for results...
+[I 220704 18:44:20 gaia:809] GAIA query completed, retrieving results...
+[I 220704 18:44:21 gaia:870] done. rows in result: 
+[I 220704 18:44:26 mast:245] query successful. nmatches: 1
+6003002882571321344
+[I 220704 18:44:26 gaia:550] using GAIA mirror TAP URL: https://gea.esac.esa.int/tap-server/tap/async, with table: gaiadr2.gaia_source
+[I 220704 18:44:26 gaia:555] submitting GAIA TAP query request for input params: {'REQUEST': 'doQuery', 'LANG': 'ADQL', 'FORMAT': 'csv', 'PHASE': 'RUN', 'JOBNAME': 'ab-gaia-1656974666', 'JOBDESCRIPTION': 'astrobase-gaia-tap-ADQL-query', 'QUERY': 'select source_id, ra, dec, phot_g_mean_mag, phot_bp_mean_mag, phot_rp_mean_mag, l, b, parallax, parallax_error, pmra, pmra_error, pmdec, pmdec_error from gaiadr2.gaia_source where source_id = 6003002882571321344'}
+[I 220704 18:44:27 gaia:737] request submitted successfully, current status is: EXECUTING. waiting for results...
+[I 220704 18:44:31 gaia:809] GAIA query completed, retrieving results...
+[I 220704 18:44:31 gaia:870] done. rows in result: 
+[I 220704 18:44:35 mast:245] query successful. nmatches: 21
+5572151314107768832
+[I 220704 18:44:35 gaia:550] using GAIA mirror TAP URL: https://gea.esac.esa.int/tap-server/tap/async, with table: gaiadr2.gaia_source
+[I 220704 18:44:35 gaia:555] submitting GAIA TAP query request for input params: {'REQUEST': 'doQuery', 'LANG': 'ADQL', 'FORMAT': 'csv', 'PHASE': 'RUN', 'JOBNAME': 'ab-gaia-1656974675', 'JOBDESCRIPTION': 'astrobase-gaia-tap-ADQL-query', 'QUERY': 'select source_id, ra, dec, phot_g_mean_mag, phot_bp_mean_mag, phot_rp_mean_mag, l, b, parallax, parallax_error, pmra, pmra_error, pmdec, pmdec_error from gaiadr2.gaia_source where source_id = 5572151314107768832'}
+[I 220704 18:44:36 gaia:737] request submitted successfully, current status is: EXECUTING. waiting for results...
+[I 220704 18:44:39 gaia:809] GAIA query completed, retrieving results...
+[I 220704 18:44:40 gaia:870] done. rows in result: 
+[I 220704 18:44:44 mast:245] query successful. nmatches: 2
+2945166418989801984
+[I 220704 18:44:44 gaia:550] using GAIA mirror TAP URL: https://gea.esac.esa.int/tap-server/tap/async, with table: gaiadr2.gaia_source
+[I 220704 18:44:44 gaia:555] submitting GAIA TAP query request for input params: {'REQUEST': 'doQuery', 'LANG': 'ADQL', 'FORMAT': 'csv', 'PHASE': 'RUN', 'JOBNAME': 'ab-gaia-1656974684', 'JOBDESCRIPTION': 'astrobase-gaia-tap-ADQL-query', 'QUERY': 'select source_id, ra, dec, phot_g_mean_mag, phot_bp_mean_mag, phot_rp_mean_mag, l, b, parallax, parallax_error, pmra, pmra_error, pmdec, pmdec_error from gaiadr2.gaia_source where source_id = 2945166418989801984'}
+[I 220704 18:44:45 gaia:737] request submitted successfully, current status is: EXECUTING. waiting for results...
+[I 220704 18:44:48 gaia:809] GAIA query completed, retrieving results...
+[I 220704 18:44:49 gaia:870] done. rows in result: 
+[I 220704 18:44:52 mast:245] query successful. nmatches: 10
+5273480353499087744
+[I 220704 18:44:52 gaia:550] using GAIA mirror TAP URL: https://gea.esac.esa.int/tap-server/tap/async, with table: gaiadr2.gaia_source
+[I 220704 18:44:52 gaia:555] submitting GAIA TAP query request for input params: {'REQUEST': 'doQuery', 'LANG': 'ADQL', 'FORMAT': 'csv', 'PHASE': 'RUN', 'JOBNAME': 'ab-gaia-1656974692', 'JOBDESCRIPTION': 'astrobase-gaia-tap-ADQL-query', 'QUERY': 'select source_id, ra, dec, phot_g_mean_mag, phot_bp_mean_mag, phot_rp_mean_mag, l, b, parallax, parallax_error, pmra, pmra_error, pmdec, pmdec_error from gaiadr2.gaia_source where source_id = 5273480353499087744'}
+[I 220704 18:44:53 gaia:737] request submitted successfully, current status is: EXECUTING. waiting for results...
+[I 220704 18:44:56 gaia:809] GAIA query completed, retrieving results...
+[I 220704 18:44:57 gaia:870] done. rows in result: 
+[I 220704 18:45:02 mast:245] query successful. nmatches: 12
+6348951090810594688
+[I 220704 18:45:02 gaia:550] using GAIA mirror TAP URL: https://gea.esac.esa.int/tap-server/tap/async, with table: gaiadr2.gaia_source
+[I 220704 18:45:02 gaia:555] submitting GAIA TAP query request for input params: {'REQUEST': 'doQuery', 'LANG': 'ADQL', 'FORMAT': 'csv', 'PHASE': 'RUN', 'JOBNAME': 'ab-gaia-1656974702', 'JOBDESCRIPTION': 'astrobase-gaia-tap-ADQL-query', 'QUERY': 'select source_id, ra, dec, phot_g_mean_mag, phot_bp_mean_mag, phot_rp_mean_mag, l, b, parallax, parallax_error, pmra, pmra_error, pmdec, pmdec_error from gaiadr2.gaia_source where source_id = 6348951090810594688'}
+[I 220704 18:45:03 gaia:737] request submitted successfully, current status is: EXECUTING. waiting for results...
+[I 220704 18:45:06 gaia:809] GAIA query completed, retrieving results...
+[I 220704 18:45:07 gaia:870] done. rows in result: 
+[I 220704 18:45:10 mast:245] query successful. nmatches: 4
+2133055723280822016
+[I 220704 18:45:10 gaia:550] using GAIA mirror TAP URL: https://gea.esac.esa.int/tap-server/tap/async, with table: gaiadr2.gaia_source
+[I 220704 18:45:10 gaia:555] submitting GAIA TAP query request for input params: {'REQUEST': 'doQuery', 'LANG': 'ADQL', 'FORMAT': 'csv', 'PHASE': 'RUN', 'JOBNAME': 'ab-gaia-1656974710', 'JOBDESCRIPTION': 'astrobase-gaia-tap-ADQL-query', 'QUERY': 'select source_id, ra, dec, phot_g_mean_mag, phot_bp_mean_mag, phot_rp_mean_mag, l, b, parallax, parallax_error, pmra, pmra_error, pmdec, pmdec_error from gaiadr2.gaia_source where source_id = 2133055723280822016'}
+[I 220704 18:45:11 gaia:737] request submitted successfully, current status is: EXECUTING. waiting for results...
+[I 220704 18:45:14 gaia:809] GAIA query completed, retrieving results...
+[I 220704 18:45:15 gaia:870] done. rows in result: 
+[I 220704 18:45:17 mast:245] query successful. nmatches: 7
+162535345034688768
+[I 220704 18:45:17 gaia:550] using GAIA mirror TAP URL: https://gea.esac.esa.int/tap-server/tap/async, with table: gaiadr2.gaia_source
+[I 220704 18:45:17 gaia:555] submitting GAIA TAP query request for input params: {'REQUEST': 'doQuery', 'LANG': 'ADQL', 'FORMAT': 'csv', 'PHASE': 'RUN', 'JOBNAME': 'ab-gaia-1656974717', 'JOBDESCRIPTION': 'astrobase-gaia-tap-ADQL-query', 'QUERY': 'select source_id, ra, dec, phot_g_mean_mag, phot_bp_mean_mag, phot_rp_mean_mag, l, b, parallax, parallax_error, pmra, pmra_error, pmdec, pmdec_error from gaiadr2.gaia_source where source_id = 162535345034688768'}
+[I 220704 18:45:17 gaia:737] request submitted successfully, current status is: EXECUTING. waiting for results...
+[I 220704 18:45:20 gaia:809] GAIA query completed, retrieving results...
+[I 220704 18:45:21 gaia:870] done. rows in result: 
+[I 220704 18:45:26 mast:245] query successful. nmatches: 8
+162541942104406784
+[I 220704 18:45:26 gaia:550] using GAIA mirror TAP URL: https://gea.esac.esa.int/tap-server/tap/async, with table: gaiadr2.gaia_source
+[I 220704 18:45:26 gaia:555] submitting GAIA TAP query request for input params: {'REQUEST': 'doQuery', 'LANG': 'ADQL', 'FORMAT': 'csv', 'PHASE': 'RUN', 'JOBNAME': 'ab-gaia-1656974726', 'JOBDESCRIPTION': 'astrobase-gaia-tap-ADQL-query', 'QUERY': 'select source_id, ra, dec, phot_g_mean_mag, phot_bp_mean_mag, phot_rp_mean_mag, l, b, parallax, parallax_error, pmra, pmra_error, pmdec, pmdec_error from gaiadr2.gaia_source where source_id = 162541942104406784'}
+[I 220704 18:45:27 gaia:737] request submitted successfully, current status is: EXECUTING. waiting for results...
+[I 220704 18:45:30 gaia:809] GAIA query completed, retrieving results...
+[I 220704 18:45:31 gaia:870] done. rows in result: 
+[I 220704 18:45:32 mast:245] query successful. nmatches: 3
+5223096603248408192
+[I 220704 18:45:32 gaia:550] using GAIA mirror TAP URL: https://gea.esac.esa.int/tap-server/tap/async, with table: gaiadr2.gaia_source
+[I 220704 18:45:32 gaia:555] submitting GAIA TAP query request for input params: {'REQUEST': 'doQuery', 'LANG': 'ADQL', 'FORMAT': 'csv', 'PHASE': 'RUN', 'JOBNAME': 'ab-gaia-1656974732', 'JOBDESCRIPTION': 'astrobase-gaia-tap-ADQL-query', 'QUERY': 'select source_id, ra, dec, phot_g_mean_mag, phot_bp_mean_mag, phot_rp_mean_mag, l, b, parallax, parallax_error, pmra, pmra_error, pmdec, pmdec_error from gaiadr2.gaia_source where source_id = 5223096603248408192'}
+[I 220704 18:45:33 gaia:737] request submitted successfully, current status is: EXECUTING. waiting for results...
+[I 220704 18:45:36 gaia:809] GAIA query completed, retrieving results...
+[I 220704 18:45:37 gaia:870] done. rows in result: 
+[I 220704 18:45:41 mast:245] query successful. nmatches: 6
+3182599942051379200
+[I 220704 18:45:41 gaia:550] using GAIA mirror TAP URL: https://gea.esac.esa.int/tap-server/tap/async, with table: gaiadr2.gaia_source
+[I 220704 18:45:41 gaia:555] submitting GAIA TAP query request for input params: {'REQUEST': 'doQuery', 'LANG': 'ADQL', 'FORMAT': 'csv', 'PHASE': 'RUN', 'JOBNAME': 'ab-gaia-1656974741', 'JOBDESCRIPTION': 'astrobase-gaia-tap-ADQL-query', 'QUERY': 'select source_id, ra, dec, phot_g_mean_mag, phot_bp_mean_mag, phot_rp_mean_mag, l, b, parallax, parallax_error, pmra, pmra_error, pmdec, pmdec_error from gaiadr2.gaia_source where source_id = 3182599942051379200'}
+[I 220704 18:45:42 gaia:737] request submitted successfully, current status is: EXECUTING. waiting for results...
+[I 220704 18:45:45 gaia:809] GAIA query completed, retrieving results...
+[I 220704 18:45:46 gaia:870] done. rows in result: 
+[I 220704 18:45:52 mast:245] query successful. nmatches: 1
+6036257061986755584
+[I 220704 18:45:52 gaia:550] using GAIA mirror TAP URL: https://gea.esac.esa.int/tap-server/tap/async, with table: gaiadr2.gaia_source
+[I 220704 18:45:52 gaia:555] submitting GAIA TAP query request for input params: {'REQUEST': 'doQuery', 'LANG': 'ADQL', 'FORMAT': 'csv', 'PHASE': 'RUN', 'JOBNAME': 'ab-gaia-1656974752', 'JOBDESCRIPTION': 'astrobase-gaia-tap-ADQL-query', 'QUERY': 'select source_id, ra, dec, phot_g_mean_mag, phot_bp_mean_mag, phot_rp_mean_mag, l, b, parallax, parallax_error, pmra, pmra_error, pmdec, pmdec_error from gaiadr2.gaia_source where source_id = 6036257061986755584'}
+[I 220704 18:45:52 gaia:737] request submitted successfully, current status is: EXECUTING. waiting for results...
+[I 220704 18:45:55 gaia:809] GAIA query completed, retrieving results...
+[I 220704 18:45:56 gaia:870] done. rows in result: 
+[I 220704 18:46:01 mast:245] query successful. nmatches: 18
+5732702551750568064
+[I 220704 18:46:01 gaia:550] using GAIA mirror TAP URL: https://gea.esac.esa.int/tap-server/tap/async, with table: gaiadr2.gaia_source
+[I 220704 18:46:01 gaia:555] submitting GAIA TAP query request for input params: {'REQUEST': 'doQuery', 'LANG': 'ADQL', 'FORMAT': 'csv', 'PHASE': 'RUN', 'JOBNAME': 'ab-gaia-1656974761', 'JOBDESCRIPTION': 'astrobase-gaia-tap-ADQL-query', 'QUERY': 'select source_id, ra, dec, phot_g_mean_mag, phot_bp_mean_mag, phot_rp_mean_mag, l, b, parallax, parallax_error, pmra, pmra_error, pmdec, pmdec_error from gaiadr2.gaia_source where source_id = 5732702551750568064'}
+[I 220704 18:46:02 gaia:737] request submitted successfully, current status is: EXECUTING. waiting for results...
+[I 220704 18:46:04 gaia:809] GAIA query completed, retrieving results...
+[I 220704 18:46:05 gaia:870] done. rows in result: 
+[I 220704 18:46:06 mast:245] query successful. nmatches: 4
+1927058921282291456
+[I 220704 18:46:06 gaia:550] using GAIA mirror TAP URL: https://gea.esac.esa.int/tap-server/tap/async, with table: gaiadr2.gaia_source
+[I 220704 18:46:06 gaia:555] submitting GAIA TAP query request for input params: {'REQUEST': 'doQuery', 'LANG': 'ADQL', 'FORMAT': 'csv', 'PHASE': 'RUN', 'JOBNAME': 'ab-gaia-1656974766', 'JOBDESCRIPTION': 'astrobase-gaia-tap-ADQL-query', 'QUERY': 'select source_id, ra, dec, phot_g_mean_mag, phot_bp_mean_mag, phot_rp_mean_mag, l, b, parallax, parallax_error, pmra, pmra_error, pmdec, pmdec_error from gaiadr2.gaia_source where source_id = 1927058921282291456'}
+[I 220704 18:46:07 gaia:737] request submitted successfully, current status is: EXECUTING. waiting for results...
+[I 220704 18:46:11 gaia:809] GAIA query completed, retrieving results...
+[I 220704 18:46:11 gaia:870] done. rows in result: 
+[I 220704 18:46:16 mast:245] query successful. nmatches: 6
+3319608191905879168
+[I 220704 18:46:16 gaia:550] using GAIA mirror TAP URL: https://gea.esac.esa.int/tap-server/tap/async, with table: gaiadr2.gaia_source
+[I 220704 18:46:16 gaia:555] submitting GAIA TAP query request for input params: {'REQUEST': 'doQuery', 'LANG': 'ADQL', 'FORMAT': 'csv', 'PHASE': 'RUN', 'JOBNAME': 'ab-gaia-1656974776', 'JOBDESCRIPTION': 'astrobase-gaia-tap-ADQL-query', 'QUERY': 'select source_id, ra, dec, phot_g_mean_mag, phot_bp_mean_mag, phot_rp_mean_mag, l, b, parallax, parallax_error, pmra, pmra_error, pmdec, pmdec_error from gaiadr2.gaia_source where source_id = 3319608191905879168'}
+[I 220704 18:46:17 gaia:737] request submitted successfully, current status is: EXECUTING. waiting for results...
+[I 220704 18:46:20 gaia:809] GAIA query completed, retrieving results...
+[I 220704 18:46:21 gaia:870] done. rows in result: 
+[I 220704 18:46:22 mast:245] query successful. nmatches: 3
+3784327059242949504
+[I 220704 18:46:22 gaia:550] using GAIA mirror TAP URL: https://gea.esac.esa.int/tap-server/tap/async, with table: gaiadr2.gaia_source
+[I 220704 18:46:22 gaia:555] submitting GAIA TAP query request for input params: {'REQUEST': 'doQuery', 'LANG': 'ADQL', 'FORMAT': 'csv', 'PHASE': 'RUN', 'JOBNAME': 'ab-gaia-1656974782', 'JOBDESCRIPTION': 'astrobase-gaia-tap-ADQL-query', 'QUERY': 'select source_id, ra, dec, phot_g_mean_mag, phot_bp_mean_mag, phot_rp_mean_mag, l, b, parallax, parallax_error, pmra, pmra_error, pmdec, pmdec_error from gaiadr2.gaia_source where source_id = 3784327059242949504'}
+[I 220704 18:46:23 gaia:737] request submitted successfully, current status is: EXECUTING. waiting for results...
+[I 220704 18:46:26 gaia:809] GAIA query completed, retrieving results...
+[I 220704 18:46:27 gaia:870] done. rows in result: 
+[I 220704 18:46:29 mast:245] query successful. nmatches: 2
+6619440159652409728
+[I 220704 18:46:29 gaia:550] using GAIA mirror TAP URL: https://gea.esac.esa.int/tap-server/tap/async, with table: gaiadr2.gaia_source
+[I 220704 18:46:29 gaia:555] submitting GAIA TAP query request for input params: {'REQUEST': 'doQuery', 'LANG': 'ADQL', 'FORMAT': 'csv', 'PHASE': 'RUN', 'JOBNAME': 'ab-gaia-1656974789', 'JOBDESCRIPTION': 'astrobase-gaia-tap-ADQL-query', 'QUERY': 'select source_id, ra, dec, phot_g_mean_mag, phot_bp_mean_mag, phot_rp_mean_mag, l, b, parallax, parallax_error, pmra, pmra_error, pmdec, pmdec_error from gaiadr2.gaia_source where source_id = 6619440159652409728'}
+[I 220704 18:46:30 gaia:737] request submitted successfully, current status is: EXECUTING. waiting for results...
+[I 220704 18:46:33 gaia:809] GAIA query completed, retrieving results...
+[I 220704 18:46:34 gaia:870] done. rows in result: 
+[I 220704 18:46:38 mast:245] query successful. nmatches: 2
+2229832464716233728
+[I 220704 18:46:38 gaia:550] using GAIA mirror TAP URL: https://gea.esac.esa.int/tap-server/tap/async, with table: gaiadr2.gaia_source
+[I 220704 18:46:38 gaia:555] submitting GAIA TAP query request for input params: {'REQUEST': 'doQuery', 'LANG': 'ADQL', 'FORMAT': 'csv', 'PHASE': 'RUN', 'JOBNAME': 'ab-gaia-1656974798', 'JOBDESCRIPTION': 'astrobase-gaia-tap-ADQL-query', 'QUERY': 'select source_id, ra, dec, phot_g_mean_mag, phot_bp_mean_mag, phot_rp_mean_mag, l, b, parallax, parallax_error, pmra, pmra_error, pmdec, pmdec_error from gaiadr2.gaia_source where source_id = 2229832464716233728'}
+[I 220704 18:46:39 gaia:737] request submitted successfully, current status is: EXECUTING. waiting for results...
+[I 220704 18:46:42 gaia:809] GAIA query completed, retrieving results...
+[I 220704 18:46:43 gaia:870] done. rows in result: 
+[I 220704 18:46:45 mast:245] query successful. nmatches: 5
+4111950974216689024
+[I 220704 18:46:45 gaia:550] using GAIA mirror TAP URL: https://gea.esac.esa.int/tap-server/tap/async, with table: gaiadr2.gaia_source
+[I 220704 18:46:45 gaia:555] submitting GAIA TAP query request for input params: {'REQUEST': 'doQuery', 'LANG': 'ADQL', 'FORMAT': 'csv', 'PHASE': 'RUN', 'JOBNAME': 'ab-gaia-1656974805', 'JOBDESCRIPTION': 'astrobase-gaia-tap-ADQL-query', 'QUERY': 'select source_id, ra, dec, phot_g_mean_mag, phot_bp_mean_mag, phot_rp_mean_mag, l, b, parallax, parallax_error, pmra, pmra_error, pmdec, pmdec_error from gaiadr2.gaia_source where source_id = 4111950974216689024'}
+[I 220704 18:46:46 gaia:737] request submitted successfully, current status is: EXECUTING. waiting for results...
+[I 220704 18:46:49 gaia:809] GAIA query completed, retrieving results...
+[I 220704 18:46:50 gaia:870] done. rows in result: 
+[I 220704 18:46:53 mast:245] query successful. nmatches: 104
+6013156906798029696
+[I 220704 18:46:53 gaia:550] using GAIA mirror TAP URL: https://gea.esac.esa.int/tap-server/tap/async, with table: gaiadr2.gaia_source
+[I 220704 18:46:53 gaia:555] submitting GAIA TAP query request for input params: {'REQUEST': 'doQuery', 'LANG': 'ADQL', 'FORMAT': 'csv', 'PHASE': 'RUN', 'JOBNAME': 'ab-gaia-1656974813', 'JOBDESCRIPTION': 'astrobase-gaia-tap-ADQL-query', 'QUERY': 'select source_id, ra, dec, phot_g_mean_mag, phot_bp_mean_mag, phot_rp_mean_mag, l, b, parallax, parallax_error, pmra, pmra_error, pmdec, pmdec_error from gaiadr2.gaia_source where source_id = 6013156906798029696'}
+[I 220704 18:46:54 gaia:737] request submitted successfully, current status is: EXECUTING. waiting for results...
+[I 220704 18:46:57 gaia:809] GAIA query completed, retrieving results...
+[I 220704 18:46:58 gaia:870] done. rows in result: 
+[I 220704 18:47:03 mast:245] query successful. nmatches: 9
+6013224866059899904
+[I 220704 18:47:03 gaia:550] using GAIA mirror TAP URL: https://gea.esac.esa.int/tap-server/tap/async, with table: gaiadr2.gaia_source
+[I 220704 18:47:03 gaia:555] submitting GAIA TAP query request for input params: {'REQUEST': 'doQuery', 'LANG': 'ADQL', 'FORMAT': 'csv', 'PHASE': 'RUN', 'JOBNAME': 'ab-gaia-1656974823', 'JOBDESCRIPTION': 'astrobase-gaia-tap-ADQL-query', 'QUERY': 'select source_id, ra, dec, phot_g_mean_mag, phot_bp_mean_mag, phot_rp_mean_mag, l, b, parallax, parallax_error, pmra, pmra_error, pmdec, pmdec_error from gaiadr2.gaia_source where source_id = 6013224866059899904'}
+[I 220704 18:47:04 gaia:737] request submitted successfully, current status is: EXECUTING. waiting for results...
+[I 220704 18:47:07 gaia:809] GAIA query completed, retrieving results...
+[I 220704 18:47:08 gaia:870] done. rows in result: 
+[I 220704 18:47:12 mast:245] query successful. nmatches: 9
+561016840182392960
+[I 220704 18:47:12 gaia:550] using GAIA mirror TAP URL: https://gea.esac.esa.int/tap-server/tap/async, with table: gaiadr2.gaia_source
+[I 220704 18:47:12 gaia:555] submitting GAIA TAP query request for input params: {'REQUEST': 'doQuery', 'LANG': 'ADQL', 'FORMAT': 'csv', 'PHASE': 'RUN', 'JOBNAME': 'ab-gaia-1656974832', 'JOBDESCRIPTION': 'astrobase-gaia-tap-ADQL-query', 'QUERY': 'select source_id, ra, dec, phot_g_mean_mag, phot_bp_mean_mag, phot_rp_mean_mag, l, b, parallax, parallax_error, pmra, pmra_error, pmdec, pmdec_error from gaiadr2.gaia_source where source_id = 561016840182392960'}
+[I 220704 18:47:12 gaia:737] request submitted successfully, current status is: EXECUTING. waiting for results...
+[I 220704 18:47:15 gaia:809] GAIA query completed, retrieving results...
+[I 220704 18:47:16 gaia:870] done. rows in result: 
+[I 220704 18:47:18 mast:245] query successful. nmatches: 6
+560852501849699072
+[I 220704 18:47:18 gaia:550] using GAIA mirror TAP URL: https://gea.esac.esa.int/tap-server/tap/async, with table: gaiadr2.gaia_source
+[I 220704 18:47:18 gaia:555] submitting GAIA TAP query request for input params: {'REQUEST': 'doQuery', 'LANG': 'ADQL', 'FORMAT': 'csv', 'PHASE': 'RUN', 'JOBNAME': 'ab-gaia-1656974838', 'JOBDESCRIPTION': 'astrobase-gaia-tap-ADQL-query', 'QUERY': 'select source_id, ra, dec, phot_g_mean_mag, phot_bp_mean_mag, phot_rp_mean_mag, l, b, parallax, parallax_error, pmra, pmra_error, pmdec, pmdec_error from gaiadr2.gaia_source where source_id = 560852501849699072'}
+[I 220704 18:47:19 gaia:737] request submitted successfully, current status is: EXECUTING. waiting for results...
+[I 220704 18:47:22 gaia:809] GAIA query completed, retrieving results...
+[I 220704 18:47:23 gaia:870] done. rows in result: 
+[I 220704 18:47:28 mast:245] query successful. nmatches: 4
+560887097809630976
+[I 220704 18:47:28 gaia:550] using GAIA mirror TAP URL: https://gea.esac.esa.int/tap-server/tap/async, with table: gaiadr2.gaia_source
+[I 220704 18:47:28 gaia:555] submitting GAIA TAP query request for input params: {'REQUEST': 'doQuery', 'LANG': 'ADQL', 'FORMAT': 'csv', 'PHASE': 'RUN', 'JOBNAME': 'ab-gaia-1656974848', 'JOBDESCRIPTION': 'astrobase-gaia-tap-ADQL-query', 'QUERY': 'select source_id, ra, dec, phot_g_mean_mag, phot_bp_mean_mag, phot_rp_mean_mag, l, b, parallax, parallax_error, pmra, pmra_error, pmdec, pmdec_error from gaiadr2.gaia_source where source_id = 560887097809630976'}
+[I 220704 18:47:29 gaia:737] request submitted successfully, current status is: EXECUTING. waiting for results...
+[I 220704 18:47:33 gaia:809] GAIA query completed, retrieving results...
+[I 220704 18:47:33 gaia:870] done. rows in result: 
+[I 220704 18:47:35 mast:245] query successful. nmatches: 1
+5566206529616713472
+[I 220704 18:47:35 gaia:550] using GAIA mirror TAP URL: https://gea.esac.esa.int/tap-server/tap/async, with table: gaiadr2.gaia_source
+[I 220704 18:47:35 gaia:555] submitting GAIA TAP query request for input params: {'REQUEST': 'doQuery', 'LANG': 'ADQL', 'FORMAT': 'csv', 'PHASE': 'RUN', 'JOBNAME': 'ab-gaia-1656974855', 'JOBDESCRIPTION': 'astrobase-gaia-tap-ADQL-query', 'QUERY': 'select source_id, ra, dec, phot_g_mean_mag, phot_bp_mean_mag, phot_rp_mean_mag, l, b, parallax, parallax_error, pmra, pmra_error, pmdec, pmdec_error from gaiadr2.gaia_source where source_id = 5566206529616713472'}
+[I 220704 18:47:35 gaia:737] request submitted successfully, current status is: EXECUTING. waiting for results...
+[I 220704 18:47:38 gaia:809] GAIA query completed, retrieving results...
+[I 220704 18:47:39 gaia:870] done. rows in result: 
+[I 220704 18:47:43 mast:245] query successful. nmatches: 3
+5864546021863527552
+[I 220704 18:47:43 gaia:550] using GAIA mirror TAP URL: https://gea.esac.esa.int/tap-server/tap/async, with table: gaiadr2.gaia_source
+[I 220704 18:47:43 gaia:555] submitting GAIA TAP query request for input params: {'REQUEST': 'doQuery', 'LANG': 'ADQL', 'FORMAT': 'csv', 'PHASE': 'RUN', 'JOBNAME': 'ab-gaia-1656974863', 'JOBDESCRIPTION': 'astrobase-gaia-tap-ADQL-query', 'QUERY': 'select source_id, ra, dec, phot_g_mean_mag, phot_bp_mean_mag, phot_rp_mean_mag, l, b, parallax, parallax_error, pmra, pmra_error, pmdec, pmdec_error from gaiadr2.gaia_source where source_id = 5864546021863527552'}
+[I 220704 18:47:44 gaia:737] request submitted successfully, current status is: EXECUTING. waiting for results...
+[I 220704 18:47:47 gaia:809] GAIA query completed, retrieving results...
+[I 220704 18:47:48 gaia:870] done. rows in result: 
+[I 220704 18:47:50 mast:245] query successful. nmatches: 74
+6199367893976386304
+[I 220704 18:47:50 gaia:550] using GAIA mirror TAP URL: https://gea.esac.esa.int/tap-server/tap/async, with table: gaiadr2.gaia_source
+[I 220704 18:47:50 gaia:555] submitting GAIA TAP query request for input params: {'REQUEST': 'doQuery', 'LANG': 'ADQL', 'FORMAT': 'csv', 'PHASE': 'RUN', 'JOBNAME': 'ab-gaia-1656974870', 'JOBDESCRIPTION': 'astrobase-gaia-tap-ADQL-query', 'QUERY': 'select source_id, ra, dec, phot_g_mean_mag, phot_bp_mean_mag, phot_rp_mean_mag, l, b, parallax, parallax_error, pmra, pmra_error, pmdec, pmdec_error from gaiadr2.gaia_source where source_id = 6199367893976386304'}
+[I 220704 18:47:51 gaia:737] request submitted successfully, current status is: EXECUTING. waiting for results...
+[I 220704 18:47:55 gaia:809] GAIA query completed, retrieving results...
+[I 220704 18:47:55 gaia:870] done. rows in result: 
+[I 220704 18:47:59 mast:245] query successful. nmatches: 19
+6087735612280641536
+[I 220704 18:47:59 gaia:550] using GAIA mirror TAP URL: https://gea.esac.esa.int/tap-server/tap/async, with table: gaiadr2.gaia_source
+[I 220704 18:47:59 gaia:555] submitting GAIA TAP query request for input params: {'REQUEST': 'doQuery', 'LANG': 'ADQL', 'FORMAT': 'csv', 'PHASE': 'RUN', 'JOBNAME': 'ab-gaia-1656974879', 'JOBDESCRIPTION': 'astrobase-gaia-tap-ADQL-query', 'QUERY': 'select source_id, ra, dec, phot_g_mean_mag, phot_bp_mean_mag, phot_rp_mean_mag, l, b, parallax, parallax_error, pmra, pmra_error, pmdec, pmdec_error from gaiadr2.gaia_source where source_id = 6087735612280641536'}
+[I 220704 18:48:00 gaia:737] request submitted successfully, current status is: EXECUTING. waiting for results...
+[I 220704 18:48:03 gaia:809] GAIA query completed, retrieving results...
+[I 220704 18:48:03 gaia:870] done. rows in result: 
+[I 220704 18:48:08 mast:245] query successful. nmatches: 7
+6038965468360703872
+[I 220704 18:48:08 gaia:550] using GAIA mirror TAP URL: https://gea.esac.esa.int/tap-server/tap/async, with table: gaiadr2.gaia_source
+[I 220704 18:48:08 gaia:555] submitting GAIA TAP query request for input params: {'REQUEST': 'doQuery', 'LANG': 'ADQL', 'FORMAT': 'csv', 'PHASE': 'RUN', 'JOBNAME': 'ab-gaia-1656974888', 'JOBDESCRIPTION': 'astrobase-gaia-tap-ADQL-query', 'QUERY': 'select source_id, ra, dec, phot_g_mean_mag, phot_bp_mean_mag, phot_rp_mean_mag, l, b, parallax, parallax_error, pmra, pmra_error, pmdec, pmdec_error from gaiadr2.gaia_source where source_id = 6038965468360703872'}
+[I 220704 18:48:09 gaia:737] request submitted successfully, current status is: EXECUTING. waiting for results...
+[I 220704 18:48:12 gaia:809] GAIA query completed, retrieving results...
+[I 220704 18:48:12 gaia:870] done. rows in result: 
+[I 220704 18:48:16 mast:245] query successful. nmatches: 6
+6087718535490651136
+[I 220704 18:48:16 gaia:550] using GAIA mirror TAP URL: https://gea.esac.esa.int/tap-server/tap/async, with table: gaiadr2.gaia_source
+[I 220704 18:48:16 gaia:555] submitting GAIA TAP query request for input params: {'REQUEST': 'doQuery', 'LANG': 'ADQL', 'FORMAT': 'csv', 'PHASE': 'RUN', 'JOBNAME': 'ab-gaia-1656974896', 'JOBDESCRIPTION': 'astrobase-gaia-tap-ADQL-query', 'QUERY': 'select source_id, ra, dec, phot_g_mean_mag, phot_bp_mean_mag, phot_rp_mean_mag, l, b, parallax, parallax_error, pmra, pmra_error, pmdec, pmdec_error from gaiadr2.gaia_source where source_id = 6087718535490651136'}
+[I 220704 18:48:17 gaia:737] request submitted successfully, current status is: EXECUTING. waiting for results...
+[I 220704 18:48:20 gaia:809] GAIA query completed, retrieving results...
+[I 220704 18:48:20 gaia:870] done. rows in result: 
+[I 220704 18:48:23 mast:245] query successful. nmatches: 6
+6087735612280640768
+[I 220704 18:48:23 gaia:550] using GAIA mirror TAP URL: https://gea.esac.esa.int/tap-server/tap/async, with table: gaiadr2.gaia_source
+[I 220704 18:48:23 gaia:555] submitting GAIA TAP query request for input params: {'REQUEST': 'doQuery', 'LANG': 'ADQL', 'FORMAT': 'csv', 'PHASE': 'RUN', 'JOBNAME': 'ab-gaia-1656974903', 'JOBDESCRIPTION': 'astrobase-gaia-tap-ADQL-query', 'QUERY': 'select source_id, ra, dec, phot_g_mean_mag, phot_bp_mean_mag, phot_rp_mean_mag, l, b, parallax, parallax_error, pmra, pmra_error, pmdec, pmdec_error from gaiadr2.gaia_source where source_id = 6087735612280640768'}
+[I 220704 18:48:24 gaia:737] request submitted successfully, current status is: EXECUTING. waiting for results...
+[I 220704 18:48:26 gaia:809] GAIA query completed, retrieving results...
+[I 220704 18:48:27 gaia:870] done. rows in result: 
+[I 220704 18:48:32 mast:245] query successful. nmatches: 8
+5973589125457767040
+[I 220704 18:48:32 gaia:550] using GAIA mirror TAP URL: https://gea.esac.esa.int/tap-server/tap/async, with table: gaiadr2.gaia_source
+[I 220704 18:48:32 gaia:555] submitting GAIA TAP query request for input params: {'REQUEST': 'doQuery', 'LANG': 'ADQL', 'FORMAT': 'csv', 'PHASE': 'RUN', 'JOBNAME': 'ab-gaia-1656974912', 'JOBDESCRIPTION': 'astrobase-gaia-tap-ADQL-query', 'QUERY': 'select source_id, ra, dec, phot_g_mean_mag, phot_bp_mean_mag, phot_rp_mean_mag, l, b, parallax, parallax_error, pmra, pmra_error, pmdec, pmdec_error from gaiadr2.gaia_source where source_id = 5973589125457767040'}
+[I 220704 18:48:34 gaia:737] request submitted successfully, current status is: EXECUTING. waiting for results...
+[I 220704 18:48:37 gaia:809] GAIA query completed, retrieving results...
+[I 220704 18:48:38 gaia:870] done. rows in result: 
+[I 220704 18:48:42 mast:245] query successful. nmatches: 32
+6003745396504617856
+[I 220704 18:48:42 gaia:550] using GAIA mirror TAP URL: https://gea.esac.esa.int/tap-server/tap/async, with table: gaiadr2.gaia_source
+[I 220704 18:48:42 gaia:555] submitting GAIA TAP query request for input params: {'REQUEST': 'doQuery', 'LANG': 'ADQL', 'FORMAT': 'csv', 'PHASE': 'RUN', 'JOBNAME': 'ab-gaia-1656974922', 'JOBDESCRIPTION': 'astrobase-gaia-tap-ADQL-query', 'QUERY': 'select source_id, ra, dec, phot_g_mean_mag, phot_bp_mean_mag, phot_rp_mean_mag, l, b, parallax, parallax_error, pmra, pmra_error, pmdec, pmdec_error from gaiadr2.gaia_source where source_id = 6003745396504617856'}
+[I 220704 18:48:42 gaia:737] request submitted successfully, current status is: EXECUTING. waiting for results...
+[I 220704 18:48:46 gaia:809] GAIA query completed, retrieving results...
+[I 220704 18:48:47 gaia:870] done. rows in result: 
+[I 220704 18:48:50 mast:245] query successful. nmatches: 15
+5068870993435429376
+[I 220704 18:48:50 gaia:550] using GAIA mirror TAP URL: https://gea.esac.esa.int/tap-server/tap/async, with table: gaiadr2.gaia_source
+[I 220704 18:48:50 gaia:555] submitting GAIA TAP query request for input params: {'REQUEST': 'doQuery', 'LANG': 'ADQL', 'FORMAT': 'csv', 'PHASE': 'RUN', 'JOBNAME': 'ab-gaia-1656974930', 'JOBDESCRIPTION': 'astrobase-gaia-tap-ADQL-query', 'QUERY': 'select source_id, ra, dec, phot_g_mean_mag, phot_bp_mean_mag, phot_rp_mean_mag, l, b, parallax, parallax_error, pmra, pmra_error, pmdec, pmdec_error from gaiadr2.gaia_source where source_id = 5068870993435429376'}
+[I 220704 18:48:51 gaia:737] request submitted successfully, current status is: EXECUTING. waiting for results...
+[I 220704 18:48:54 gaia:809] GAIA query completed, retrieving results...
+[I 220704 18:48:55 gaia:870] done. rows in result: 
+[I 220704 18:48:56 mast:245] query successful. nmatches: 1
+6003732202365150976
+[I 220704 18:48:56 gaia:550] using GAIA mirror TAP URL: https://gea.esac.esa.int/tap-server/tap/async, with table: gaiadr2.gaia_source
+[I 220704 18:48:56 gaia:555] submitting GAIA TAP query request for input params: {'REQUEST': 'doQuery', 'LANG': 'ADQL', 'FORMAT': 'csv', 'PHASE': 'RUN', 'JOBNAME': 'ab-gaia-1656974936', 'JOBDESCRIPTION': 'astrobase-gaia-tap-ADQL-query', 'QUERY': 'select source_id, ra, dec, phot_g_mean_mag, phot_bp_mean_mag, phot_rp_mean_mag, l, b, parallax, parallax_error, pmra, pmra_error, pmdec, pmdec_error from gaiadr2.gaia_source where source_id = 6003732202365150976'}
+[I 220704 18:48:57 gaia:737] request submitted successfully, current status is: EXECUTING. waiting for results...
+[I 220704 18:49:01 gaia:809] GAIA query completed, retrieving results...
+[I 220704 18:49:01 gaia:870] done. rows in result: 
+[I 220704 18:49:06 mast:245] query successful. nmatches: 21
+5980336416102110976
+[I 220704 18:49:06 gaia:550] using GAIA mirror TAP URL: https://gea.esac.esa.int/tap-server/tap/async, with table: gaiadr2.gaia_source
+[I 220704 18:49:06 gaia:555] submitting GAIA TAP query request for input params: {'REQUEST': 'doQuery', 'LANG': 'ADQL', 'FORMAT': 'csv', 'PHASE': 'RUN', 'JOBNAME': 'ab-gaia-1656974946', 'JOBDESCRIPTION': 'astrobase-gaia-tap-ADQL-query', 'QUERY': 'select source_id, ra, dec, phot_g_mean_mag, phot_bp_mean_mag, phot_rp_mean_mag, l, b, parallax, parallax_error, pmra, pmra_error, pmdec, pmdec_error from gaiadr2.gaia_source where source_id = 5980336416102110976'}
+[I 220704 18:49:07 gaia:737] request submitted successfully, current status is: EXECUTING. waiting for results...
+[I 220704 18:49:10 gaia:809] GAIA query completed, retrieving results...
+[I 220704 18:49:10 gaia:870] done. rows in result: 
+[I 220704 18:49:16 mast:245] query successful. nmatches: 169
+5442099532588314112
+[I 220704 18:49:16 gaia:550] using GAIA mirror TAP URL: https://gea.esac.esa.int/tap-server/tap/async, with table: gaiadr2.gaia_source
+[I 220704 18:49:16 gaia:555] submitting GAIA TAP query request for input params: {'REQUEST': 'doQuery', 'LANG': 'ADQL', 'FORMAT': 'csv', 'PHASE': 'RUN', 'JOBNAME': 'ab-gaia-1656974956', 'JOBDESCRIPTION': 'astrobase-gaia-tap-ADQL-query', 'QUERY': 'select source_id, ra, dec, phot_g_mean_mag, phot_bp_mean_mag, phot_rp_mean_mag, l, b, parallax, parallax_error, pmra, pmra_error, pmdec, pmdec_error from gaiadr2.gaia_source where source_id = 5442099532588314112'}
+[I 220704 18:49:17 gaia:737] request submitted successfully, current status is: EXECUTING. waiting for results...
+[I 220704 18:49:20 gaia:809] GAIA query completed, retrieving results...
+[I 220704 18:49:20 gaia:870] done. rows in result: 
+[I 220704 18:49:24 mast:245] query successful. nmatches: 7
+5969308348767269248
+[I 220704 18:49:24 gaia:550] using GAIA mirror TAP URL: https://gea.esac.esa.int/tap-server/tap/async, with table: gaiadr2.gaia_source
+[I 220704 18:49:24 gaia:555] submitting GAIA TAP query request for input params: {'REQUEST': 'doQuery', 'LANG': 'ADQL', 'FORMAT': 'csv', 'PHASE': 'RUN', 'JOBNAME': 'ab-gaia-1656974964', 'JOBDESCRIPTION': 'astrobase-gaia-tap-ADQL-query', 'QUERY': 'select source_id, ra, dec, phot_g_mean_mag, phot_bp_mean_mag, phot_rp_mean_mag, l, b, parallax, parallax_error, pmra, pmra_error, pmdec, pmdec_error from gaiadr2.gaia_source where source_id = 5969308348767269248'}
+[I 220704 18:49:25 gaia:737] request submitted successfully, current status is: EXECUTING. waiting for results...
+[I 220704 18:49:28 gaia:809] GAIA query completed, retrieving results...
+[I 220704 18:49:29 gaia:870] done. rows in result: 
+[I 220704 18:49:34 mast:245] query successful. nmatches: 83
+5969313433997701376
+[I 220704 18:49:34 gaia:550] using GAIA mirror TAP URL: https://gea.esac.esa.int/tap-server/tap/async, with table: gaiadr2.gaia_source
+[I 220704 18:49:34 gaia:555] submitting GAIA TAP query request for input params: {'REQUEST': 'doQuery', 'LANG': 'ADQL', 'FORMAT': 'csv', 'PHASE': 'RUN', 'JOBNAME': 'ab-gaia-1656974974', 'JOBDESCRIPTION': 'astrobase-gaia-tap-ADQL-query', 'QUERY': 'select source_id, ra, dec, phot_g_mean_mag, phot_bp_mean_mag, phot_rp_mean_mag, l, b, parallax, parallax_error, pmra, pmra_error, pmdec, pmdec_error from gaiadr2.gaia_source where source_id = 5969313433997701376'}
+[I 220704 18:49:34 gaia:737] request submitted successfully, current status is: EXECUTING. waiting for results...
+[I 220704 18:49:37 gaia:809] GAIA query completed, retrieving results...
+[I 220704 18:49:38 gaia:870] done. rows in result: 
+[I 220704 18:49:43 mast:245] query successful. nmatches: 74
+4269617784843985792
+[I 220704 18:49:43 gaia:550] using GAIA mirror TAP URL: https://gea.esac.esa.int/tap-server/tap/async, with table: gaiadr2.gaia_source
+[I 220704 18:49:43 gaia:555] submitting GAIA TAP query request for input params: {'REQUEST': 'doQuery', 'LANG': 'ADQL', 'FORMAT': 'csv', 'PHASE': 'RUN', 'JOBNAME': 'ab-gaia-1656974983', 'JOBDESCRIPTION': 'astrobase-gaia-tap-ADQL-query', 'QUERY': 'select source_id, ra, dec, phot_g_mean_mag, phot_bp_mean_mag, phot_rp_mean_mag, l, b, parallax, parallax_error, pmra, pmra_error, pmdec, pmdec_error from gaiadr2.gaia_source where source_id = 4269617784843985792'}
+[I 220704 18:49:43 gaia:737] request submitted successfully, current status is: EXECUTING. waiting for results...
+[I 220704 18:49:46 gaia:809] GAIA query completed, retrieving results...
+[I 220704 18:49:47 gaia:870] done. rows in result: 
+[I 220704 18:49:48 mast:245] query successful. nmatches: 7
+229616205849127168
+[I 220704 18:49:48 gaia:550] using GAIA mirror TAP URL: https://gea.esac.esa.int/tap-server/tap/async, with table: gaiadr2.gaia_source
+[I 220704 18:49:48 gaia:555] submitting GAIA TAP query request for input params: {'REQUEST': 'doQuery', 'LANG': 'ADQL', 'FORMAT': 'csv', 'PHASE': 'RUN', 'JOBNAME': 'ab-gaia-1656974988', 'JOBDESCRIPTION': 'astrobase-gaia-tap-ADQL-query', 'QUERY': 'select source_id, ra, dec, phot_g_mean_mag, phot_bp_mean_mag, phot_rp_mean_mag, l, b, parallax, parallax_error, pmra, pmra_error, pmdec, pmdec_error from gaiadr2.gaia_source where source_id = 229616205849127168'}
+[I 220704 18:49:49 gaia:737] request submitted successfully, current status is: EXECUTING. waiting for results...
+[I 220704 18:49:52 gaia:809] GAIA query completed, retrieving results...
+[I 220704 18:49:53 gaia:870] done. rows in result: 
+[I 220704 18:49:56 mast:245] query successful. nmatches: 8
+6202965083703333504
+[I 220704 18:49:56 gaia:550] using GAIA mirror TAP URL: https://gea.esac.esa.int/tap-server/tap/async, with table: gaiadr2.gaia_source
+[I 220704 18:49:56 gaia:555] submitting GAIA TAP query request for input params: {'REQUEST': 'doQuery', 'LANG': 'ADQL', 'FORMAT': 'csv', 'PHASE': 'RUN', 'JOBNAME': 'ab-gaia-1656974996', 'JOBDESCRIPTION': 'astrobase-gaia-tap-ADQL-query', 'QUERY': 'select source_id, ra, dec, phot_g_mean_mag, phot_bp_mean_mag, phot_rp_mean_mag, l, b, parallax, parallax_error, pmra, pmra_error, pmdec, pmdec_error from gaiadr2.gaia_source where source_id = 6202965083703333504'}
+[I 220704 18:49:57 gaia:737] request submitted successfully, current status is: EXECUTING. waiting for results...
+[I 220704 18:50:01 gaia:809] GAIA query completed, retrieving results...
+[I 220704 18:50:01 gaia:870] done. rows in result: 
+[I 220704 18:50:05 mast:245] query successful. nmatches: 7
+6202983809760979328
+[I 220704 18:50:05 gaia:550] using GAIA mirror TAP URL: https://gea.esac.esa.int/tap-server/tap/async, with table: gaiadr2.gaia_source
+[I 220704 18:50:05 gaia:555] submitting GAIA TAP query request for input params: {'REQUEST': 'doQuery', 'LANG': 'ADQL', 'FORMAT': 'csv', 'PHASE': 'RUN', 'JOBNAME': 'ab-gaia-1656975005', 'JOBDESCRIPTION': 'astrobase-gaia-tap-ADQL-query', 'QUERY': 'select source_id, ra, dec, phot_g_mean_mag, phot_bp_mean_mag, phot_rp_mean_mag, l, b, parallax, parallax_error, pmra, pmra_error, pmdec, pmdec_error from gaiadr2.gaia_source where source_id = 6202983809760979328'}
+[I 220704 18:50:06 gaia:737] request submitted successfully, current status is: EXECUTING. waiting for results...
+[I 220704 18:50:09 gaia:809] GAIA query completed, retrieving results...
+[I 220704 18:50:09 gaia:870] done. rows in result: 
+[I 220704 18:50:12 mast:245] query successful. nmatches: 10
+5906352752460320512
+[I 220704 18:50:12 gaia:550] using GAIA mirror TAP URL: https://gea.esac.esa.int/tap-server/tap/async, with table: gaiadr2.gaia_source
+[I 220704 18:50:12 gaia:555] submitting GAIA TAP query request for input params: {'REQUEST': 'doQuery', 'LANG': 'ADQL', 'FORMAT': 'csv', 'PHASE': 'RUN', 'JOBNAME': 'ab-gaia-1656975012', 'JOBDESCRIPTION': 'astrobase-gaia-tap-ADQL-query', 'QUERY': 'select source_id, ra, dec, phot_g_mean_mag, phot_bp_mean_mag, phot_rp_mean_mag, l, b, parallax, parallax_error, pmra, pmra_error, pmdec, pmdec_error from gaiadr2.gaia_source where source_id = 5906352752460320512'}
+[I 220704 18:50:13 gaia:737] request submitted successfully, current status is: EXECUTING. waiting for results...
+[I 220704 18:50:15 gaia:809] GAIA query completed, retrieving results...
+[I 220704 18:50:16 gaia:870] done. rows in result: 
+[I 220704 18:50:20 mast:245] query successful. nmatches: 17
+4269619090514045696
+[I 220704 18:50:20 gaia:550] using GAIA mirror TAP URL: https://gea.esac.esa.int/tap-server/tap/async, with table: gaiadr2.gaia_source
+[I 220704 18:50:20 gaia:555] submitting GAIA TAP query request for input params: {'REQUEST': 'doQuery', 'LANG': 'ADQL', 'FORMAT': 'csv', 'PHASE': 'RUN', 'JOBNAME': 'ab-gaia-1656975020', 'JOBDESCRIPTION': 'astrobase-gaia-tap-ADQL-query', 'QUERY': 'select source_id, ra, dec, phot_g_mean_mag, phot_bp_mean_mag, phot_rp_mean_mag, l, b, parallax, parallax_error, pmra, pmra_error, pmdec, pmdec_error from gaiadr2.gaia_source where source_id = 4269619090514045696'}
+[I 220704 18:50:21 gaia:737] request submitted successfully, current status is: EXECUTING. waiting for results...
+[I 220704 18:50:25 gaia:809] GAIA query completed, retrieving results...
+[I 220704 18:50:25 gaia:870] done. rows in result: 
+[I 220704 18:50:30 mast:245] query successful. nmatches: 20
+4269581805899206656
+[I 220704 18:50:30 gaia:550] using GAIA mirror TAP URL: https://gea.esac.esa.int/tap-server/tap/async, with table: gaiadr2.gaia_source
+[I 220704 18:50:30 gaia:555] submitting GAIA TAP query request for input params: {'REQUEST': 'doQuery', 'LANG': 'ADQL', 'FORMAT': 'csv', 'PHASE': 'RUN', 'JOBNAME': 'ab-gaia-1656975030', 'JOBDESCRIPTION': 'astrobase-gaia-tap-ADQL-query', 'QUERY': 'select source_id, ra, dec, phot_g_mean_mag, phot_bp_mean_mag, phot_rp_mean_mag, l, b, parallax, parallax_error, pmra, pmra_error, pmdec, pmdec_error from gaiadr2.gaia_source where source_id = 4269581805899206656'}
+[I 220704 18:50:31 gaia:737] request submitted successfully, current status is: EXECUTING. waiting for results...
+[I 220704 18:50:34 gaia:809] GAIA query completed, retrieving results...
+[I 220704 18:50:35 gaia:870] done. rows in result: 
+[I 220704 18:50:36 mast:245] query successful. nmatches: 20
+6027587996947187456
+[I 220704 18:50:36 gaia:550] using GAIA mirror TAP URL: https://gea.esac.esa.int/tap-server/tap/async, with table: gaiadr2.gaia_source
+[I 220704 18:50:36 gaia:555] submitting GAIA TAP query request for input params: {'REQUEST': 'doQuery', 'LANG': 'ADQL', 'FORMAT': 'csv', 'PHASE': 'RUN', 'JOBNAME': 'ab-gaia-1656975036', 'JOBDESCRIPTION': 'astrobase-gaia-tap-ADQL-query', 'QUERY': 'select source_id, ra, dec, phot_g_mean_mag, phot_bp_mean_mag, phot_rp_mean_mag, l, b, parallax, parallax_error, pmra, pmra_error, pmdec, pmdec_error from gaiadr2.gaia_source where source_id = 6027587996947187456'}
+[I 220704 18:50:37 gaia:737] request submitted successfully, current status is: EXECUTING. waiting for results...
+[I 220704 18:50:40 gaia:809] GAIA query completed, retrieving results...
+[I 220704 18:50:41 gaia:870] done. rows in result: 
+[I 220704 18:50:44 mast:245] query successful. nmatches: 72
+6061042699793311616
+[I 220704 18:50:44 gaia:550] using GAIA mirror TAP URL: https://gea.esac.esa.int/tap-server/tap/async, with table: gaiadr2.gaia_source
+[I 220704 18:50:44 gaia:555] submitting GAIA TAP query request for input params: {'REQUEST': 'doQuery', 'LANG': 'ADQL', 'FORMAT': 'csv', 'PHASE': 'RUN', 'JOBNAME': 'ab-gaia-1656975044', 'JOBDESCRIPTION': 'astrobase-gaia-tap-ADQL-query', 'QUERY': 'select source_id, ra, dec, phot_g_mean_mag, phot_bp_mean_mag, phot_rp_mean_mag, l, b, parallax, parallax_error, pmra, pmra_error, pmdec, pmdec_error from gaiadr2.gaia_source where source_id = 6061042699793311616'}
+[I 220704 18:50:45 gaia:737] request submitted successfully, current status is: EXECUTING. waiting for results...
+[I 220704 18:50:48 gaia:809] GAIA query completed, retrieving results...
+[I 220704 18:50:48 gaia:870] done. rows in result: 
+[I 220704 18:50:54 mast:245] query successful. nmatches: 46
+1813794998688407296
+[I 220704 18:50:54 gaia:550] using GAIA mirror TAP URL: https://gea.esac.esa.int/tap-server/tap/async, with table: gaiadr2.gaia_source
+[I 220704 18:50:54 gaia:555] submitting GAIA TAP query request for input params: {'REQUEST': 'doQuery', 'LANG': 'ADQL', 'FORMAT': 'csv', 'PHASE': 'RUN', 'JOBNAME': 'ab-gaia-1656975054', 'JOBDESCRIPTION': 'astrobase-gaia-tap-ADQL-query', 'QUERY': 'select source_id, ra, dec, phot_g_mean_mag, phot_bp_mean_mag, phot_rp_mean_mag, l, b, parallax, parallax_error, pmra, pmra_error, pmdec, pmdec_error from gaiadr2.gaia_source where source_id = 1813794998688407296'}
+[I 220704 18:50:55 gaia:737] request submitted successfully, current status is: EXECUTING. waiting for results...
+[I 220704 18:50:58 gaia:809] GAIA query completed, retrieving results...
+[I 220704 18:50:59 gaia:870] done. rows in result: 
+[I 220704 18:51:00 mast:245] query successful. nmatches: 10
+3166164614038405248
+[I 220704 18:51:00 gaia:550] using GAIA mirror TAP URL: https://gea.esac.esa.int/tap-server/tap/async, with table: gaiadr2.gaia_source
+[I 220704 18:51:00 gaia:555] submitting GAIA TAP query request for input params: {'REQUEST': 'doQuery', 'LANG': 'ADQL', 'FORMAT': 'csv', 'PHASE': 'RUN', 'JOBNAME': 'ab-gaia-1656975060', 'JOBDESCRIPTION': 'astrobase-gaia-tap-ADQL-query', 'QUERY': 'select source_id, ra, dec, phot_g_mean_mag, phot_bp_mean_mag, phot_rp_mean_mag, l, b, parallax, parallax_error, pmra, pmra_error, pmdec, pmdec_error from gaiadr2.gaia_source where source_id = 3166164614038405248'}
+[I 220704 18:51:01 gaia:737] request submitted successfully, current status is: EXECUTING. waiting for results...
+[I 220704 18:51:04 gaia:809] GAIA query completed, retrieving results...
+[I 220704 18:51:05 gaia:870] done. rows in result: 
+[I 220704 18:51:09 mast:245] query successful. nmatches: 8
+2192162440434345472
+[I 220704 18:51:09 gaia:550] using GAIA mirror TAP URL: https://gea.esac.esa.int/tap-server/tap/async, with table: gaiadr2.gaia_source
+[I 220704 18:51:09 gaia:555] submitting GAIA TAP query request for input params: {'REQUEST': 'doQuery', 'LANG': 'ADQL', 'FORMAT': 'csv', 'PHASE': 'RUN', 'JOBNAME': 'ab-gaia-1656975069', 'JOBDESCRIPTION': 'astrobase-gaia-tap-ADQL-query', 'QUERY': 'select source_id, ra, dec, phot_g_mean_mag, phot_bp_mean_mag, phot_rp_mean_mag, l, b, parallax, parallax_error, pmra, pmra_error, pmdec, pmdec_error from gaiadr2.gaia_source where source_id = 2192162440434345472'}
+[I 220704 18:51:10 gaia:737] request submitted successfully, current status is: EXECUTING. waiting for results...
+[I 220704 18:51:14 gaia:809] GAIA query completed, retrieving results...
+[I 220704 18:51:14 gaia:870] done. rows in result: 
+[I 220704 18:51:17 mast:245] query successful. nmatches: 16
+2205806456324231040
+[I 220704 18:51:17 gaia:550] using GAIA mirror TAP URL: https://gea.esac.esa.int/tap-server/tap/async, with table: gaiadr2.gaia_source
+[I 220704 18:51:17 gaia:555] submitting GAIA TAP query request for input params: {'REQUEST': 'doQuery', 'LANG': 'ADQL', 'FORMAT': 'csv', 'PHASE': 'RUN', 'JOBNAME': 'ab-gaia-1656975077', 'JOBDESCRIPTION': 'astrobase-gaia-tap-ADQL-query', 'QUERY': 'select source_id, ra, dec, phot_g_mean_mag, phot_bp_mean_mag, phot_rp_mean_mag, l, b, parallax, parallax_error, pmra, pmra_error, pmdec, pmdec_error from gaiadr2.gaia_source where source_id = 2205806456324231040'}
+[I 220704 18:51:18 gaia:737] request submitted successfully, current status is: EXECUTING. waiting for results...
+[I 220704 18:51:21 gaia:809] GAIA query completed, retrieving results...
+[I 220704 18:51:22 gaia:870] done. rows in result: 
+[I 220704 18:51:25 mast:245] query successful. nmatches: 14
+5430883998593799296
+[I 220704 18:51:25 gaia:550] using GAIA mirror TAP URL: https://gea.esac.esa.int/tap-server/tap/async, with table: gaiadr2.gaia_source
+[I 220704 18:51:25 gaia:555] submitting GAIA TAP query request for input params: {'REQUEST': 'doQuery', 'LANG': 'ADQL', 'FORMAT': 'csv', 'PHASE': 'RUN', 'JOBNAME': 'ab-gaia-1656975085', 'JOBDESCRIPTION': 'astrobase-gaia-tap-ADQL-query', 'QUERY': 'select source_id, ra, dec, phot_g_mean_mag, phot_bp_mean_mag, phot_rp_mean_mag, l, b, parallax, parallax_error, pmra, pmra_error, pmdec, pmdec_error from gaiadr2.gaia_source where source_id = 5430883998593799296'}
+[I 220704 18:51:26 gaia:737] request submitted successfully, current status is: EXECUTING. waiting for results...
+[I 220704 18:51:29 gaia:809] GAIA query completed, retrieving results...
+[I 220704 18:51:30 gaia:870] done. rows in result: 
+[I 220704 18:51:34 mast:245] query successful. nmatches: 21
+6109555764128640512
+[I 220704 18:51:34 gaia:550] using GAIA mirror TAP URL: https://gea.esac.esa.int/tap-server/tap/async, with table: gaiadr2.gaia_source
+[I 220704 18:51:34 gaia:555] submitting GAIA TAP query request for input params: {'REQUEST': 'doQuery', 'LANG': 'ADQL', 'FORMAT': 'csv', 'PHASE': 'RUN', 'JOBNAME': 'ab-gaia-1656975094', 'JOBDESCRIPTION': 'astrobase-gaia-tap-ADQL-query', 'QUERY': 'select source_id, ra, dec, phot_g_mean_mag, phot_bp_mean_mag, phot_rp_mean_mag, l, b, parallax, parallax_error, pmra, pmra_error, pmdec, pmdec_error from gaiadr2.gaia_source where source_id = 6109555764128640512'}
+[I 220704 18:51:34 gaia:737] request submitted successfully, current status is: EXECUTING. waiting for results...
+[I 220704 18:51:38 gaia:809] GAIA query completed, retrieving results...
+[I 220704 18:51:38 gaia:870] done. rows in result: 
+[I 220704 18:51:42 mast:245] query successful. nmatches: 8
+6109481615813970816
+[I 220704 18:51:42 gaia:550] using GAIA mirror TAP URL: https://gea.esac.esa.int/tap-server/tap/async, with table: gaiadr2.gaia_source
+[I 220704 18:51:42 gaia:555] submitting GAIA TAP query request for input params: {'REQUEST': 'doQuery', 'LANG': 'ADQL', 'FORMAT': 'csv', 'PHASE': 'RUN', 'JOBNAME': 'ab-gaia-1656975102', 'JOBDESCRIPTION': 'astrobase-gaia-tap-ADQL-query', 'QUERY': 'select source_id, ra, dec, phot_g_mean_mag, phot_bp_mean_mag, phot_rp_mean_mag, l, b, parallax, parallax_error, pmra, pmra_error, pmdec, pmdec_error from gaiadr2.gaia_source where source_id = 6109481615813970816'}
+[I 220704 18:51:43 gaia:737] request submitted successfully, current status is: EXECUTING. waiting for results...
+[I 220704 18:51:46 gaia:809] GAIA query completed, retrieving results...
+[I 220704 18:51:47 gaia:870] done. rows in result: 
+[I 220704 18:51:49 mast:245] query successful. nmatches: 8
+513586249320497664
+[I 220704 18:51:49 gaia:550] using GAIA mirror TAP URL: https://gea.esac.esa.int/tap-server/tap/async, with table: gaiadr2.gaia_source
+[I 220704 18:51:49 gaia:555] submitting GAIA TAP query request for input params: {'REQUEST': 'doQuery', 'LANG': 'ADQL', 'FORMAT': 'csv', 'PHASE': 'RUN', 'JOBNAME': 'ab-gaia-1656975109', 'JOBDESCRIPTION': 'astrobase-gaia-tap-ADQL-query', 'QUERY': 'select source_id, ra, dec, phot_g_mean_mag, phot_bp_mean_mag, phot_rp_mean_mag, l, b, parallax, parallax_error, pmra, pmra_error, pmdec, pmdec_error from gaiadr2.gaia_source where source_id = 513586249320497664'}
+[I 220704 18:51:50 gaia:737] request submitted successfully, current status is: EXECUTING. waiting for results...
+[I 220704 18:51:53 gaia:809] GAIA query completed, retrieving results...
+[I 220704 18:51:54 gaia:870] done. rows in result: 
+[I 220704 18:51:58 mast:245] query successful. nmatches: 7
+6000893847465533696
+[I 220704 18:51:58 gaia:550] using GAIA mirror TAP URL: https://gea.esac.esa.int/tap-server/tap/async, with table: gaiadr2.gaia_source
+[I 220704 18:51:58 gaia:555] submitting GAIA TAP query request for input params: {'REQUEST': 'doQuery', 'LANG': 'ADQL', 'FORMAT': 'csv', 'PHASE': 'RUN', 'JOBNAME': 'ab-gaia-1656975118', 'JOBDESCRIPTION': 'astrobase-gaia-tap-ADQL-query', 'QUERY': 'select source_id, ra, dec, phot_g_mean_mag, phot_bp_mean_mag, phot_rp_mean_mag, l, b, parallax, parallax_error, pmra, pmra_error, pmdec, pmdec_error from gaiadr2.gaia_source where source_id = 6000893847465533696'}
+[I 220704 18:51:58 gaia:737] request submitted successfully, current status is: EXECUTING. waiting for results...
+[I 220704 18:52:01 gaia:809] GAIA query completed, retrieving results...
+[I 220704 18:52:02 gaia:870] done. rows in result: 
+[I 220704 18:52:05 mast:245] query successful. nmatches: 23
+6658326999713005952
+[I 220704 18:52:05 gaia:550] using GAIA mirror TAP URL: https://gea.esac.esa.int/tap-server/tap/async, with table: gaiadr2.gaia_source
+[I 220704 18:52:05 gaia:555] submitting GAIA TAP query request for input params: {'REQUEST': 'doQuery', 'LANG': 'ADQL', 'FORMAT': 'csv', 'PHASE': 'RUN', 'JOBNAME': 'ab-gaia-1656975125', 'JOBDESCRIPTION': 'astrobase-gaia-tap-ADQL-query', 'QUERY': 'select source_id, ra, dec, phot_g_mean_mag, phot_bp_mean_mag, phot_rp_mean_mag, l, b, parallax, parallax_error, pmra, pmra_error, pmdec, pmdec_error from gaiadr2.gaia_source where source_id = 6658326999713005952'}
+[I 220704 18:52:06 gaia:737] request submitted successfully, current status is: EXECUTING. waiting for results...
+[I 220704 18:52:09 gaia:809] GAIA query completed, retrieving results...
+[I 220704 18:52:10 gaia:870] done. rows in result: 
+[I 220704 18:52:15 mast:245] query successful. nmatches: 12
+5590127057915957120
+[I 220704 18:52:15 gaia:550] using GAIA mirror TAP URL: https://gea.esac.esa.int/tap-server/tap/async, with table: gaiadr2.gaia_source
+[I 220704 18:52:15 gaia:555] submitting GAIA TAP query request for input params: {'REQUEST': 'doQuery', 'LANG': 'ADQL', 'FORMAT': 'csv', 'PHASE': 'RUN', 'JOBNAME': 'ab-gaia-1656975135', 'JOBDESCRIPTION': 'astrobase-gaia-tap-ADQL-query', 'QUERY': 'select source_id, ra, dec, phot_g_mean_mag, phot_bp_mean_mag, phot_rp_mean_mag, l, b, parallax, parallax_error, pmra, pmra_error, pmdec, pmdec_error from gaiadr2.gaia_source where source_id = 5590127057915957120'}
+[I 220704 18:52:16 gaia:737] request submitted successfully, current status is: EXECUTING. waiting for results...
+[I 220704 18:52:19 gaia:809] GAIA query completed, retrieving results...
+[I 220704 18:52:20 gaia:870] done. rows in result: 
+[I 220704 18:52:22 mast:245] query successful. nmatches: 12
+5590100738356103680
+[I 220704 18:52:22 gaia:550] using GAIA mirror TAP URL: https://gea.esac.esa.int/tap-server/tap/async, with table: gaiadr2.gaia_source
+[I 220704 18:52:22 gaia:555] submitting GAIA TAP query request for input params: {'REQUEST': 'doQuery', 'LANG': 'ADQL', 'FORMAT': 'csv', 'PHASE': 'RUN', 'JOBNAME': 'ab-gaia-1656975142', 'JOBDESCRIPTION': 'astrobase-gaia-tap-ADQL-query', 'QUERY': 'select source_id, ra, dec, phot_g_mean_mag, phot_bp_mean_mag, phot_rp_mean_mag, l, b, parallax, parallax_error, pmra, pmra_error, pmdec, pmdec_error from gaiadr2.gaia_source where source_id = 5590100738356103680'}
+[I 220704 18:52:23 gaia:737] request submitted successfully, current status is: EXECUTING. waiting for results...
+[I 220704 18:52:26 gaia:809] GAIA query completed, retrieving results...
+[I 220704 18:52:27 gaia:870] done. rows in result: 
+[I 220704 18:52:31 mast:245] query successful. nmatches: 14
+2281960074768088704
+[I 220704 18:52:31 gaia:550] using GAIA mirror TAP URL: https://gea.esac.esa.int/tap-server/tap/async, with table: gaiadr2.gaia_source
+[I 220704 18:52:31 gaia:555] submitting GAIA TAP query request for input params: {'REQUEST': 'doQuery', 'LANG': 'ADQL', 'FORMAT': 'csv', 'PHASE': 'RUN', 'JOBNAME': 'ab-gaia-1656975151', 'JOBDESCRIPTION': 'astrobase-gaia-tap-ADQL-query', 'QUERY': 'select source_id, ra, dec, phot_g_mean_mag, phot_bp_mean_mag, phot_rp_mean_mag, l, b, parallax, parallax_error, pmra, pmra_error, pmdec, pmdec_error from gaiadr2.gaia_source where source_id = 2281960074768088704'}
+[I 220704 18:52:32 gaia:737] request submitted successfully, current status is: EXECUTING. waiting for results...
+[I 220704 18:52:35 gaia:809] GAIA query completed, retrieving results...
+[I 220704 18:52:36 gaia:870] done. rows in result: 
+[I 220704 18:52:37 mast:245] query successful. nmatches: 2
+5899359514918611456
+[I 220704 18:52:37 gaia:550] using GAIA mirror TAP URL: https://gea.esac.esa.int/tap-server/tap/async, with table: gaiadr2.gaia_source
+[I 220704 18:52:37 gaia:555] submitting GAIA TAP query request for input params: {'REQUEST': 'doQuery', 'LANG': 'ADQL', 'FORMAT': 'csv', 'PHASE': 'RUN', 'JOBNAME': 'ab-gaia-1656975157', 'JOBDESCRIPTION': 'astrobase-gaia-tap-ADQL-query', 'QUERY': 'select source_id, ra, dec, phot_g_mean_mag, phot_bp_mean_mag, phot_rp_mean_mag, l, b, parallax, parallax_error, pmra, pmra_error, pmdec, pmdec_error from gaiadr2.gaia_source where source_id = 5899359514918611456'}
+[I 220704 18:52:38 gaia:737] request submitted successfully, current status is: EXECUTING. waiting for results...
+[I 220704 18:52:42 gaia:809] GAIA query completed, retrieving results...
+[I 220704 18:52:42 gaia:870] done. rows in result: 
+[I 220704 18:52:46 mast:245] query successful. nmatches: 20
+5899360889308195072
+[I 220704 18:52:46 gaia:550] using GAIA mirror TAP URL: https://gea.esac.esa.int/tap-server/tap/async, with table: gaiadr2.gaia_source
+[I 220704 18:52:46 gaia:555] submitting GAIA TAP query request for input params: {'REQUEST': 'doQuery', 'LANG': 'ADQL', 'FORMAT': 'csv', 'PHASE': 'RUN', 'JOBNAME': 'ab-gaia-1656975166', 'JOBDESCRIPTION': 'astrobase-gaia-tap-ADQL-query', 'QUERY': 'select source_id, ra, dec, phot_g_mean_mag, phot_bp_mean_mag, phot_rp_mean_mag, l, b, parallax, parallax_error, pmra, pmra_error, pmdec, pmdec_error from gaiadr2.gaia_source where source_id = 5899360889308195072'}
+[I 220704 18:52:47 gaia:737] request submitted successfully, current status is: EXECUTING. waiting for results...
+[I 220704 18:52:50 gaia:809] GAIA query completed, retrieving results...
+[I 220704 18:52:51 gaia:870] done. rows in result: 
+[I 220704 18:52:52 mast:245] query successful. nmatches: 25
+2297149071990437760
+[I 220704 18:52:52 gaia:550] using GAIA mirror TAP URL: https://gea.esac.esa.int/tap-server/tap/async, with table: gaiadr2.gaia_source
+[I 220704 18:52:52 gaia:555] submitting GAIA TAP query request for input params: {'REQUEST': 'doQuery', 'LANG': 'ADQL', 'FORMAT': 'csv', 'PHASE': 'RUN', 'JOBNAME': 'ab-gaia-1656975172', 'JOBDESCRIPTION': 'astrobase-gaia-tap-ADQL-query', 'QUERY': 'select source_id, ra, dec, phot_g_mean_mag, phot_bp_mean_mag, phot_rp_mean_mag, l, b, parallax, parallax_error, pmra, pmra_error, pmdec, pmdec_error from gaiadr2.gaia_source where source_id = 2297149071990437760'}
+[I 220704 18:52:53 gaia:737] request submitted successfully, current status is: EXECUTING. waiting for results...
+[I 220704 18:52:57 gaia:809] GAIA query completed, retrieving results...
+[I 220704 18:52:57 gaia:870] done. rows in result: 
+[I 220704 18:53:03 mast:245] query successful. nmatches: 2
+5616318829343360000
+[I 220704 18:53:03 gaia:550] using GAIA mirror TAP URL: https://gea.esac.esa.int/tap-server/tap/async, with table: gaiadr2.gaia_source
+[I 220704 18:53:03 gaia:555] submitting GAIA TAP query request for input params: {'REQUEST': 'doQuery', 'LANG': 'ADQL', 'FORMAT': 'csv', 'PHASE': 'RUN', 'JOBNAME': 'ab-gaia-1656975183', 'JOBDESCRIPTION': 'astrobase-gaia-tap-ADQL-query', 'QUERY': 'select source_id, ra, dec, phot_g_mean_mag, phot_bp_mean_mag, phot_rp_mean_mag, l, b, parallax, parallax_error, pmra, pmra_error, pmdec, pmdec_error from gaiadr2.gaia_source where source_id = 5616318829343360000'}
+[I 220704 18:53:04 gaia:737] request submitted successfully, current status is: EXECUTING. waiting for results...
+[I 220704 18:53:07 gaia:809] GAIA query completed, retrieving results...
+[I 220704 18:53:08 gaia:870] done. rows in result: 
+[I 220704 18:53:10 mast:245] query successful. nmatches: 14
+6111548074901230080
+[I 220704 18:53:10 gaia:550] using GAIA mirror TAP URL: https://gea.esac.esa.int/tap-server/tap/async, with table: gaiadr2.gaia_source
+[I 220704 18:53:10 gaia:555] submitting GAIA TAP query request for input params: {'REQUEST': 'doQuery', 'LANG': 'ADQL', 'FORMAT': 'csv', 'PHASE': 'RUN', 'JOBNAME': 'ab-gaia-1656975190', 'JOBDESCRIPTION': 'astrobase-gaia-tap-ADQL-query', 'QUERY': 'select source_id, ra, dec, phot_g_mean_mag, phot_bp_mean_mag, phot_rp_mean_mag, l, b, parallax, parallax_error, pmra, pmra_error, pmdec, pmdec_error from gaiadr2.gaia_source where source_id = 6111548074901230080'}
+[I 220704 18:53:11 gaia:737] request submitted successfully, current status is: EXECUTING. waiting for results...
+[I 220704 18:53:14 gaia:809] GAIA query completed, retrieving results...
+[I 220704 18:53:15 gaia:870] done. rows in result: 
+[I 220704 18:53:19 mast:245] query successful. nmatches: 12
+6025809468146520320
+[I 220704 18:53:19 gaia:550] using GAIA mirror TAP URL: https://gea.esac.esa.int/tap-server/tap/async, with table: gaiadr2.gaia_source
+[I 220704 18:53:19 gaia:555] submitting GAIA TAP query request for input params: {'REQUEST': 'doQuery', 'LANG': 'ADQL', 'FORMAT': 'csv', 'PHASE': 'RUN', 'JOBNAME': 'ab-gaia-1656975199', 'JOBDESCRIPTION': 'astrobase-gaia-tap-ADQL-query', 'QUERY': 'select source_id, ra, dec, phot_g_mean_mag, phot_bp_mean_mag, phot_rp_mean_mag, l, b, parallax, parallax_error, pmra, pmra_error, pmdec, pmdec_error from gaiadr2.gaia_source where source_id = 6025809468146520320'}
+[I 220704 18:53:20 gaia:737] request submitted successfully, current status is: EXECUTING. waiting for results...
+[I 220704 18:53:24 gaia:809] GAIA query completed, retrieving results...
+[I 220704 18:53:24 gaia:870] done. rows in result: 
+[I 220704 18:53:27 mast:245] query successful. nmatches: 23
+5518232981873838592
+[I 220704 18:53:27 gaia:550] using GAIA mirror TAP URL: https://gea.esac.esa.int/tap-server/tap/async, with table: gaiadr2.gaia_source
+[I 220704 18:53:27 gaia:555] submitting GAIA TAP query request for input params: {'REQUEST': 'doQuery', 'LANG': 'ADQL', 'FORMAT': 'csv', 'PHASE': 'RUN', 'JOBNAME': 'ab-gaia-1656975207', 'JOBDESCRIPTION': 'astrobase-gaia-tap-ADQL-query', 'QUERY': 'select source_id, ra, dec, phot_g_mean_mag, phot_bp_mean_mag, phot_rp_mean_mag, l, b, parallax, parallax_error, pmra, pmra_error, pmdec, pmdec_error from gaiadr2.gaia_source where source_id = 5518232981873838592'}
+[I 220704 18:53:28 gaia:737] request submitted successfully, current status is: EXECUTING. waiting for results...
+[I 220704 18:53:31 gaia:809] GAIA query completed, retrieving results...
+[I 220704 18:53:32 gaia:870] done. rows in result: 
+[I 220704 18:53:37 mast:245] query successful. nmatches: 12
+5904019382635657984
+[I 220704 18:53:37 gaia:550] using GAIA mirror TAP URL: https://gea.esac.esa.int/tap-server/tap/async, with table: gaiadr2.gaia_source
+[I 220704 18:53:37 gaia:555] submitting GAIA TAP query request for input params: {'REQUEST': 'doQuery', 'LANG': 'ADQL', 'FORMAT': 'csv', 'PHASE': 'RUN', 'JOBNAME': 'ab-gaia-1656975217', 'JOBDESCRIPTION': 'astrobase-gaia-tap-ADQL-query', 'QUERY': 'select source_id, ra, dec, phot_g_mean_mag, phot_bp_mean_mag, phot_rp_mean_mag, l, b, parallax, parallax_error, pmra, pmra_error, pmdec, pmdec_error from gaiadr2.gaia_source where source_id = 5904019382635657984'}
+[I 220704 18:53:38 gaia:737] request submitted successfully, current status is: EXECUTING. waiting for results...
+[I 220704 18:53:41 gaia:809] GAIA query completed, retrieving results...
+[I 220704 18:53:42 gaia:870] done. rows in result: 
+[I 220704 18:53:48 mast:245] query successful. nmatches: 38
+4053348967322273152
+[I 220704 18:53:48 gaia:550] using GAIA mirror TAP URL: https://gea.esac.esa.int/tap-server/tap/async, with table: gaiadr2.gaia_source
+[I 220704 18:53:48 gaia:555] submitting GAIA TAP query request for input params: {'REQUEST': 'doQuery', 'LANG': 'ADQL', 'FORMAT': 'csv', 'PHASE': 'RUN', 'JOBNAME': 'ab-gaia-1656975228', 'JOBDESCRIPTION': 'astrobase-gaia-tap-ADQL-query', 'QUERY': 'select source_id, ra, dec, phot_g_mean_mag, phot_bp_mean_mag, phot_rp_mean_mag, l, b, parallax, parallax_error, pmra, pmra_error, pmdec, pmdec_error from gaiadr2.gaia_source where source_id = 4053348967322273152'}
+[I 220704 18:53:48 gaia:737] request submitted successfully, current status is: EXECUTING. waiting for results...
+[I 220704 18:53:52 gaia:809] GAIA query completed, retrieving results...
+[I 220704 18:53:52 gaia:870] done. rows in result: 
+[I 220704 18:53:54 mast:245] query successful. nmatches: 125
+6068483575995668352
+[I 220704 18:53:54 gaia:550] using GAIA mirror TAP URL: https://gea.esac.esa.int/tap-server/tap/async, with table: gaiadr2.gaia_source
+[I 220704 18:53:54 gaia:555] submitting GAIA TAP query request for input params: {'REQUEST': 'doQuery', 'LANG': 'ADQL', 'FORMAT': 'csv', 'PHASE': 'RUN', 'JOBNAME': 'ab-gaia-1656975234', 'JOBDESCRIPTION': 'astrobase-gaia-tap-ADQL-query', 'QUERY': 'select source_id, ra, dec, phot_g_mean_mag, phot_bp_mean_mag, phot_rp_mean_mag, l, b, parallax, parallax_error, pmra, pmra_error, pmdec, pmdec_error from gaiadr2.gaia_source where source_id = 6068483575995668352'}
+[I 220704 18:53:55 gaia:737] request submitted successfully, current status is: EXECUTING. waiting for results...
+[I 220704 18:53:58 gaia:809] GAIA query completed, retrieving results...
+[I 220704 18:53:59 gaia:870] done. rows in result: 
+[I 220704 18:54:03 mast:245] query successful. nmatches: 21
+4321295552920340224
+[I 220704 18:54:03 gaia:550] using GAIA mirror TAP URL: https://gea.esac.esa.int/tap-server/tap/async, with table: gaiadr2.gaia_source
+[I 220704 18:54:03 gaia:555] submitting GAIA TAP query request for input params: {'REQUEST': 'doQuery', 'LANG': 'ADQL', 'FORMAT': 'csv', 'PHASE': 'RUN', 'JOBNAME': 'ab-gaia-1656975243', 'JOBDESCRIPTION': 'astrobase-gaia-tap-ADQL-query', 'QUERY': 'select source_id, ra, dec, phot_g_mean_mag, phot_bp_mean_mag, phot_rp_mean_mag, l, b, parallax, parallax_error, pmra, pmra_error, pmdec, pmdec_error from gaiadr2.gaia_source where source_id = 4321295552920340224'}
+[I 220704 18:54:04 gaia:737] request submitted successfully, current status is: EXECUTING. waiting for results...
+[I 220704 18:54:07 gaia:809] GAIA query completed, retrieving results...
+[I 220704 18:54:07 gaia:870] done. rows in result: 
+[I 220704 18:54:10 mast:245] query successful. nmatches: 22
+4872543266628506496
+[I 220704 18:54:10 gaia:550] using GAIA mirror TAP URL: https://gea.esac.esa.int/tap-server/tap/async, with table: gaiadr2.gaia_source
+[I 220704 18:54:10 gaia:555] submitting GAIA TAP query request for input params: {'REQUEST': 'doQuery', 'LANG': 'ADQL', 'FORMAT': 'csv', 'PHASE': 'RUN', 'JOBNAME': 'ab-gaia-1656975250', 'JOBDESCRIPTION': 'astrobase-gaia-tap-ADQL-query', 'QUERY': 'select source_id, ra, dec, phot_g_mean_mag, phot_bp_mean_mag, phot_rp_mean_mag, l, b, parallax, parallax_error, pmra, pmra_error, pmdec, pmdec_error from gaiadr2.gaia_source where source_id = 4872543266628506496'}
+[I 220704 18:54:11 gaia:737] request submitted successfully, current status is: EXECUTING. waiting for results...
+[I 220704 18:54:13 gaia:809] GAIA query completed, retrieving results...
+[I 220704 18:54:14 gaia:870] done. rows in result: 
+[I 220704 18:54:18 mast:245] query successful. nmatches: 1
+5970950606831462912
+[I 220704 18:54:18 gaia:550] using GAIA mirror TAP URL: https://gea.esac.esa.int/tap-server/tap/async, with table: gaiadr2.gaia_source
+[I 220704 18:54:18 gaia:555] submitting GAIA TAP query request for input params: {'REQUEST': 'doQuery', 'LANG': 'ADQL', 'FORMAT': 'csv', 'PHASE': 'RUN', 'JOBNAME': 'ab-gaia-1656975258', 'JOBDESCRIPTION': 'astrobase-gaia-tap-ADQL-query', 'QUERY': 'select source_id, ra, dec, phot_g_mean_mag, phot_bp_mean_mag, phot_rp_mean_mag, l, b, parallax, parallax_error, pmra, pmra_error, pmdec, pmdec_error from gaiadr2.gaia_source where source_id = 5970950606831462912'}
+[I 220704 18:54:19 gaia:737] request submitted successfully, current status is: EXECUTING. waiting for results...
+[I 220704 18:54:23 gaia:809] GAIA query completed, retrieving results...
+[I 220704 18:54:24 gaia:870] done. rows in result: 
+[I 220704 18:54:28 mast:245] query successful. nmatches: 104
+5970954455122276864
+[I 220704 18:54:28 gaia:550] using GAIA mirror TAP URL: https://gea.esac.esa.int/tap-server/tap/async, with table: gaiadr2.gaia_source
+[I 220704 18:54:28 gaia:555] submitting GAIA TAP query request for input params: {'REQUEST': 'doQuery', 'LANG': 'ADQL', 'FORMAT': 'csv', 'PHASE': 'RUN', 'JOBNAME': 'ab-gaia-1656975268', 'JOBDESCRIPTION': 'astrobase-gaia-tap-ADQL-query', 'QUERY': 'select source_id, ra, dec, phot_g_mean_mag, phot_bp_mean_mag, phot_rp_mean_mag, l, b, parallax, parallax_error, pmra, pmra_error, pmdec, pmdec_error from gaiadr2.gaia_source where source_id = 5970954455122276864'}
+[I 220704 18:54:29 gaia:737] request submitted successfully, current status is: EXECUTING. waiting for results...
+[I 220704 18:54:33 gaia:809] GAIA query completed, retrieving results...
+[I 220704 18:54:33 gaia:870] done. rows in result: 
+[I 220704 18:54:39 mast:245] query successful. nmatches: 105
+5970954833079394688
+[I 220704 18:54:39 gaia:550] using GAIA mirror TAP URL: https://gea.esac.esa.int/tap-server/tap/async, with table: gaiadr2.gaia_source
+[I 220704 18:54:39 gaia:555] submitting GAIA TAP query request for input params: {'REQUEST': 'doQuery', 'LANG': 'ADQL', 'FORMAT': 'csv', 'PHASE': 'RUN', 'JOBNAME': 'ab-gaia-1656975279', 'JOBDESCRIPTION': 'astrobase-gaia-tap-ADQL-query', 'QUERY': 'select source_id, ra, dec, phot_g_mean_mag, phot_bp_mean_mag, phot_rp_mean_mag, l, b, parallax, parallax_error, pmra, pmra_error, pmdec, pmdec_error from gaiadr2.gaia_source where source_id = 5970954833079394688'}
+[I 220704 18:54:40 gaia:737] request submitted successfully, current status is: EXECUTING. waiting for results...
+[I 220704 18:54:43 gaia:809] GAIA query completed, retrieving results...
+[I 220704 18:54:43 gaia:870] done. rows in result: 
+[I 220704 18:54:48 mast:245] query successful. nmatches: 94
+6068473886549055488
+[I 220704 18:54:48 gaia:550] using GAIA mirror TAP URL: https://gea.esac.esa.int/tap-server/tap/async, with table: gaiadr2.gaia_source
+[I 220704 18:54:48 gaia:555] submitting GAIA TAP query request for input params: {'REQUEST': 'doQuery', 'LANG': 'ADQL', 'FORMAT': 'csv', 'PHASE': 'RUN', 'JOBNAME': 'ab-gaia-1656975288', 'JOBDESCRIPTION': 'astrobase-gaia-tap-ADQL-query', 'QUERY': 'select source_id, ra, dec, phot_g_mean_mag, phot_bp_mean_mag, phot_rp_mean_mag, l, b, parallax, parallax_error, pmra, pmra_error, pmdec, pmdec_error from gaiadr2.gaia_source where source_id = 6068473886549055488'}
+[I 220704 18:54:49 gaia:737] request submitted successfully, current status is: EXECUTING. waiting for results...
+[I 220704 18:54:52 gaia:809] GAIA query completed, retrieving results...
+[I 220704 18:54:53 gaia:870] done. rows in result: 
+[I 220704 18:54:54 mast:245] query successful. nmatches: 25
+5238783202529206144
+[I 220704 18:54:54 gaia:550] using GAIA mirror TAP URL: https://gea.esac.esa.int/tap-server/tap/async, with table: gaiadr2.gaia_source
+[I 220704 18:54:54 gaia:555] submitting GAIA TAP query request for input params: {'REQUEST': 'doQuery', 'LANG': 'ADQL', 'FORMAT': 'csv', 'PHASE': 'RUN', 'JOBNAME': 'ab-gaia-1656975294', 'JOBDESCRIPTION': 'astrobase-gaia-tap-ADQL-query', 'QUERY': 'select source_id, ra, dec, phot_g_mean_mag, phot_bp_mean_mag, phot_rp_mean_mag, l, b, parallax, parallax_error, pmra, pmra_error, pmdec, pmdec_error from gaiadr2.gaia_source where source_id = 5238783202529206144'}
+[I 220704 18:54:55 gaia:737] request submitted successfully, current status is: EXECUTING. waiting for results...
+[I 220704 18:54:58 gaia:809] GAIA query completed, retrieving results...
+[I 220704 18:54:59 gaia:870] done. rows in result: 
+[I 220704 18:55:03 mast:245] query successful. nmatches: 39
+5238818043284096256
+[I 220704 18:55:03 gaia:550] using GAIA mirror TAP URL: https://gea.esac.esa.int/tap-server/tap/async, with table: gaiadr2.gaia_source
+[I 220704 18:55:03 gaia:555] submitting GAIA TAP query request for input params: {'REQUEST': 'doQuery', 'LANG': 'ADQL', 'FORMAT': 'csv', 'PHASE': 'RUN', 'JOBNAME': 'ab-gaia-1656975303', 'JOBDESCRIPTION': 'astrobase-gaia-tap-ADQL-query', 'QUERY': 'select source_id, ra, dec, phot_g_mean_mag, phot_bp_mean_mag, phot_rp_mean_mag, l, b, parallax, parallax_error, pmra, pmra_error, pmdec, pmdec_error from gaiadr2.gaia_source where source_id = 5238818043284096256'}
+[I 220704 18:55:04 gaia:737] request submitted successfully, current status is: EXECUTING. waiting for results...
+[I 220704 18:55:08 gaia:809] GAIA query completed, retrieving results...
+[I 220704 18:55:08 gaia:870] done. rows in result: 
+[I 220704 18:55:10 mast:245] query successful. nmatches: 32
+6037581385079589248
+[I 220704 18:55:10 gaia:550] using GAIA mirror TAP URL: https://gea.esac.esa.int/tap-server/tap/async, with table: gaiadr2.gaia_source
+[I 220704 18:55:10 gaia:555] submitting GAIA TAP query request for input params: {'REQUEST': 'doQuery', 'LANG': 'ADQL', 'FORMAT': 'csv', 'PHASE': 'RUN', 'JOBNAME': 'ab-gaia-1656975310', 'JOBDESCRIPTION': 'astrobase-gaia-tap-ADQL-query', 'QUERY': 'select source_id, ra, dec, phot_g_mean_mag, phot_bp_mean_mag, phot_rp_mean_mag, l, b, parallax, parallax_error, pmra, pmra_error, pmdec, pmdec_error from gaiadr2.gaia_source where source_id = 6037581385079589248'}
+[I 220704 18:55:11 gaia:737] request submitted successfully, current status is: EXECUTING. waiting for results...
+[I 220704 18:55:14 gaia:809] GAIA query completed, retrieving results...
+[I 220704 18:55:15 gaia:870] done. rows in result: 
+[I 220704 18:55:16 mast:245] query successful. nmatches: 23
+6037548713276304256
+[I 220704 18:55:16 gaia:550] using GAIA mirror TAP URL: https://gea.esac.esa.int/tap-server/tap/async, with table: gaiadr2.gaia_source
+[I 220704 18:55:16 gaia:555] submitting GAIA TAP query request for input params: {'REQUEST': 'doQuery', 'LANG': 'ADQL', 'FORMAT': 'csv', 'PHASE': 'RUN', 'JOBNAME': 'ab-gaia-1656975316', 'JOBDESCRIPTION': 'astrobase-gaia-tap-ADQL-query', 'QUERY': 'select source_id, ra, dec, phot_g_mean_mag, phot_bp_mean_mag, phot_rp_mean_mag, l, b, parallax, parallax_error, pmra, pmra_error, pmdec, pmdec_error from gaiadr2.gaia_source where source_id = 6037548713276304256'}
+[I 220704 18:55:17 gaia:737] request submitted successfully, current status is: EXECUTING. waiting for results...
+[I 220704 18:55:20 gaia:809] GAIA query completed, retrieving results...
+[I 220704 18:55:21 gaia:870] done. rows in result: 
+[I 220704 18:55:25 mast:245] query successful. nmatches: 25
+6037555310346228096
+[I 220704 18:55:25 gaia:550] using GAIA mirror TAP URL: https://gea.esac.esa.int/tap-server/tap/async, with table: gaiadr2.gaia_source
+[I 220704 18:55:25 gaia:555] submitting GAIA TAP query request for input params: {'REQUEST': 'doQuery', 'LANG': 'ADQL', 'FORMAT': 'csv', 'PHASE': 'RUN', 'JOBNAME': 'ab-gaia-1656975325', 'JOBDESCRIPTION': 'astrobase-gaia-tap-ADQL-query', 'QUERY': 'select source_id, ra, dec, phot_g_mean_mag, phot_bp_mean_mag, phot_rp_mean_mag, l, b, parallax, parallax_error, pmra, pmra_error, pmdec, pmdec_error from gaiadr2.gaia_source where source_id = 6037555310346228096'}
+[I 220704 18:55:26 gaia:737] request submitted successfully, current status is: EXECUTING. waiting for results...
+[I 220704 18:55:29 gaia:809] GAIA query completed, retrieving results...
+[I 220704 18:55:30 gaia:870] done. rows in result: 
+[I 220704 18:55:32 mast:245] query successful. nmatches: 25
+2573669129613634560
+[I 220704 18:55:32 gaia:550] using GAIA mirror TAP URL: https://gea.esac.esa.int/tap-server/tap/async, with table: gaiadr2.gaia_source
+[I 220704 18:55:32 gaia:555] submitting GAIA TAP query request for input params: {'REQUEST': 'doQuery', 'LANG': 'ADQL', 'FORMAT': 'csv', 'PHASE': 'RUN', 'JOBNAME': 'ab-gaia-1656975332', 'JOBDESCRIPTION': 'astrobase-gaia-tap-ADQL-query', 'QUERY': 'select source_id, ra, dec, phot_g_mean_mag, phot_bp_mean_mag, phot_rp_mean_mag, l, b, parallax, parallax_error, pmra, pmra_error, pmdec, pmdec_error from gaiadr2.gaia_source where source_id = 2573669129613634560'}
+[I 220704 18:55:33 gaia:737] request submitted successfully, current status is: EXECUTING. waiting for results...
+[I 220704 18:55:36 gaia:809] GAIA query completed, retrieving results...
+[I 220704 18:55:37 gaia:870] done. rows in result: 
+[I 220704 18:55:41 mast:245] query successful. nmatches: 1
+5784403203398904064
+[I 220704 18:55:41 gaia:550] using GAIA mirror TAP URL: https://gea.esac.esa.int/tap-server/tap/async, with table: gaiadr2.gaia_source
+[I 220704 18:55:41 gaia:555] submitting GAIA TAP query request for input params: {'REQUEST': 'doQuery', 'LANG': 'ADQL', 'FORMAT': 'csv', 'PHASE': 'RUN', 'JOBNAME': 'ab-gaia-1656975341', 'JOBDESCRIPTION': 'astrobase-gaia-tap-ADQL-query', 'QUERY': 'select source_id, ra, dec, phot_g_mean_mag, phot_bp_mean_mag, phot_rp_mean_mag, l, b, parallax, parallax_error, pmra, pmra_error, pmdec, pmdec_error from gaiadr2.gaia_source where source_id = 5784403203398904064'}
+[I 220704 18:55:42 gaia:737] request submitted successfully, current status is: EXECUTING. waiting for results...
+[I 220704 18:55:45 gaia:809] GAIA query completed, retrieving results...
+[I 220704 18:55:45 gaia:870] done. rows in result: 
+[I 220704 18:55:49 mast:245] query successful. nmatches: 9
+5784403409557211776
+[I 220704 18:55:49 gaia:550] using GAIA mirror TAP URL: https://gea.esac.esa.int/tap-server/tap/async, with table: gaiadr2.gaia_source
+[I 220704 18:55:49 gaia:555] submitting GAIA TAP query request for input params: {'REQUEST': 'doQuery', 'LANG': 'ADQL', 'FORMAT': 'csv', 'PHASE': 'RUN', 'JOBNAME': 'ab-gaia-1656975349', 'JOBDESCRIPTION': 'astrobase-gaia-tap-ADQL-query', 'QUERY': 'select source_id, ra, dec, phot_g_mean_mag, phot_bp_mean_mag, phot_rp_mean_mag, l, b, parallax, parallax_error, pmra, pmra_error, pmdec, pmdec_error from gaiadr2.gaia_source where source_id = 5784403409557211776'}
+[I 220704 18:55:50 gaia:737] request submitted successfully, current status is: EXECUTING. waiting for results...
+[I 220704 18:55:53 gaia:809] GAIA query completed, retrieving results...
+[I 220704 18:55:54 gaia:870] done. rows in result: 
+[I 220704 18:55:56 mast:245] query successful. nmatches: 5
+2969743974201501696
+[I 220704 18:55:56 gaia:550] using GAIA mirror TAP URL: https://gea.esac.esa.int/tap-server/tap/async, with table: gaiadr2.gaia_source
+[I 220704 18:55:56 gaia:555] submitting GAIA TAP query request for input params: {'REQUEST': 'doQuery', 'LANG': 'ADQL', 'FORMAT': 'csv', 'PHASE': 'RUN', 'JOBNAME': 'ab-gaia-1656975356', 'JOBDESCRIPTION': 'astrobase-gaia-tap-ADQL-query', 'QUERY': 'select source_id, ra, dec, phot_g_mean_mag, phot_bp_mean_mag, phot_rp_mean_mag, l, b, parallax, parallax_error, pmra, pmra_error, pmdec, pmdec_error from gaiadr2.gaia_source where source_id = 2969743974201501696'}
+[I 220704 18:55:57 gaia:737] request submitted successfully, current status is: EXECUTING. waiting for results...
+[I 220704 18:56:00 gaia:809] GAIA query completed, retrieving results...
+[I 220704 18:56:01 gaia:870] done. rows in result: 
+[I 220704 18:56:04 mast:245] query successful. nmatches: 3
+2969725076345523328
+[I 220704 18:56:04 gaia:550] using GAIA mirror TAP URL: https://gea.esac.esa.int/tap-server/tap/async, with table: gaiadr2.gaia_source
+[I 220704 18:56:04 gaia:555] submitting GAIA TAP query request for input params: {'REQUEST': 'doQuery', 'LANG': 'ADQL', 'FORMAT': 'csv', 'PHASE': 'RUN', 'JOBNAME': 'ab-gaia-1656975364', 'JOBDESCRIPTION': 'astrobase-gaia-tap-ADQL-query', 'QUERY': 'select source_id, ra, dec, phot_g_mean_mag, phot_bp_mean_mag, phot_rp_mean_mag, l, b, parallax, parallax_error, pmra, pmra_error, pmdec, pmdec_error from gaiadr2.gaia_source where source_id = 2969725076345523328'}
+[I 220704 18:56:05 gaia:737] request submitted successfully, current status is: EXECUTING. waiting for results...
+[I 220704 18:56:08 gaia:809] GAIA query completed, retrieving results...
+[I 220704 18:56:09 gaia:870] done. rows in result: 
+[I 220704 18:56:11 mast:245] query successful. nmatches: 7
+5363661163338659840
+[I 220704 18:56:11 gaia:550] using GAIA mirror TAP URL: https://gea.esac.esa.int/tap-server/tap/async, with table: gaiadr2.gaia_source
+[I 220704 18:56:11 gaia:555] submitting GAIA TAP query request for input params: {'REQUEST': 'doQuery', 'LANG': 'ADQL', 'FORMAT': 'csv', 'PHASE': 'RUN', 'JOBNAME': 'ab-gaia-1656975371', 'JOBDESCRIPTION': 'astrobase-gaia-tap-ADQL-query', 'QUERY': 'select source_id, ra, dec, phot_g_mean_mag, phot_bp_mean_mag, phot_rp_mean_mag, l, b, parallax, parallax_error, pmra, pmra_error, pmdec, pmdec_error from gaiadr2.gaia_source where source_id = 5363661163338659840'}
+[I 220704 18:56:12 gaia:737] request submitted successfully, current status is: EXECUTING. waiting for results...
+[I 220704 18:56:16 gaia:809] GAIA query completed, retrieving results...
+[I 220704 18:56:16 gaia:870] done. rows in result: 
+[I 220704 18:56:18 mast:245] query successful. nmatches: 8
+4885412053798737280
+[I 220704 18:56:18 gaia:550] using GAIA mirror TAP URL: https://gea.esac.esa.int/tap-server/tap/async, with table: gaiadr2.gaia_source
+[I 220704 18:56:18 gaia:555] submitting GAIA TAP query request for input params: {'REQUEST': 'doQuery', 'LANG': 'ADQL', 'FORMAT': 'csv', 'PHASE': 'RUN', 'JOBNAME': 'ab-gaia-1656975378', 'JOBDESCRIPTION': 'astrobase-gaia-tap-ADQL-query', 'QUERY': 'select source_id, ra, dec, phot_g_mean_mag, phot_bp_mean_mag, phot_rp_mean_mag, l, b, parallax, parallax_error, pmra, pmra_error, pmdec, pmdec_error from gaiadr2.gaia_source where source_id = 4885412053798737280'}
+[I 220704 18:56:19 gaia:737] request submitted successfully, current status is: EXECUTING. waiting for results...
+[I 220704 18:56:22 gaia:809] GAIA query completed, retrieving results...
+[I 220704 18:56:23 gaia:870] done. rows in result: 
+[I 220704 18:56:24 mast:245] query successful. nmatches: 2
+5859373919170289024
+[I 220704 18:56:24 gaia:550] using GAIA mirror TAP URL: https://gea.esac.esa.int/tap-server/tap/async, with table: gaiadr2.gaia_source
+[I 220704 18:56:24 gaia:555] submitting GAIA TAP query request for input params: {'REQUEST': 'doQuery', 'LANG': 'ADQL', 'FORMAT': 'csv', 'PHASE': 'RUN', 'JOBNAME': 'ab-gaia-1656975384', 'JOBDESCRIPTION': 'astrobase-gaia-tap-ADQL-query', 'QUERY': 'select source_id, ra, dec, phot_g_mean_mag, phot_bp_mean_mag, phot_rp_mean_mag, l, b, parallax, parallax_error, pmra, pmra_error, pmdec, pmdec_error from gaiadr2.gaia_source where source_id = 5859373919170289024'}
+[I 220704 18:56:25 gaia:737] request submitted successfully, current status is: EXECUTING. waiting for results...
+[I 220704 18:56:28 gaia:809] GAIA query completed, retrieving results...
+[I 220704 18:56:29 gaia:870] done. rows in result: 
+[I 220704 18:56:35 mast:245] query successful. nmatches: 58
+5246087430050615040
+[I 220704 18:56:35 gaia:550] using GAIA mirror TAP URL: https://gea.esac.esa.int/tap-server/tap/async, with table: gaiadr2.gaia_source
+[I 220704 18:56:35 gaia:555] submitting GAIA TAP query request for input params: {'REQUEST': 'doQuery', 'LANG': 'ADQL', 'FORMAT': 'csv', 'PHASE': 'RUN', 'JOBNAME': 'ab-gaia-1656975395', 'JOBDESCRIPTION': 'astrobase-gaia-tap-ADQL-query', 'QUERY': 'select source_id, ra, dec, phot_g_mean_mag, phot_bp_mean_mag, phot_rp_mean_mag, l, b, parallax, parallax_error, pmra, pmra_error, pmdec, pmdec_error from gaiadr2.gaia_source where source_id = 5246087430050615040'}
+[I 220704 18:56:36 gaia:737] request submitted successfully, current status is: EXECUTING. waiting for results...
+[I 220704 18:56:38 gaia:809] GAIA query completed, retrieving results...
+[I 220704 18:56:39 gaia:870] done. rows in result: 
+[I 220704 18:56:42 mast:245] query successful. nmatches: 16
+4133550742705288320
+[I 220704 18:56:42 gaia:550] using GAIA mirror TAP URL: https://gea.esac.esa.int/tap-server/tap/async, with table: gaiadr2.gaia_source
+[I 220704 18:56:42 gaia:555] submitting GAIA TAP query request for input params: {'REQUEST': 'doQuery', 'LANG': 'ADQL', 'FORMAT': 'csv', 'PHASE': 'RUN', 'JOBNAME': 'ab-gaia-1656975402', 'JOBDESCRIPTION': 'astrobase-gaia-tap-ADQL-query', 'QUERY': 'select source_id, ra, dec, phot_g_mean_mag, phot_bp_mean_mag, phot_rp_mean_mag, l, b, parallax, parallax_error, pmra, pmra_error, pmdec, pmdec_error from gaiadr2.gaia_source where source_id = 4133550742705288320'}
+[I 220704 18:56:43 gaia:737] request submitted successfully, current status is: EXECUTING. waiting for results...
+[I 220704 18:56:47 gaia:809] GAIA query completed, retrieving results...
+[I 220704 18:56:48 gaia:870] done. rows in result: 
+[I 220704 18:56:52 mast:245] query successful. nmatches: 12
+4133538927254323712
+[I 220704 18:56:52 gaia:550] using GAIA mirror TAP URL: https://gea.esac.esa.int/tap-server/tap/async, with table: gaiadr2.gaia_source
+[I 220704 18:56:52 gaia:555] submitting GAIA TAP query request for input params: {'REQUEST': 'doQuery', 'LANG': 'ADQL', 'FORMAT': 'csv', 'PHASE': 'RUN', 'JOBNAME': 'ab-gaia-1656975412', 'JOBDESCRIPTION': 'astrobase-gaia-tap-ADQL-query', 'QUERY': 'select source_id, ra, dec, phot_g_mean_mag, phot_bp_mean_mag, phot_rp_mean_mag, l, b, parallax, parallax_error, pmra, pmra_error, pmdec, pmdec_error from gaiadr2.gaia_source where source_id = 4133538927254323712'}
+[I 220704 18:56:53 gaia:737] request submitted successfully, current status is: EXECUTING. waiting for results...
+[I 220704 18:56:56 gaia:809] GAIA query completed, retrieving results...
+[I 220704 18:56:57 gaia:870] done. rows in result: 
+[I 220704 18:57:02 mast:245] query successful. nmatches: 13
+561177716773029504
+[I 220704 18:57:02 gaia:550] using GAIA mirror TAP URL: https://gea.esac.esa.int/tap-server/tap/async, with table: gaiadr2.gaia_source
+[I 220704 18:57:02 gaia:555] submitting GAIA TAP query request for input params: {'REQUEST': 'doQuery', 'LANG': 'ADQL', 'FORMAT': 'csv', 'PHASE': 'RUN', 'JOBNAME': 'ab-gaia-1656975422', 'JOBDESCRIPTION': 'astrobase-gaia-tap-ADQL-query', 'QUERY': 'select source_id, ra, dec, phot_g_mean_mag, phot_bp_mean_mag, phot_rp_mean_mag, l, b, parallax, parallax_error, pmra, pmra_error, pmdec, pmdec_error from gaiadr2.gaia_source where source_id = 561177716773029504'}
+[I 220704 18:57:03 gaia:737] request submitted successfully, current status is: EXECUTING. waiting for results...
+[I 220704 18:57:06 gaia:809] GAIA query completed, retrieving results...
+[I 220704 18:57:07 gaia:870] done. rows in result: 
+[I 220704 18:57:12 mast:245] query successful. nmatches: 6
+219292822455778176
+[I 220704 18:57:12 gaia:550] using GAIA mirror TAP URL: https://gea.esac.esa.int/tap-server/tap/async, with table: gaiadr2.gaia_source
+[I 220704 18:57:12 gaia:555] submitting GAIA TAP query request for input params: {'REQUEST': 'doQuery', 'LANG': 'ADQL', 'FORMAT': 'csv', 'PHASE': 'RUN', 'JOBNAME': 'ab-gaia-1656975432', 'JOBDESCRIPTION': 'astrobase-gaia-tap-ADQL-query', 'QUERY': 'select source_id, ra, dec, phot_g_mean_mag, phot_bp_mean_mag, phot_rp_mean_mag, l, b, parallax, parallax_error, pmra, pmra_error, pmdec, pmdec_error from gaiadr2.gaia_source where source_id = 219292822455778176'}
+[I 220704 18:57:12 gaia:737] request submitted successfully, current status is: EXECUTING. waiting for results...
+[I 220704 18:57:15 gaia:809] GAIA query completed, retrieving results...
+[I 220704 18:57:16 gaia:870] done. rows in result: 
+[I 220704 18:57:18 mast:245] query successful. nmatches: 6
+6076333053922674816
+[I 220704 18:57:18 gaia:550] using GAIA mirror TAP URL: https://gea.esac.esa.int/tap-server/tap/async, with table: gaiadr2.gaia_source
+[I 220704 18:57:18 gaia:555] submitting GAIA TAP query request for input params: {'REQUEST': 'doQuery', 'LANG': 'ADQL', 'FORMAT': 'csv', 'PHASE': 'RUN', 'JOBNAME': 'ab-gaia-1656975438', 'JOBDESCRIPTION': 'astrobase-gaia-tap-ADQL-query', 'QUERY': 'select source_id, ra, dec, phot_g_mean_mag, phot_bp_mean_mag, phot_rp_mean_mag, l, b, parallax, parallax_error, pmra, pmra_error, pmdec, pmdec_error from gaiadr2.gaia_source where source_id = 6076333053922674816'}
+[I 220704 18:57:19 gaia:737] request submitted successfully, current status is: EXECUTING. waiting for results...
+[I 220704 18:57:23 gaia:809] GAIA query completed, retrieving results...
+[I 220704 18:57:24 gaia:870] done. rows in result: 
+[I 220704 18:57:28 mast:245] query successful. nmatches: 33
+3340972944080533504
+[I 220704 18:57:28 gaia:550] using GAIA mirror TAP URL: https://gea.esac.esa.int/tap-server/tap/async, with table: gaiadr2.gaia_source
+[I 220704 18:57:28 gaia:555] submitting GAIA TAP query request for input params: {'REQUEST': 'doQuery', 'LANG': 'ADQL', 'FORMAT': 'csv', 'PHASE': 'RUN', 'JOBNAME': 'ab-gaia-1656975448', 'JOBDESCRIPTION': 'astrobase-gaia-tap-ADQL-query', 'QUERY': 'select source_id, ra, dec, phot_g_mean_mag, phot_bp_mean_mag, phot_rp_mean_mag, l, b, parallax, parallax_error, pmra, pmra_error, pmdec, pmdec_error from gaiadr2.gaia_source where source_id = 3340972944080533504'}
+[I 220704 18:57:29 gaia:737] request submitted successfully, current status is: EXECUTING. waiting for results...
+[I 220704 18:57:32 gaia:809] GAIA query completed, retrieving results...
+[I 220704 18:57:33 gaia:870] done. rows in result: 
+[I 220704 18:57:37 mast:245] query successful. nmatches: 4
+3340935388886477696
+[I 220704 18:57:37 gaia:550] using GAIA mirror TAP URL: https://gea.esac.esa.int/tap-server/tap/async, with table: gaiadr2.gaia_source
+[I 220704 18:57:37 gaia:555] submitting GAIA TAP query request for input params: {'REQUEST': 'doQuery', 'LANG': 'ADQL', 'FORMAT': 'csv', 'PHASE': 'RUN', 'JOBNAME': 'ab-gaia-1656975457', 'JOBDESCRIPTION': 'astrobase-gaia-tap-ADQL-query', 'QUERY': 'select source_id, ra, dec, phot_g_mean_mag, phot_bp_mean_mag, phot_rp_mean_mag, l, b, parallax, parallax_error, pmra, pmra_error, pmdec, pmdec_error from gaiadr2.gaia_source where source_id = 3340935388886477696'}
+[I 220704 18:57:38 gaia:737] request submitted successfully, current status is: EXECUTING. waiting for results...
+[I 220704 18:57:42 gaia:809] GAIA query completed, retrieving results...
+[I 220704 18:57:42 gaia:870] done. rows in result: 
+[I 220704 18:57:45 mast:245] query successful. nmatches: 3
+3340871892090133888
+[I 220704 18:57:45 gaia:550] using GAIA mirror TAP URL: https://gea.esac.esa.int/tap-server/tap/async, with table: gaiadr2.gaia_source
+[I 220704 18:57:45 gaia:555] submitting GAIA TAP query request for input params: {'REQUEST': 'doQuery', 'LANG': 'ADQL', 'FORMAT': 'csv', 'PHASE': 'RUN', 'JOBNAME': 'ab-gaia-1656975465', 'JOBDESCRIPTION': 'astrobase-gaia-tap-ADQL-query', 'QUERY': 'select source_id, ra, dec, phot_g_mean_mag, phot_bp_mean_mag, phot_rp_mean_mag, l, b, parallax, parallax_error, pmra, pmra_error, pmdec, pmdec_error from gaiadr2.gaia_source where source_id = 3340871892090133888'}
+[I 220704 18:57:46 gaia:737] request submitted successfully, current status is: EXECUTING. waiting for results...
+[I 220704 18:57:49 gaia:809] GAIA query completed, retrieving results...
+[I 220704 18:57:50 gaia:870] done. rows in result: 
+[I 220704 18:57:55 mast:245] query successful. nmatches: 4
+6082407168472772992
+[I 220704 18:57:55 gaia:550] using GAIA mirror TAP URL: https://gea.esac.esa.int/tap-server/tap/async, with table: gaiadr2.gaia_source
+[I 220704 18:57:55 gaia:555] submitting GAIA TAP query request for input params: {'REQUEST': 'doQuery', 'LANG': 'ADQL', 'FORMAT': 'csv', 'PHASE': 'RUN', 'JOBNAME': 'ab-gaia-1656975475', 'JOBDESCRIPTION': 'astrobase-gaia-tap-ADQL-query', 'QUERY': 'select source_id, ra, dec, phot_g_mean_mag, phot_bp_mean_mag, phot_rp_mean_mag, l, b, parallax, parallax_error, pmra, pmra_error, pmdec, pmdec_error from gaiadr2.gaia_source where source_id = 6082407168472772992'}
+[I 220704 18:57:56 gaia:737] request submitted successfully, current status is: EXECUTING. waiting for results...
+[I 220704 18:57:59 gaia:809] GAIA query completed, retrieving results...
+[I 220704 18:57:59 gaia:870] done. rows in result: 
+[I 220704 18:58:03 mast:245] query successful. nmatches: 7
+6207637767602806912
+[I 220704 18:58:03 gaia:550] using GAIA mirror TAP URL: https://gea.esac.esa.int/tap-server/tap/async, with table: gaiadr2.gaia_source
+[I 220704 18:58:03 gaia:555] submitting GAIA TAP query request for input params: {'REQUEST': 'doQuery', 'LANG': 'ADQL', 'FORMAT': 'csv', 'PHASE': 'RUN', 'JOBNAME': 'ab-gaia-1656975483', 'JOBDESCRIPTION': 'astrobase-gaia-tap-ADQL-query', 'QUERY': 'select source_id, ra, dec, phot_g_mean_mag, phot_bp_mean_mag, phot_rp_mean_mag, l, b, parallax, parallax_error, pmra, pmra_error, pmdec, pmdec_error from gaiadr2.gaia_source where source_id = 6207637767602806912'}
+[I 220704 18:58:04 gaia:737] request submitted successfully, current status is: EXECUTING. waiting for results...
+[I 220704 18:58:07 gaia:809] GAIA query completed, retrieving results...
+[I 220704 18:58:07 gaia:870] done. rows in result: 
+[I 220704 18:58:11 mast:245] query successful. nmatches: 5
+6054076984422770176
+[I 220704 18:58:11 gaia:550] using GAIA mirror TAP URL: https://gea.esac.esa.int/tap-server/tap/async, with table: gaiadr2.gaia_source
+[I 220704 18:58:11 gaia:555] submitting GAIA TAP query request for input params: {'REQUEST': 'doQuery', 'LANG': 'ADQL', 'FORMAT': 'csv', 'PHASE': 'RUN', 'JOBNAME': 'ab-gaia-1656975491', 'JOBDESCRIPTION': 'astrobase-gaia-tap-ADQL-query', 'QUERY': 'select source_id, ra, dec, phot_g_mean_mag, phot_bp_mean_mag, phot_rp_mean_mag, l, b, parallax, parallax_error, pmra, pmra_error, pmdec, pmdec_error from gaiadr2.gaia_source where source_id = 6054076984422770176'}
+[I 220704 18:58:12 gaia:737] request submitted successfully, current status is: EXECUTING. waiting for results...
+[I 220704 18:58:15 gaia:809] GAIA query completed, retrieving results...
+[I 220704 18:58:15 gaia:870] done. rows in result: 
+[I 220704 18:58:17 mast:245] query successful. nmatches: 55
+6207527296744835200
+[I 220704 18:58:17 gaia:550] using GAIA mirror TAP URL: https://gea.esac.esa.int/tap-server/tap/async, with table: gaiadr2.gaia_source
+[I 220704 18:58:17 gaia:555] submitting GAIA TAP query request for input params: {'REQUEST': 'doQuery', 'LANG': 'ADQL', 'FORMAT': 'csv', 'PHASE': 'RUN', 'JOBNAME': 'ab-gaia-1656975497', 'JOBDESCRIPTION': 'astrobase-gaia-tap-ADQL-query', 'QUERY': 'select source_id, ra, dec, phot_g_mean_mag, phot_bp_mean_mag, phot_rp_mean_mag, l, b, parallax, parallax_error, pmra, pmra_error, pmdec, pmdec_error from gaiadr2.gaia_source where source_id = 6207527296744835200'}
+[I 220704 18:58:18 gaia:737] request submitted successfully, current status is: EXECUTING. waiting for results...
+[I 220704 18:58:21 gaia:809] GAIA query completed, retrieving results...
+[I 220704 18:58:21 gaia:870] done. rows in result: 
+[I 220704 18:58:24 mast:245] query successful. nmatches: 10
+4269648296291461120
+[I 220704 18:58:24 gaia:550] using GAIA mirror TAP URL: https://gea.esac.esa.int/tap-server/tap/async, with table: gaiadr2.gaia_source
+[I 220704 18:58:24 gaia:555] submitting GAIA TAP query request for input params: {'REQUEST': 'doQuery', 'LANG': 'ADQL', 'FORMAT': 'csv', 'PHASE': 'RUN', 'JOBNAME': 'ab-gaia-1656975504', 'JOBDESCRIPTION': 'astrobase-gaia-tap-ADQL-query', 'QUERY': 'select source_id, ra, dec, phot_g_mean_mag, phot_bp_mean_mag, phot_rp_mean_mag, l, b, parallax, parallax_error, pmra, pmra_error, pmdec, pmdec_error from gaiadr2.gaia_source where source_id = 4269648296291461120'}
+[I 220704 18:58:25 gaia:737] request submitted successfully, current status is: EXECUTING. waiting for results...
+[I 220704 18:58:28 gaia:809] GAIA query completed, retrieving results...
+[I 220704 18:58:28 gaia:870] done. rows in result: 
+[I 220704 18:58:33 mast:245] query successful. nmatches: 10
+4269690657549268992
+[I 220704 18:58:33 gaia:550] using GAIA mirror TAP URL: https://gea.esac.esa.int/tap-server/tap/async, with table: gaiadr2.gaia_source
+[I 220704 18:58:33 gaia:555] submitting GAIA TAP query request for input params: {'REQUEST': 'doQuery', 'LANG': 'ADQL', 'FORMAT': 'csv', 'PHASE': 'RUN', 'JOBNAME': 'ab-gaia-1656975513', 'JOBDESCRIPTION': 'astrobase-gaia-tap-ADQL-query', 'QUERY': 'select source_id, ra, dec, phot_g_mean_mag, phot_bp_mean_mag, phot_rp_mean_mag, l, b, parallax, parallax_error, pmra, pmra_error, pmdec, pmdec_error from gaiadr2.gaia_source where source_id = 4269690657549268992'}
+[I 220704 18:58:34 gaia:737] request submitted successfully, current status is: EXECUTING. waiting for results...
+[I 220704 18:58:37 gaia:809] GAIA query completed, retrieving results...
+[I 220704 18:58:37 gaia:870] done. rows in result: 
+[I 220704 18:58:42 mast:245] query successful. nmatches: 13
+4269698633319748480
+[I 220704 18:58:42 gaia:550] using GAIA mirror TAP URL: https://gea.esac.esa.int/tap-server/tap/async, with table: gaiadr2.gaia_source
+[I 220704 18:58:42 gaia:555] submitting GAIA TAP query request for input params: {'REQUEST': 'doQuery', 'LANG': 'ADQL', 'FORMAT': 'csv', 'PHASE': 'RUN', 'JOBNAME': 'ab-gaia-1656975522', 'JOBDESCRIPTION': 'astrobase-gaia-tap-ADQL-query', 'QUERY': 'select source_id, ra, dec, phot_g_mean_mag, phot_bp_mean_mag, phot_rp_mean_mag, l, b, parallax, parallax_error, pmra, pmra_error, pmdec, pmdec_error from gaiadr2.gaia_source where source_id = 4269698633319748480'}
+[I 220704 18:58:42 gaia:737] request submitted successfully, current status is: EXECUTING. waiting for results...
+[I 220704 18:58:46 gaia:809] GAIA query completed, retrieving results...
+[I 220704 18:58:47 gaia:870] done. rows in result: 
+[I 220704 18:58:51 mast:245] query successful. nmatches: 34
+6734990924699697024
+[I 220704 18:58:51 gaia:550] using GAIA mirror TAP URL: https://gea.esac.esa.int/tap-server/tap/async, with table: gaiadr2.gaia_source
+[I 220704 18:58:51 gaia:555] submitting GAIA TAP query request for input params: {'REQUEST': 'doQuery', 'LANG': 'ADQL', 'FORMAT': 'csv', 'PHASE': 'RUN', 'JOBNAME': 'ab-gaia-1656975531', 'JOBDESCRIPTION': 'astrobase-gaia-tap-ADQL-query', 'QUERY': 'select source_id, ra, dec, phot_g_mean_mag, phot_bp_mean_mag, phot_rp_mean_mag, l, b, parallax, parallax_error, pmra, pmra_error, pmdec, pmdec_error from gaiadr2.gaia_source where source_id = 6734990924699697024'}
+[I 220704 18:58:52 gaia:737] request submitted successfully, current status is: EXECUTING. waiting for results...
+[I 220704 18:58:55 gaia:809] GAIA query completed, retrieving results...
+[I 220704 18:58:56 gaia:870] done. rows in result: 
+[I 220704 18:59:00 mast:245] query successful. nmatches: 54
+6734979418518297856
+[I 220704 18:59:00 gaia:550] using GAIA mirror TAP URL: https://gea.esac.esa.int/tap-server/tap/async, with table: gaiadr2.gaia_source
+[I 220704 18:59:00 gaia:555] submitting GAIA TAP query request for input params: {'REQUEST': 'doQuery', 'LANG': 'ADQL', 'FORMAT': 'csv', 'PHASE': 'RUN', 'JOBNAME': 'ab-gaia-1656975540', 'JOBDESCRIPTION': 'astrobase-gaia-tap-ADQL-query', 'QUERY': 'select source_id, ra, dec, phot_g_mean_mag, phot_bp_mean_mag, phot_rp_mean_mag, l, b, parallax, parallax_error, pmra, pmra_error, pmdec, pmdec_error from gaiadr2.gaia_source where source_id = 6734979418518297856'}
+[I 220704 18:59:01 gaia:737] request submitted successfully, current status is: EXECUTING. waiting for results...
+[I 220704 18:59:04 gaia:809] GAIA query completed, retrieving results...
+[I 220704 18:59:05 gaia:870] done. rows in result: 
+[I 220704 18:59:09 mast:245] query successful. nmatches: 80
+2250011118722938880
+[I 220704 18:59:09 gaia:550] using GAIA mirror TAP URL: https://gea.esac.esa.int/tap-server/tap/async, with table: gaiadr2.gaia_source
+[I 220704 18:59:09 gaia:555] submitting GAIA TAP query request for input params: {'REQUEST': 'doQuery', 'LANG': 'ADQL', 'FORMAT': 'csv', 'PHASE': 'RUN', 'JOBNAME': 'ab-gaia-1656975549', 'JOBDESCRIPTION': 'astrobase-gaia-tap-ADQL-query', 'QUERY': 'select source_id, ra, dec, phot_g_mean_mag, phot_bp_mean_mag, phot_rp_mean_mag, l, b, parallax, parallax_error, pmra, pmra_error, pmdec, pmdec_error from gaiadr2.gaia_source where source_id = 2250011118722938880'}
+[I 220704 18:59:10 gaia:737] request submitted successfully, current status is: EXECUTING. waiting for results...
+[I 220704 18:59:14 gaia:809] GAIA query completed, retrieving results...
+[I 220704 18:59:14 gaia:870] done. rows in result: 
+[I 220704 18:59:20 mast:245] query successful. nmatches: 7
+5827789829173311488
+[I 220704 18:59:20 gaia:550] using GAIA mirror TAP URL: https://gea.esac.esa.int/tap-server/tap/async, with table: gaiadr2.gaia_source
+[I 220704 18:59:20 gaia:555] submitting GAIA TAP query request for input params: {'REQUEST': 'doQuery', 'LANG': 'ADQL', 'FORMAT': 'csv', 'PHASE': 'RUN', 'JOBNAME': 'ab-gaia-1656975560', 'JOBDESCRIPTION': 'astrobase-gaia-tap-ADQL-query', 'QUERY': 'select source_id, ra, dec, phot_g_mean_mag, phot_bp_mean_mag, phot_rp_mean_mag, l, b, parallax, parallax_error, pmra, pmra_error, pmdec, pmdec_error from gaiadr2.gaia_source where source_id = 5827789829173311488'}
+[I 220704 18:59:21 gaia:737] request submitted successfully, current status is: EXECUTING. waiting for results...
+[I 220704 18:59:24 gaia:809] GAIA query completed, retrieving results...
+[I 220704 18:59:25 gaia:870] done. rows in result: 
+[I 220704 18:59:28 mast:245] query successful. nmatches: 33
+1931528676566731648
+[I 220704 18:59:28 gaia:550] using GAIA mirror TAP URL: https://gea.esac.esa.int/tap-server/tap/async, with table: gaiadr2.gaia_source
+[I 220704 18:59:28 gaia:555] submitting GAIA TAP query request for input params: {'REQUEST': 'doQuery', 'LANG': 'ADQL', 'FORMAT': 'csv', 'PHASE': 'RUN', 'JOBNAME': 'ab-gaia-1656975568', 'JOBDESCRIPTION': 'astrobase-gaia-tap-ADQL-query', 'QUERY': 'select source_id, ra, dec, phot_g_mean_mag, phot_bp_mean_mag, phot_rp_mean_mag, l, b, parallax, parallax_error, pmra, pmra_error, pmdec, pmdec_error from gaiadr2.gaia_source where source_id = 1931528676566731648'}
+[I 220704 18:59:28 gaia:737] request submitted successfully, current status is: EXECUTING. waiting for results...
+[I 220704 18:59:32 gaia:809] GAIA query completed, retrieving results...
+[I 220704 18:59:32 gaia:870] done. rows in result: 
+[I 220704 18:59:34 mast:245] query successful. nmatches: 6
+5566395675677421056
+[I 220704 18:59:34 gaia:550] using GAIA mirror TAP URL: https://gea.esac.esa.int/tap-server/tap/async, with table: gaiadr2.gaia_source
+[I 220704 18:59:34 gaia:555] submitting GAIA TAP query request for input params: {'REQUEST': 'doQuery', 'LANG': 'ADQL', 'FORMAT': 'csv', 'PHASE': 'RUN', 'JOBNAME': 'ab-gaia-1656975574', 'JOBDESCRIPTION': 'astrobase-gaia-tap-ADQL-query', 'QUERY': 'select source_id, ra, dec, phot_g_mean_mag, phot_bp_mean_mag, phot_rp_mean_mag, l, b, parallax, parallax_error, pmra, pmra_error, pmdec, pmdec_error from gaiadr2.gaia_source where source_id = 5566395675677421056'}
+[I 220704 18:59:34 gaia:737] request submitted successfully, current status is: EXECUTING. waiting for results...
+[I 220704 18:59:38 gaia:809] GAIA query completed, retrieving results...
+[I 220704 18:59:39 gaia:870] done. rows in result: 
+[I 220704 18:59:44 mast:245] query successful. nmatches: 6
+228062527199389696
+[I 220704 18:59:44 gaia:550] using GAIA mirror TAP URL: https://gea.esac.esa.int/tap-server/tap/async, with table: gaiadr2.gaia_source
+[I 220704 18:59:44 gaia:555] submitting GAIA TAP query request for input params: {'REQUEST': 'doQuery', 'LANG': 'ADQL', 'FORMAT': 'csv', 'PHASE': 'RUN', 'JOBNAME': 'ab-gaia-1656975584', 'JOBDESCRIPTION': 'astrobase-gaia-tap-ADQL-query', 'QUERY': 'select source_id, ra, dec, phot_g_mean_mag, phot_bp_mean_mag, phot_rp_mean_mag, l, b, parallax, parallax_error, pmra, pmra_error, pmdec, pmdec_error from gaiadr2.gaia_source where source_id = 228062527199389696'}
+[I 220704 18:59:45 gaia:737] request submitted successfully, current status is: EXECUTING. waiting for results...
+[I 220704 18:59:48 gaia:809] GAIA query completed, retrieving results...
+[I 220704 18:59:49 gaia:870] done. rows in result: 
+[I 220704 18:59:54 mast:245] query successful. nmatches: 14
+3295546930416384640
+[I 220704 18:59:54 gaia:550] using GAIA mirror TAP URL: https://gea.esac.esa.int/tap-server/tap/async, with table: gaiadr2.gaia_source
+[I 220704 18:59:54 gaia:555] submitting GAIA TAP query request for input params: {'REQUEST': 'doQuery', 'LANG': 'ADQL', 'FORMAT': 'csv', 'PHASE': 'RUN', 'JOBNAME': 'ab-gaia-1656975594', 'JOBDESCRIPTION': 'astrobase-gaia-tap-ADQL-query', 'QUERY': 'select source_id, ra, dec, phot_g_mean_mag, phot_bp_mean_mag, phot_rp_mean_mag, l, b, parallax, parallax_error, pmra, pmra_error, pmdec, pmdec_error from gaiadr2.gaia_source where source_id = 3295546930416384640'}
+[I 220704 18:59:55 gaia:737] request submitted successfully, current status is: EXECUTING. waiting for results...
+[I 220704 18:59:59 gaia:809] GAIA query completed, retrieving results...
+[I 220704 18:59:59 gaia:870] done. rows in result: 
+[I 220704 19:00:04 mast:245] query successful. nmatches: 6
+3295565312876412032
+[I 220704 19:00:04 gaia:550] using GAIA mirror TAP URL: https://gea.esac.esa.int/tap-server/tap/async, with table: gaiadr2.gaia_source
+[I 220704 19:00:04 gaia:555] submitting GAIA TAP query request for input params: {'REQUEST': 'doQuery', 'LANG': 'ADQL', 'FORMAT': 'csv', 'PHASE': 'RUN', 'JOBNAME': 'ab-gaia-1656975604', 'JOBDESCRIPTION': 'astrobase-gaia-tap-ADQL-query', 'QUERY': 'select source_id, ra, dec, phot_g_mean_mag, phot_bp_mean_mag, phot_rp_mean_mag, l, b, parallax, parallax_error, pmra, pmra_error, pmdec, pmdec_error from gaiadr2.gaia_source where source_id = 3295565312876412032'}
+[I 220704 19:00:05 gaia:737] request submitted successfully, current status is: EXECUTING. waiting for results...
+[I 220704 19:00:07 gaia:809] GAIA query completed, retrieving results...
+[I 220704 19:00:08 gaia:870] done. rows in result: 
+[I 220704 19:00:13 mast:245] query successful. nmatches: 4
+3182725148937838848
+[I 220704 19:00:13 gaia:550] using GAIA mirror TAP URL: https://gea.esac.esa.int/tap-server/tap/async, with table: gaiadr2.gaia_source
+[I 220704 19:00:13 gaia:555] submitting GAIA TAP query request for input params: {'REQUEST': 'doQuery', 'LANG': 'ADQL', 'FORMAT': 'csv', 'PHASE': 'RUN', 'JOBNAME': 'ab-gaia-1656975613', 'JOBDESCRIPTION': 'astrobase-gaia-tap-ADQL-query', 'QUERY': 'select source_id, ra, dec, phot_g_mean_mag, phot_bp_mean_mag, phot_rp_mean_mag, l, b, parallax, parallax_error, pmra, pmra_error, pmdec, pmdec_error from gaiadr2.gaia_source where source_id = 3182725148937838848'}
+[I 220704 19:00:13 gaia:737] request submitted successfully, current status is: EXECUTING. waiting for results...
+[I 220704 19:00:16 gaia:809] GAIA query completed, retrieving results...
+[I 220704 19:00:17 gaia:870] done. rows in result: 
+[I 220704 19:00:18 mast:245] query successful. nmatches: 2
+3182966697897963648
+[I 220704 19:00:18 gaia:550] using GAIA mirror TAP URL: https://gea.esac.esa.int/tap-server/tap/async, with table: gaiadr2.gaia_source
+[I 220704 19:00:18 gaia:555] submitting GAIA TAP query request for input params: {'REQUEST': 'doQuery', 'LANG': 'ADQL', 'FORMAT': 'csv', 'PHASE': 'RUN', 'JOBNAME': 'ab-gaia-1656975618', 'JOBDESCRIPTION': 'astrobase-gaia-tap-ADQL-query', 'QUERY': 'select source_id, ra, dec, phot_g_mean_mag, phot_bp_mean_mag, phot_rp_mean_mag, l, b, parallax, parallax_error, pmra, pmra_error, pmdec, pmdec_error from gaiadr2.gaia_source where source_id = 3182966697897963648'}
+[I 220704 19:00:19 gaia:737] request submitted successfully, current status is: EXECUTING. waiting for results...
+[I 220704 19:00:22 gaia:809] GAIA query completed, retrieving results...
+[I 220704 19:00:23 gaia:870] done. rows in result: 
+[I 220704 19:00:28 mast:245] query successful. nmatches: 3
+6007538024422285312
+[I 220704 19:00:28 gaia:550] using GAIA mirror TAP URL: https://gea.esac.esa.int/tap-server/tap/async, with table: gaiadr2.gaia_source
+[I 220704 19:00:28 gaia:555] submitting GAIA TAP query request for input params: {'REQUEST': 'doQuery', 'LANG': 'ADQL', 'FORMAT': 'csv', 'PHASE': 'RUN', 'JOBNAME': 'ab-gaia-1656975628', 'JOBDESCRIPTION': 'astrobase-gaia-tap-ADQL-query', 'QUERY': 'select source_id, ra, dec, phot_g_mean_mag, phot_bp_mean_mag, phot_rp_mean_mag, l, b, parallax, parallax_error, pmra, pmra_error, pmdec, pmdec_error from gaiadr2.gaia_source where source_id = 6007538024422285312'}
+[I 220704 19:00:29 gaia:737] request submitted successfully, current status is: EXECUTING. waiting for results...
+[I 220704 19:00:33 gaia:809] GAIA query completed, retrieving results...
+[I 220704 19:00:33 gaia:870] done. rows in result: 
+[I 220704 19:00:39 mast:245] query successful. nmatches: 17
+2080437937201045120
+[I 220704 19:00:39 gaia:550] using GAIA mirror TAP URL: https://gea.esac.esa.int/tap-server/tap/async, with table: gaiadr2.gaia_source
+[I 220704 19:00:39 gaia:555] submitting GAIA TAP query request for input params: {'REQUEST': 'doQuery', 'LANG': 'ADQL', 'FORMAT': 'csv', 'PHASE': 'RUN', 'JOBNAME': 'ab-gaia-1656975639', 'JOBDESCRIPTION': 'astrobase-gaia-tap-ADQL-query', 'QUERY': 'select source_id, ra, dec, phot_g_mean_mag, phot_bp_mean_mag, phot_rp_mean_mag, l, b, parallax, parallax_error, pmra, pmra_error, pmdec, pmdec_error from gaiadr2.gaia_source where source_id = 2080437937201045120'}
+[I 220704 19:00:40 gaia:737] request submitted successfully, current status is: EXECUTING. waiting for results...
+[I 220704 19:00:43 gaia:809] GAIA query completed, retrieving results...
+[I 220704 19:00:43 gaia:870] done. rows in result: 
+[I 220704 19:00:49 mast:245] query successful. nmatches: 15
+162758236656524416
+[I 220704 19:00:49 gaia:550] using GAIA mirror TAP URL: https://gea.esac.esa.int/tap-server/tap/async, with table: gaiadr2.gaia_source
+[I 220704 19:00:49 gaia:555] submitting GAIA TAP query request for input params: {'REQUEST': 'doQuery', 'LANG': 'ADQL', 'FORMAT': 'csv', 'PHASE': 'RUN', 'JOBNAME': 'ab-gaia-1656975649', 'JOBDESCRIPTION': 'astrobase-gaia-tap-ADQL-query', 'QUERY': 'select source_id, ra, dec, phot_g_mean_mag, phot_bp_mean_mag, phot_rp_mean_mag, l, b, parallax, parallax_error, pmra, pmra_error, pmdec, pmdec_error from gaiadr2.gaia_source where source_id = 162758236656524416'}
+[I 220704 19:00:50 gaia:737] request submitted successfully, current status is: EXECUTING. waiting for results...
+[I 220704 19:00:53 gaia:809] GAIA query completed, retrieving results...
+[I 220704 19:00:53 gaia:870] done. rows in result: 
+[I 220704 19:00:59 mast:245] query successful. nmatches: 2
+162757545164429696
+[I 220704 19:00:59 gaia:550] using GAIA mirror TAP URL: https://gea.esac.esa.int/tap-server/tap/async, with table: gaiadr2.gaia_source
+[I 220704 19:00:59 gaia:555] submitting GAIA TAP query request for input params: {'REQUEST': 'doQuery', 'LANG': 'ADQL', 'FORMAT': 'csv', 'PHASE': 'RUN', 'JOBNAME': 'ab-gaia-1656975659', 'JOBDESCRIPTION': 'astrobase-gaia-tap-ADQL-query', 'QUERY': 'select source_id, ra, dec, phot_g_mean_mag, phot_bp_mean_mag, phot_rp_mean_mag, l, b, parallax, parallax_error, pmra, pmra_error, pmdec, pmdec_error from gaiadr2.gaia_source where source_id = 162757545164429696'}
+[I 220704 19:01:00 gaia:737] request submitted successfully, current status is: EXECUTING. waiting for results...
+[I 220704 19:01:03 gaia:809] GAIA query completed, retrieving results...
+[I 220704 19:01:03 gaia:870] done. rows in result: 
+[I 220704 19:01:09 mast:245] query successful. nmatches: 4
+162895538168516736
+[I 220704 19:01:09 gaia:550] using GAIA mirror TAP URL: https://gea.esac.esa.int/tap-server/tap/async, with table: gaiadr2.gaia_source
+[I 220704 19:01:09 gaia:555] submitting GAIA TAP query request for input params: {'REQUEST': 'doQuery', 'LANG': 'ADQL', 'FORMAT': 'csv', 'PHASE': 'RUN', 'JOBNAME': 'ab-gaia-1656975669', 'JOBDESCRIPTION': 'astrobase-gaia-tap-ADQL-query', 'QUERY': 'select source_id, ra, dec, phot_g_mean_mag, phot_bp_mean_mag, phot_rp_mean_mag, l, b, parallax, parallax_error, pmra, pmra_error, pmdec, pmdec_error from gaiadr2.gaia_source where source_id = 162895538168516736'}
+[I 220704 19:01:10 gaia:737] request submitted successfully, current status is: EXECUTING. waiting for results...
+[I 220704 19:01:13 gaia:809] GAIA query completed, retrieving results...
+[I 220704 19:01:13 gaia:870] done. rows in result: 
+[I 220704 19:01:16 mast:245] query successful. nmatches: 3
+5994338078121180032
+[I 220704 19:01:16 gaia:550] using GAIA mirror TAP URL: https://gea.esac.esa.int/tap-server/tap/async, with table: gaiadr2.gaia_source
+[I 220704 19:01:16 gaia:555] submitting GAIA TAP query request for input params: {'REQUEST': 'doQuery', 'LANG': 'ADQL', 'FORMAT': 'csv', 'PHASE': 'RUN', 'JOBNAME': 'ab-gaia-1656975676', 'JOBDESCRIPTION': 'astrobase-gaia-tap-ADQL-query', 'QUERY': 'select source_id, ra, dec, phot_g_mean_mag, phot_bp_mean_mag, phot_rp_mean_mag, l, b, parallax, parallax_error, pmra, pmra_error, pmdec, pmdec_error from gaiadr2.gaia_source where source_id = 5994338078121180032'}
+[I 220704 19:01:16 gaia:737] request submitted successfully, current status is: EXECUTING. waiting for results...
+[I 220704 19:01:19 gaia:809] GAIA query completed, retrieving results...
+[I 220704 19:01:20 gaia:870] done. rows in result: 
+[I 220704 19:01:22 mast:245] query successful. nmatches: 58
+166478915287383552
+[I 220704 19:01:22 gaia:550] using GAIA mirror TAP URL: https://gea.esac.esa.int/tap-server/tap/async, with table: gaiadr2.gaia_source
+[I 220704 19:01:22 gaia:555] submitting GAIA TAP query request for input params: {'REQUEST': 'doQuery', 'LANG': 'ADQL', 'FORMAT': 'csv', 'PHASE': 'RUN', 'JOBNAME': 'ab-gaia-1656975682', 'JOBDESCRIPTION': 'astrobase-gaia-tap-ADQL-query', 'QUERY': 'select source_id, ra, dec, phot_g_mean_mag, phot_bp_mean_mag, phot_rp_mean_mag, l, b, parallax, parallax_error, pmra, pmra_error, pmdec, pmdec_error from gaiadr2.gaia_source where source_id = 166478915287383552'}
+[I 220704 19:01:23 gaia:737] request submitted successfully, current status is: EXECUTING. waiting for results...
+[I 220704 19:01:26 gaia:809] GAIA query completed, retrieving results...
+[I 220704 19:01:27 gaia:870] done. rows in result: 
+[I 220704 19:01:32 mast:245] query successful. nmatches: 7
+5997975400009713920
+[I 220704 19:01:32 gaia:550] using GAIA mirror TAP URL: https://gea.esac.esa.int/tap-server/tap/async, with table: gaiadr2.gaia_source
+[I 220704 19:01:32 gaia:555] submitting GAIA TAP query request for input params: {'REQUEST': 'doQuery', 'LANG': 'ADQL', 'FORMAT': 'csv', 'PHASE': 'RUN', 'JOBNAME': 'ab-gaia-1656975692', 'JOBDESCRIPTION': 'astrobase-gaia-tap-ADQL-query', 'QUERY': 'select source_id, ra, dec, phot_g_mean_mag, phot_bp_mean_mag, phot_rp_mean_mag, l, b, parallax, parallax_error, pmra, pmra_error, pmdec, pmdec_error from gaiadr2.gaia_source where source_id = 5997975400009713920'}
+[I 220704 19:01:33 gaia:737] request submitted successfully, current status is: EXECUTING. waiting for results...
+[I 220704 19:01:36 gaia:809] GAIA query completed, retrieving results...
+[I 220704 19:01:37 gaia:870] done. rows in result: 
+[I 220704 19:01:41 mast:245] query successful. nmatches: 34
+6022873909547184512
+[I 220704 19:01:41 gaia:550] using GAIA mirror TAP URL: https://gea.esac.esa.int/tap-server/tap/async, with table: gaiadr2.gaia_source
+[I 220704 19:01:41 gaia:555] submitting GAIA TAP query request for input params: {'REQUEST': 'doQuery', 'LANG': 'ADQL', 'FORMAT': 'csv', 'PHASE': 'RUN', 'JOBNAME': 'ab-gaia-1656975701', 'JOBDESCRIPTION': 'astrobase-gaia-tap-ADQL-query', 'QUERY': 'select source_id, ra, dec, phot_g_mean_mag, phot_bp_mean_mag, phot_rp_mean_mag, l, b, parallax, parallax_error, pmra, pmra_error, pmdec, pmdec_error from gaiadr2.gaia_source where source_id = 6022873909547184512'}
+[I 220704 19:01:42 gaia:737] request submitted successfully, current status is: EXECUTING. waiting for results...
+[I 220704 19:01:46 gaia:809] GAIA query completed, retrieving results...
+[I 220704 19:01:47 gaia:870] done. rows in result: 
+[I 220704 19:01:48 mast:245] query successful. nmatches: 32
+3189804629430466944
+[I 220704 19:01:48 gaia:550] using GAIA mirror TAP URL: https://gea.esac.esa.int/tap-server/tap/async, with table: gaiadr2.gaia_source
+[I 220704 19:01:48 gaia:555] submitting GAIA TAP query request for input params: {'REQUEST': 'doQuery', 'LANG': 'ADQL', 'FORMAT': 'csv', 'PHASE': 'RUN', 'JOBNAME': 'ab-gaia-1656975708', 'JOBDESCRIPTION': 'astrobase-gaia-tap-ADQL-query', 'QUERY': 'select source_id, ra, dec, phot_g_mean_mag, phot_bp_mean_mag, phot_rp_mean_mag, l, b, parallax, parallax_error, pmra, pmra_error, pmdec, pmdec_error from gaiadr2.gaia_source where source_id = 3189804629430466944'}
+[I 220704 19:01:49 gaia:737] request submitted successfully, current status is: EXECUTING. waiting for results...
+[I 220704 19:01:53 gaia:809] GAIA query completed, retrieving results...
+[I 220704 19:01:53 gaia:870] done. rows in result: 

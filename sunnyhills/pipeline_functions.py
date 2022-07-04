@@ -636,6 +636,15 @@ def better_download(tic_id:str, save_directory:str=None):
             save_path = save_directory+tic_id+'.csv' 
             data_df.to_csv(save_path, index=False)
 
+        if downloaded_sectors[-1] == '|': 
+            downloaded_sectors = downloaded_sectors[:-1]
+
+        if sector_starts[-1] == '|': 
+            sector_starts = sector_starts[:-1]
+        
+        if sector_ends[-1] == '|': 
+            sector_ends = sector_ends[:-1]
+
         return data_df, downloaded_sectors, sector_starts, sector_ends, last_dates
 
 def better_preprocess(tic_id:str, raw_data:str, last_dates:list, save_directory:str=None,
@@ -707,7 +716,7 @@ def better_preprocess(tic_id:str, raw_data:str, last_dates:list, save_directory:
             delete_idx = np.where(temp_no_flare_raw_time<=last_date)[0]
 
             temp_no_flare_raw_time = np.delete(temp_no_flare_raw_time, delete_idx)
-            temp_no_flare_raw_time = np.delete(temp_no_flare_raw_flux, delete_idx)
+            temp_no_flare_raw_flux = np.delete(temp_no_flare_raw_flux, delete_idx)
 
             detrended_flux_temp, trend_flux_temp = wotan.flatten(
                 current_time, current_flux, return_trend=True,
