@@ -12,7 +12,7 @@ def create_local_catalog(tic_ids, base_catalog, working_dir:str='/ar1/PROJ/fjuhs
     import pandas as pd
     import numpy as np
     import os 
-    from sunnyhills.pipeline_functions import query_tls_vizier, query_simbad, remove_flares
+    from sunnyhills.pipeline_functions import query_tls_vizier, query_simbad, remove_flares, better_preprocess
     from astropy.timeseries import LombScargle
     
     if working_dir[-1]!='/':
@@ -33,10 +33,10 @@ def create_local_catalog(tic_ids, base_catalog, working_dir:str='/ar1/PROJ/fjuhs
     third_ls_powers = [] 
     fap_95_levels = [] 
 
-    raw_counts = []
-    no_flare_counts = []
-    wotan_counts = [] # 
-    lomb_scargle_counts = [] 
+    all_raw_counts = []
+    all_no_flare_counts = []
+    all_wotan_counts = [] # 
+    all_lomb_scargle_counts = [] 
 
     ab_values = [] 
     mass_values = [] 
@@ -69,13 +69,17 @@ def create_local_catalog(tic_ids, base_catalog, working_dir:str='/ar1/PROJ/fjuhs
             no_flare_raw_time = []
             no_flare_raw_flux = []
 
-            raw_counts.append(len(raw_time))
-            no_flare_counts.append(len(no_flare_raw_time))
+            all_raw_counts.append(len(raw_time))
+            all_no_flare_counts.append(len(no_flare_raw_time))
 
             # 2. PREPROCESS DATA
 
             # 2.a Wotan Detrend
-            wotan_path = wotan_dir+tic_id+'.csv'
+
+            _, wotan_counts = better_preprocess(tic_id=tic_id, raw_data=raw_path, last_dates=[], 
+                                                save_directory=wotan_dir)
+
+            all_wotan_counts.append(wotan_counts)
 
             # 2.b Lomb-Scargle on Data
             periodogram = LombScargle(no_flare_raw_time, no_flare_raw_flux, nterms=2)
@@ -102,7 +106,7 @@ def create_local_catalog(tic_ids, base_catalog, working_dir:str='/ar1/PROJ/fjuhs
 
             (ls_clean_time, ls_clean_flux), (_, _) = remove_flares(no_flare_raw_time, no_flare_raw_flux/y_fit, y_fit)
 
-            lomb_scargle_counts.append(len(ls_clean_time))
+            all_lomb_scargle_counts.append(len(ls_clean_time))
 
             ls_data_cols = [ls_clean_time, ls_clean_flux, no_flare_raw_time, y_fit, no_flare_raw_time, no_flare_raw_flux, raw_time, raw_flux]
             ls_data_cols = [pd.Series(i) for i in ls_data_cols]
@@ -147,13 +151,12 @@ def create_local_catalog(tic_ids, base_catalog, working_dir:str='/ar1/PROJ/fjuhs
             fap_95_levels.append(np.nan)
 
             # Detrend Information # 
-            raw_counts.append(np.nan)
-            no_flare_counts.append(np.nan)
+            all_raw_counts.append(np.nan)
+            all_no_flare_counts.append(np.nan)
             wotan_counts.append(np.nan)
-            lomb_scargle_counts.append(np.nan)
+            all_lomb_scargle_counts.append(np.nan)
 
             # Vizier Information #
-
             ab_values.append('')
             mass_values.append(np.nan)
             mass_mins.append(np.nan)
@@ -166,5 +169,3 @@ def create_local_catalog(tic_ids, base_catalog, working_dir:str='/ar1/PROJ/fjuhs
             OTYPES.append('')
             SP_TYPES.append('')
             MAIN_OTYPES.append('')
-
-

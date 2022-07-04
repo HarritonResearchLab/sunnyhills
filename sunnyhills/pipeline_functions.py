@@ -535,6 +535,8 @@ def better_download(tic_id:str, save_directory:str=None):
         | deliminated dates for sector starts
     sector_ends : str
         | deliminated dates for sector ends
+    last_dates : list
+        list of last dates per lc list...basically same thing as sector_ends but just for preprocessing. doesn't get saved anywhere 
     
     '''
     
@@ -555,6 +557,8 @@ def better_download(tic_id:str, save_directory:str=None):
     # returned by lightkurve -- no need to hand-pick the right ones.  the exact
     # condition below says "if the interval is between 119 and 121 seconds,
     # take it".
+
+    last_dates = []
 
     if data_found: 
         raw_list = [_l for _l in lcc
@@ -610,6 +614,8 @@ def better_download(tic_id:str, save_directory:str=None):
                 raw_time = np.concatenate((raw_time, time))
                 raw_flux = np.concatenate((raw_flux, flux)) 
 
+                last_dates.append(np.max(raw_time))
+
         (no_flare_raw_time, no_flare_raw_flux), (_, _) = remove_flares(raw_time, raw_flux)
         no_flare_raw_time, no_flare_raw_flux = remove_extreme_dips(no_flare_raw_time, no_flare_raw_flux)
 
@@ -630,10 +636,12 @@ def better_download(tic_id:str, save_directory:str=None):
             save_path = save_directory+tic_id+'.csv' 
             data_df.to_csv(save_path, index=False)
 
-        return data_df, downloaded_sectors, sector_starts, sector_ends
+        return data_df, downloaded_sectors, sector_starts, sector_ends, last_dates
 
-def better_preprocess(tic_id:str, raw_data:str, 
-                      method:str='biweight', window_length:float=0.5, cval:float=5.0, break_tolerance:float=1.0): 
+def better_preprocess(tic_id:str, raw_data:str, last_dates:list, save_directory:str=None,
+                      method:str='biweight', window_length:float=0.5, 
+                      cval:float=5.0, break_tolerance:float=1.0, n_terms:int=2): 
+    
     r'''
     arguments 
     ---------
@@ -641,20 +649,101 @@ def better_preprocess(tic_id:str, raw_data:str,
         e.g. "TIC_232323111" 
     raw_data : str 
         path to csv file with columns "raw_time,raw_flux,no_flare_raw_time,no_flare_raw_flux" 
+    last_dates : list
+        see better_download docstring 
+    save_directory : str
+        directory to save all the data in 
     method : str
-        default 'biweight'
+        default 'biweight', can also be 'LombScargle'
     window_length : float
         default 0.5
     cval : float
         default 5.0
     break_tolerance : float
         default 1.0
+    n_terms : int
+        if method is 'LombScargle', then the lc will be detrended with n_terms sinusoid 
     '''
 
+    import numpy as np 
+    import wotan 
+    import pandas as pd
+    from sunnyhills.pipeline_functions import remove_flares
+    from astropy.timeseries import LombScargle
 
-    import pandas as pd 
+    raw_df = pd.read_csv(raw_data)
+    raw_time, raw_flux = [np.array(raw_df[i]) for i in ['raw_time', 'raw_flux']]
+    no_flare_mask = np.isfinite(raw_df['no_flare_raw_flux'])
+    no_flare_raw_time, no_flare_raw_flux = [np.array(raw_df[i])[no_flare_mask] for i in ['no_flare_raw_time', 'no_flare_raw_flux']]
+
+    clean_time = np.array([])
+    clean_flux = np.array([])
+    trend_time = np.array([])
+    trend_flux = np.array([])
+
+    clean_num_obs = 0
+
+    if method=='LombScargle' and n_terms is not None: 
+        periodogram = LombScargle(no_flare_raw_time, no_flare_raw_flux, nterms=2)
+
+        frequencies, powers = periodogram.autopower(minimum_frequency=1/15, maximum_frequency=1/0.1, method='fastchi2')
+        best_frequency = frequencies[np.argmax(powers)]
+        trend_flux = periodogram.model(no_flare_raw_time, best_frequency)
+        (clean_time, clean_flux), (_, _) = remove_flares(no_flare_raw_time, no_flare_raw_flux/trend_flux, trend_flux)
+        trend_time = no_flare_raw_time
+        clean_num_obs = len(clean_time)
+
+    else: 
+
+        # detrend by group so wotan doesn't get messed up lol 
+
+        temp_no_flare_raw_time, temp_no_flare_raw_flux = (no_flare_raw_time, no_flare_raw_flux)
+
+        for last_date in last_dates: 
+            current_mask = temp_no_flare_raw_time<=last_date 
+            current_time = temp_no_flare_raw_time[current_mask]
+            current_flux = temp_no_flare_raw_flux[current_mask]
+
+            delete_idx = np.where(temp_no_flare_raw_time<=last_date)[0]
+
+            temp_no_flare_raw_time = np.delete(temp_no_flare_raw_time, delete_idx)
+            temp_no_flare_raw_time = np.delete(temp_no_flare_raw_flux, delete_idx)
+
+            detrended_flux_temp, trend_flux_temp = wotan.flatten(
+                current_time, current_flux, return_trend=True,
+                method=method,
+                break_tolerance=break_tolerance,
+                window_length=window_length,
+                cval=cval
+            )
+
+            (cleaned_time_temp, detrended_flux_temp, trend_flux_temp), (_, _, _) = remove_flares(current_time, detrended_flux_temp, trend_flux_temp)
+
+            clean_time = np.concatenate((clean_time, cleaned_time_temp))
+            clean_flux = np.concatenate((clean_flux, detrended_flux_temp))
+            trend_time = np.concatenate((trend_time, cleaned_time_temp))
+            trend_flux = np.concatenate((trend_flux, trend_flux_temp))
+
+            clean_num_obs += len(clean_time)
     
-    pass 
+    cols = [clean_time, clean_flux, no_flare_raw_time, no_flare_raw_flux, raw_time, raw_flux]
+    cols = [pd.Series(i) for i in cols]
+
+    col_names = ['clean_time', 'clean_flux', 'trend_time', 'trend_flux', 'no_flare_raw_time', 'no_flare_raw_flux', 'raw_time', 'raw_flux']
+
+    dictionary = {}
+    for i in range(len(cols)):
+        dictionary.update({col_names[i]:cols[i]})
+
+    data_df = pd.DataFrame(dictionary)
+
+    if save_directory is not None:
+        if save_directory[-1]!='/': 
+            save_directory += '/'
+        save_path = save_directory+tic_id+'.csv' 
+        data_df.to_csv(save_path, index=False)
+
+    return data_df, clean_num_obs
 
 # query functions # 
 
