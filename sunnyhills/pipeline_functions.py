@@ -730,7 +730,6 @@ def run_tls(tic_id:str, time:np.array, flux:np.array,
 
     return tls_results, tls_model 
 
-
 def iterative_tls_runner(time, flux, 
                      iterations: int=1, 
                      tls_params: dict = {'min_per':0.5, 'max_per':15, 

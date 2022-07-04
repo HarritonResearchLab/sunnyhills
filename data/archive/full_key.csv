@@ -1,4 +1,4 @@
-GDR2_ID,GDR2_RA,GDR2_DEC,TLC,mas_parrallax,g_mag,bp-rp,probability,age_myr,age_err_lower,age_err_upper,Distance,absolute_mag
+GDR2_ID,GDR2_RA,GDR2_DEC,TLC,mas_parrallax,gaia_g_mag,bp-rp,probability,age_myr,age_err_lower,age_err_upper,distance,absolute_mag
 3239529836638867840,73.8034,4.7175,-1,4.17,17.8,3.5,0.34,28.3,8.4,5.7,239.8081535,10.900680274662498
 6099439604319602560,217.3498,-44.7853,22,5.96,15.6,3.0,0.94,12.0,2.7,3.0,167.7852349,9.476231298692495
 4154795132763964032,278.9114,-10.8489,-1,3.02,14.4,2.4,1.0,,331.12582779999997,,,

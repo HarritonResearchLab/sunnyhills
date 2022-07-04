@@ -6,11 +6,18 @@ def gaia_to_tic(gaia_ids):
     import numpy as np
     tic_ids = []
     for id in gaia_ids:
-        if id !=None:
-            tic_ids.append(gaiadr2_to_tic(id))
 
-        else: 
+        try: 
+
+            if id !=None:
+                tic_ids.append(gaiadr2_to_tic(id))
+
+            else: 
+                tic_ids.append(None)
+        except: 
             tic_ids.append(None)
+            continue 
+
 
     return dict(zip(gaia_ids, tic_ids))
 
@@ -320,14 +327,18 @@ def find_data_gap(array:np.array):
     except:
         return None
 
-def return_kerr_cluster(tic_id: str):
-    df0=pd.read_csv('./data/current/current_key.csv')
-    index0=df0['TIC_ID']
-    index1=df0['GDR2_ID']
-    #split at underscores....
-    conversion=np.where(str(tic_id)==index0)[0]
-    baz=index1[conversion]
-    gaiaid=np.array(baz)[0].split('GDR2_')[1]
+def return_kerr_cluster(tic_id: str=None, gaia_id:str=None):
+    if tic_id is not None: 
+        df0=pd.read_csv('./data/current/current_key.csv')
+        index0=df0['TIC_ID']
+        index1=df0['GDR2_ID']
+        #split at underscores....
+        conversion=np.where(str(tic_id)==index0)[0]
+        baz=index1[conversion]
+        gaiaid=np.array(baz)[0].split('GDR2_')[1]
+    else: 
+        gaiaid = gaia_id
+
     names=['Cepheus Flare','Pleiades','Taurus-Orion','Ophiuchus Southeast','Fornax-Horologium','CMa North','Aquila East','Cepheus Far North','Vela-CG7','ASCC 123','Cepheus-Cygnus','Lyra','Cerberus','Carina-Musca','Perseus','Perseus','Taurus-Orion II','Greater Taurus','IC 2391	101','NGC 2451A','Chamaeleon','Sco-Cen	7394','Taurus-Orion III','Vela-CG4','Taurus-Orion IV','Monoceros Southwest','Greater Orion']
     #note for some reason when making this csv with excel pandas returned a dtype warning. To fix this just specify the dtype as unicode
     df1=pd.read_csv('./personal_epochs/ryan/Summer/Week3/kerr context/table1.csv',dtype='unicode')
