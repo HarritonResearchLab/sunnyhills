@@ -305,7 +305,6 @@ def merge_plots(tic_id:str='',plot_dir:str='routines/alpha_tls/plots/',export_di
     merger.close()
     print('successfully generated: ' + tic_id + ' report!')
 
-
 def return_kerr_cluster(gaiaid: str):
     names=['Cepheus Flare','Pleiades','Taurus-Orion','Ophiuchus Southeast','Fornax-Horologium','CMa North','Aquila East','Cepheus Far North','Vela-CG7','ASCC 123','Cepheus-Cygnus','Lyra','Cerberus','Carina-Musca','Perseus','Perseus','Taurus-Orion II','Greater Taurus','IC 2391	101','NGC 2451A','Chamaeleon','Sco-Cen	7394','Taurus-Orion III','Vela-CG4','Taurus-Orion IV','Monoceros Southwest','Greater Orion']
     #note for some reason when making this csv with excel pandas returned a dtype warning. To fix this just specify the dtype as unicode

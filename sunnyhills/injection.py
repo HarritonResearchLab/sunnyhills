@@ -1,59 +1,7 @@
 import numpy as np
 import pandas as pd 
 
-def inject(tic_id:str, time:np.array, flux:np.array, per:float=None, rp:float=None, t0:float=None,core_fraction:float=0.5):
-    r'''
-    
-    Notes
-    -----
-        t0 : if t0 is not defined/None, then the algo will choose random time less than 0.05*max(time) to be t0
-    '''
-    
-    import batman 
-    import random 
-    from sunnyhills.pipeline_functions import query_tls_vizier
-    import multiprocessing
-
-    if t0 is None:     
-        percentiles = np.percentile(time, [0,5])
-        t0 = random.uniform(percentiles[0], percentiles[1])
-
-    R_J = 0.10045 # times R_S
-    ab, mass, mass_min, mass_max, radius, radius_min, radius_max = query_tls_vizier(tic_id=tic_id)
-    ab = list(ab)
-    
-    if rp is None: 
-        rp = 0.5*R_J     
-    
-    if per is None: 
-        per = np.random.uniform(1,15)
-
-    core_count = int(core_fraction*multiprocessing.cpu_count())
-
-    params = batman.TransitParams()
-    params.n_threads = core_count
-    params.t0 = t0                     #time of inferior conjunction
-    params.per = per                      #orbital period
-    params.rp = rp                   #planet radius (in units of stellar radii)
-    params.a = 15.                       #semi-major axis (in units of stellar radii) --> fix this sometime!
-    params.inc = 90.                     #orbital inclination (in degrees)
-    params.ecc = 0.                      #eccentricity
-    params.w = 90.                       #longitude of periastron (in degrees)
-    if ab is not None: 
-        params.u = ab  
-        
-    else: 
-        ab = [] #limb darkening coefficients [u1, u2]
-    params.limb_dark = "quadratic"       #limb darkening model
-
-    model = batman.TransitModel(params, time)    #initializes model
-    transit_flux = model.light_curve(params)-1   
-
-    flux = flux+transit_flux
-
-    return time, flux, (per, rp, t0)
-
-def better_inject(tic_id:str, time:np.array, flux:np.array, per:float=None, rp:float=0.5*0.10045, t0:float=None,core_fraction:float=0.5):
+def inject(tic_id:str, time:np.array, flux:np.array, per:float=None, rp:float=0.5*0.10045, t0:float=None,core_fraction:float=0.5):
     r'''
     
     Notes
@@ -105,7 +53,6 @@ def better_inject(tic_id:str, time:np.array, flux:np.array, per:float=None, rp:f
 
     return time, flux, (per, rp, t0)
 
-
 def inject_pipeline(ids:list, original_data_dir:str, new_data_dir:str, injection_key:str, rp:float=0.10045): 
     r'''
     injection_key : path for csv file to save injection info (i.e. log of all injected periods for all TIC_IDs)
@@ -127,11 +74,11 @@ def inject_pipeline(ids:list, original_data_dir:str, new_data_dir:str, injection
 
     lower_sigma = 10
     dtrdict = {'method':'biweight',
-                     'window_length':0.25,
+                     'window_length':0.5,
                      'cval':5.0,
                      "break_tolerance":1.0}
 
-    for tic_id in tqdm(ids): 
+    for tic_id in ids: 
         path = original_data_dir+tic_id+'.csv'
         if os.path.exists(path): 
             data = pd.read_csv(path)
@@ -148,7 +95,7 @@ def inject_pipeline(ids:list, original_data_dir:str, new_data_dir:str, injection
             percentiles = np.percentile(raw_time, [0,5])
             t0 = np.random.uniform(percentiles[0], percentiles[1])
 
-            time, flux, (per, rp, t0) = inject(tic_id=tic_id, time=raw_time, flux=raw_flux, rp=rp, per=per, t0=t0)
+            time, flux, (_, __, __) = inject(tic_id=tic_id, time=raw_time, flux=raw_flux, rp=rp, per=per, t0=t0)
 
             injected_tic_ids.append(tic_id)
             injected_periods.append(per)
@@ -211,15 +158,18 @@ def inject_pipeline(ids:list, original_data_dir:str, new_data_dir:str, injection
 
             out_df.to_csv(outpath, index=False)
 
+            print(tic_id, per, t0)
+
         injection_df = pd.DataFrame(np.array([injected_tic_ids, injected_periods, injected_t0s]).T, columns=['TIC_ID', 'PER', 'T0'])
         injection_df.to_csv(injection_key, index=False)
 
-r'''
+
 import os
-orig_dir = './routines/real/alpha_tls/data/two_min_lightcurves/'
-injection_key = './routines/simulations/second_bulk_injected/injection_key.csv'
+
+r'''orig_dir = './routines/real/alpha_tls/data/two_min_lightcurves/'
+injection_key = './routines/simulations/third_bulk_injected/injection_key.csv'
 ids = [i.replace('.csv','') for i in os.listdir(orig_dir) if i!='.gitkeep']
-inject_pipeline(ids=ids, original_data_dir=orig_dir, new_data_dir='./routines/simulations/second_bulk_injected/data/', injection_key=injection_key)
+inject_pipeline(ids=ids, original_data_dir=orig_dir, new_data_dir='./routines/simulations/third_bulk_injected/data/', injection_key=injection_key)
 '''
 
 def recover_injected_routine(injection_key:str, data_dir:str, plot_dir:str, report_path:str, cache_dir:str=None):
@@ -245,7 +195,6 @@ def recover_injected_routine(injection_key:str, data_dir:str, plot_dir:str, repo
 
     for tic_id in tqdm(tic_ids): 
         try: 
-
             data_path = data_dir+tic_id+'.csv' 
             data = pd.read_csv(data_path)  
             mask = np.isfinite(data['clean_flux'])
@@ -287,26 +236,29 @@ def recover_injected_routine(injection_key:str, data_dir:str, plot_dir:str, repo
 
                 tls_validation_mosaic(tic_id=tic_id, data=data_path, tls_model=tls_model, tls_results=tls_results, plot_path=validation_path, false_alarms_dictionary=false_alarm_dict, true_transit_times=true_transits)        
             
+            
+
             out_ids.append(tic_id)
             out_periods.append(tls_results.period)
             out_SDEs.append(np.max(tls_results.power))
         
         except: 
-            continue
+            continue 
 
     report = pd.DataFrame(np.array([out_ids, out_periods, out_SDEs]).T, columns=['TIC_ID', 'PER', 'SDE'])
     report.to_csv(report_path, index=False)
 
-key = './routines/simulations/first_bulk_injected/injection_key.csv'
+r'''key = './routines/simulations/first_bulk_injected/injection_key.csv'
 data_dir = './routines/simulations/first_bulk_injected/data/'
 plots_dir = './routines/simulations/first_bulk_injected/plots/'
 report_path = './routines/simulations/first_bulk_injected/results.csv'
 cache_dir = './routines/simulations/first_bulk_injected/cache_dir/'
 #recover_injected_routine(injection_key=key, data_dir=data_dir, plot_dir=plots_dir, report_path=report_path, cache_dir=cache_dir)
+'''
 
-key = './routines/simulations/second_bulk_injected/injection_key.csv'
-data_dir = './routines/simulations/second_bulk_injected/data/'
-plots_dir = './routines/simulations/second_bulk_injected/plots/'
-report_path = './routines/simulations/second_bulk_injected/results.csv'
-cache_dir = './routines/simulations/second_bulk_injected/cache_dir/'
-#recover_injected_routine(injection_key=key, data_dir=data_dir, plot_dir=plots_dir, report_path=report_path, cache_dir=cache_dir)
+key = './routines/simulations/third_bulk_injected/injection_key.csv'
+data_dir = './routines/simulations/third_bulk_injected/data/'
+plots_dir = './routines/simulations/third_bulk_injected/plots/'
+report_path = './routines/simulations/third_bulk_injected/results.csv'
+cache_dir = './routines/simulations/third_bulk_injected/cache_dir/'
+recover_injected_routine(injection_key=key, data_dir=data_dir, plot_dir=plots_dir, report_path=report_path, cache_dir=cache_dir)

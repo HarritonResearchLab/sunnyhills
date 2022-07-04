@@ -296,7 +296,7 @@ output_log = './routines/real/alpha_tls/output_log.txt'
 tls_alpha_routine(key=['TIC_316295827'], data_dir=data_dir, plot_dir=plot_dir, cache_dir=cache_dir, download_log=download_log, output_log=output_log)
 '''
 
-def tls_beta_routine_thaddaeus(key:str, working_dir:str): 
+def tls_beta_routine_thaddaeus(key:str, working_dir:str, processed_to_search:list): 
     r'''
     arguments 
     ---------
@@ -306,6 +306,9 @@ def tls_beta_routine_thaddaeus(key:str, working_dir:str):
     working_dir : str
         Path to working directory. All sub directories (such as data, plots, etc.) will be handled inside this function internally. 
     
+    processed_to_search : list 
+        List of the directory names of the different detrended data to use. E.g. processed_to_search=['LombScargle-n=2','BiWeight-d=0.5'] will run routine on those two detrending pipelines. 
+
     notes
     -----
     user should run /ar1/PROJ/fjuhsd/shared/tessodyssey/routines/initialize_directory.py before running this routine executor! 
@@ -327,15 +330,12 @@ def tls_beta_routine_thaddaeus(key:str, working_dir:str):
     #try: 
     for tic_id in tqdm(tic_ids): 
         pass 
-        # 1. DETREND DATA IF IT HAS NOT BEEN DETRENDED # 
 
+        # 1. RUN TLS # 
 
+        # 2. PLOTS # 
 
-        # 2. RUN TLS # 
-
-        # 3. PLOTS # 
-
-        # 4. LOGGING # 
+        # 3. LOGGING # 
 
 def tls_beta_routine(key:str, data_dir:str, download_log:str=None, output_log:str=None, plot_dir:str=None, 
                  tic_ids=None, cache_dir:str='/ar1/PROJ/fjuhsd/shared/github/sunnyhills/routines/alpha_tls/cache_dir'):
@@ -421,15 +421,8 @@ def tls_beta_routine(key:str, data_dir:str, download_log:str=None, output_log:st
                   run_routine(clean_time[:gap_index],clean_flux[:gap_index],tic_id,plot_dir,tls_results,tls_model,data_path)
                   run_routine(clean_time[gap_index:-1],clean_flux[:gap_index:-1],tic_id,plot_dir+'/second_plot/',tls_results,tls_model,data_path)
 
-
-
-
                 else:
                   run_routine(clean_time,clean_flux,tic_id,plot_dir,tls_results,tls_model,data_path)
-
-
-
-
        
         except: 
             continue 
@@ -439,6 +432,7 @@ def tls_beta_routine(key:str, data_dir:str, download_log:str=None, output_log:st
         
       #for line in result_lines: 
         #f.write(line+'\n')
+        
 def run_routine(clean_time,clean_flux,tic_id,plot_dir,tls_results,tls_model,data_path):
     import numpy as np
     import pandas as pd 
