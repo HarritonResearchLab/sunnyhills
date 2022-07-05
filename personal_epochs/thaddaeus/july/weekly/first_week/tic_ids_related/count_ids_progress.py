@@ -1,7 +1,7 @@
 
 def message(time_so_far): 
     counter = 0
-    with open('personal_epochs/thaddaeus/july/weekly/first_week/log.txt', 'r') as f: 
+    with open('personal_epochs/thaddaeus/july/weekly/first_week/tic_ids_related/log.txt', 'r') as f: 
         for line in f: 
             if '[' not in line: 
                 counter+=1

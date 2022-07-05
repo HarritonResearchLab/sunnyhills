@@ -46,4 +46,4 @@ def make_base_catalog():
     shutil.copyfile('/ar1/PROJ/fjuhsd/shared/github/sunnyhills/data/archive/full_key.csv', 
                     '/ar1/PROJ/fjuhsd/shared/tessodyssey/data/full_base_catalog_key.csv')
 
-make_base_catalog()
+#make_base_catalog()
