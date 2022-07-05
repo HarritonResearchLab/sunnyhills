@@ -976,11 +976,12 @@ def gen_cutout(tic_id:str='',large_size:int=20,small_size:int=10,plot_dir:str='r
     large_tpf.plot(ax=ax,aperture_mask=large_tpf.pipeline_mask,mask_color='white')
     plt.savefig(plot_dir+tic_id+'.pdf')
     plt.close()
-    
-def skyplot(ra:np.array,dec:np.array,style:str='points'):
+
+def skyplot(ra:np.array,dec:np.array,style:str='points',plot_dir:str = None):
     import matplotlib.pyplot as plt
     import numpy as np
     from scipy.stats import gaussian_kde
+    from matplotlib import projections
 
     plt.figure(figsize=(8,4.2))
     plt.subplot(111,projection='aitoff')
@@ -994,5 +995,30 @@ def skyplot(ra:np.array,dec:np.array,style:str='points'):
         plt.scatter(ra,dec,c=point_density,s=10,cmap='Blues')
 
     plt.title('Skyplot Map')
-    plt.show()
-    plt.savefig('test.png')
+    if plot_dir != None:
+        if plot_dir[-1] != "/":
+            plot_dir+="/"
+    plt.savefig(plot_dir+'skyplot.png')
+    plt.close()
+    
+def heatmap(path_to_csv:str,plot_dir:str = None):
+    import pandas as pd
+    import matplotlib.pyplot as plt
+    import numpy as np
+    import seaborn as sns
+
+    injection_results = pd.read_csv(path_to_csv)
+    recovery_proportion = np.divide(np.array(injection_results['injected_period']),np.array(injection_results['recovered_period']))
+    injection_results = injection_results.join(pd.Series(recovery_proportion,name='recovery_proportion'))
+    fig,ax = plt.subplots()
+
+    ax =sns.heatmap(injection_results.pivot('R_P','rotation_period','recovery_proportion'),annot=True,cmap="YlGnBu")
+    ax.invert_yaxis()
+    ax.set_title('TLS Recovery Percentages')
+    ax.set_xlabel('Stellar Rotation Period (s)')
+    ax.set_ylabel('Planetary Radius ($R_{{{Jupiter}}}$)')
+
+    if plot_dir!=None:
+        if plot_dir[-1]!="/":
+            plot_dir+="/"
+    fig.savefig(plot_dir +"heatmap.png")
