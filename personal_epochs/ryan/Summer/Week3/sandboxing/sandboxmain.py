@@ -1,19 +1,16 @@
 import numpy as np
 import pandas as pd
-import os
-import time
-dirindex=os.listdir('.')
-dirindex.remove('routine.py')
-dirindex.remove('nohup.out')
-print(dirindex)
+from multiprocessing import Pool
 
 masterdf=pd.DataFrame()
 TIC_index=[]
-
+GAIA_index=[]
 
 def gaia_to_tic(gaia_ids):
     from astrobase.services.identifiers import gaiadr2_to_tic
     tic_ids = []
+    tic_ids.append(str(gaiadr2_to_tic(gaia_ids)))
+    '''
     for gaia_id in gaia_ids:
         print(gaia_id)
         try: 
@@ -25,20 +22,17 @@ def gaia_to_tic(gaia_ids):
         except: 
             tic_ids.append('')
             continue 
-
+    '''
 
     return tic_ids
 print('loaded function')
 
+df=pd.read_csv('kerr1.csv')
+GAIA_index=df['GAIA']
 
-for i in dirindex:
-    df=pd.read_csv(i)
-    print('csv read')
-    GAIA_index=df['GAIA']
-    x=gaia_to_tic(GAIA_index)
-    TIC_index.append(x)
-    print('output appended and sleeping for 1 minute...')
-    time.sleep(60)
+pool=Pool(8)
+TIC_index=pool.map(gaia_to_tic, GAIA_index)
+
 
 print('Finishing up...')
 masterdf['TIC_ID']=TIC_index
