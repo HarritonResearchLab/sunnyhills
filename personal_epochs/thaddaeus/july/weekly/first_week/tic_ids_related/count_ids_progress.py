@@ -10,5 +10,5 @@ def message(time_so_far):
     etd = (10215-counter)*time_so_far/counter 
     print('finished: ', counter, 'percent complete: ', round(percent_done, 1), 'ETD: ', round(etd), round(etd/60, 2), '(minutes, hours)')
 
-message(139)
+message(303.2)
 #finished:  199 percent complete:  1.9 ETD:  617 10.28 (minutes, hours)

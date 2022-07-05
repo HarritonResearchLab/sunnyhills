@@ -6,24 +6,28 @@ first_ls_power,second_ls_power,third_ls_power,95_fap_level,raw_counts,no_flare_c
 BiWeight-w=0.5_counts,LombScargle-n=2_counts
 '''
 
-def create_local_catalog(tic_ids, base_catalog, working_dir:str='/ar1/PROJ/fjuhsd/shared/tessodyssey/'):
+# FUTURE FIX: MAKE IT SO THAT IT DOESN'T OVERWRITE PREVIOUS FILES/ENTRIES #
+# FUTURE FIX: MAKE IT APPEND TO A CSV LINE-BY-LINE MID-ITERATION # 
+
+def create_base_catalog(tic_ids, base_catalog_path:str='/ar1/PROJ/fjuhsd/shared/tessodyssey/base_catalog.csv',
+                        working_dir:str='/ar1/PROJ/fjuhsd/shared/tessodyssey/'):
     
     from tqdm import tqdm 
     import pandas as pd
     import numpy as np
     import os 
-    from sunnyhills.pipeline_functions import query_tls_vizier, query_simbad, remove_flares
+    from sunnyhills.pipeline_functions import query_tls_vizier, query_simbad, remove_flares, better_download, better_preprocess
     from astropy.timeseries import LombScargle
     
     if working_dir[-1]!='/':
         working_dir+='/'
 
-    base_df = pd.read_csv(base_catalog)
-    base_ids = list(base_df['TIC_ID'])
+    base_catalog_df = pd.read_csv(base_catalog_path)
+    base_ids = list(base_catalog_df['TIC_ID'])
 
-    downloaded_sectors = [] #
-    sector_starts = [] #
-    sector_ends = [] #
+    all_downloaded_sectors = [] 
+    all_sector_starts = [] 
+    all_sector_ends = []
 
     first_ls_periods = [] 
     second_ls_periods = []  
@@ -33,10 +37,10 @@ def create_local_catalog(tic_ids, base_catalog, working_dir:str='/ar1/PROJ/fjuhs
     third_ls_powers = [] 
     fap_95_levels = [] 
 
-    raw_counts = []
-    no_flare_counts = []
-    wotan_counts = [] # 
-    lomb_scargle_counts = [] 
+    all_raw_counts = []
+    all_no_flare_counts = []
+    all_wotan_counts = [] # 
+    all_lomb_scargle_counts = [] 
 
     ab_values = [] 
     mass_values = [] 
@@ -63,19 +67,28 @@ def create_local_catalog(tic_ids, base_catalog, working_dir:str='/ar1/PROJ/fjuhs
             
             # 1. DOWNLOAD DATA 
             raw_path = raw_dir + tic_id + '.csv'
-        
-            raw_time = []
-            raw_flux = []
-            no_flare_raw_time = []
-            no_flare_raw_flux = []
 
-            raw_counts.append(len(raw_time))
-            no_flare_counts.append(len(no_flare_raw_time))
+            raw_df, downloaded_sectors, sector_starts, sector_ends, last_dates = better_download(tic_id=tic_id, save_directory=raw_dir)
+
+            all_downloaded_sectors.append(downloaded_sectors) 
+            all_sector_starts.append(sector_starts)
+            all_sector_ends.append(sector_ends)
+
+            raw_time, raw_flux = (np.array(raw_df[i]) for i in ['raw_time', 'raw_flux'])
+            no_flare_mask = np.isfinite(raw_df['no_flare_raw_time'])
+            no_flare_raw_time, no_flare_raw_flux = (np.array(raw_df[i])[no_flare_mask] for i in ['no_flare_raw_time', 'no_flare_raw_flux'])
+
+            all_raw_counts.append(len(raw_time))
+            all_no_flare_counts.append(len(no_flare_raw_time))
 
             # 2. PREPROCESS DATA
 
             # 2.a Wotan Detrend
-            wotan_path = wotan_dir+tic_id+'.csv'
+
+            _, wotan_counts = better_preprocess(tic_id=tic_id, raw_data=raw_path, last_dates=last_dates, 
+                                                save_directory=wotan_dir)
+
+            all_wotan_counts.append(wotan_counts)
 
             # 2.b Lomb-Scargle on Data
             periodogram = LombScargle(no_flare_raw_time, no_flare_raw_flux, nterms=2)
@@ -102,7 +115,7 @@ def create_local_catalog(tic_ids, base_catalog, working_dir:str='/ar1/PROJ/fjuhs
 
             (ls_clean_time, ls_clean_flux), (_, _) = remove_flares(no_flare_raw_time, no_flare_raw_flux/y_fit, y_fit)
 
-            lomb_scargle_counts.append(len(ls_clean_time))
+            all_lomb_scargle_counts.append(len(ls_clean_time))
 
             ls_data_cols = [ls_clean_time, ls_clean_flux, no_flare_raw_time, y_fit, no_flare_raw_time, no_flare_raw_flux, raw_time, raw_flux]
             ls_data_cols = [pd.Series(i) for i in ls_data_cols]
@@ -137,7 +150,15 @@ def create_local_catalog(tic_ids, base_catalog, working_dir:str='/ar1/PROJ/fjuhs
 
         else:  
 
-            # Lomb-Scargle Information # 
+            # Bookkeeping and Detrend Information #
+            all_downloaded_sectors.append(np.nan) 
+            all_sector_starts.append(np.nan)
+            all_sector_ends.append(np.nan)
+            all_raw_counts.append(np.nan)
+            all_no_flare_counts.append(np.nan)
+            all_wotan_counts.append(np.nan)
+
+            # Lomb Scargle Information # 
             first_ls_periods.append(np.nan)
             second_ls_periods.append(np.nan)
             third_ls_periods.append(np.nan)
@@ -145,26 +166,55 @@ def create_local_catalog(tic_ids, base_catalog, working_dir:str='/ar1/PROJ/fjuhs
             second_ls_powers.append(np.nan)
             third_ls_powers.append(np.nan)
             fap_95_levels.append(np.nan)
+            all_lomb_scargle_counts.append(np.nan)
 
-            # Detrend Information # 
-            raw_counts.append(np.nan)
-            no_flare_counts.append(np.nan)
-            wotan_counts.append(np.nan)
-            lomb_scargle_counts.append(np.nan)
-
-            # Vizier Information #
-
-            ab_values.append('')
+            # Vizier Information # 
+            ab_values.append(np.nan)
             mass_values.append(np.nan)
             mass_mins.append(np.nan)
             mass_maxs.append(np.nan)
             radii.append(np.nan)
             radius_mins.append(np.nan)
-            radius_maxs.append(np.nan) 
+            radius_maxs.append(np.nan)
 
-            # Simbad Information # 
-            OTYPES.append('')
-            SP_TYPES.append('')
-            MAIN_OTYPES.append('')
+            # Simbad Information #
+            OTYPES.append(np.nan)
+            SP_TYPES.append(np.nan)
+            MAIN_OTYPES.append(np.nan)
 
+    ## NOTE: REPLACE BELOW WITH FOR LOOP IN FUTURE! ##
 
+    # Bookkeeping and Detrend Information #
+    base_catalog_df['all_downloaded_sectors'] = all_downloaded_sectors 
+    base_catalog_df['all_sector_starts'] = all_sector_starts
+    base_catalog_df['all_sector_ends'] = all_sector_ends
+    base_catalog_df['all_raw_counts'] = all_raw_counts
+    base_catalog_df['all_no_flare_counts'] = all_no_flare_counts
+    base_catalog_df['all_wotan_counts'] = all_wotan_counts
+
+    # Lomb Scargle Information # 
+    base_catalog_df['first_ls_periods'] = first_ls_periods
+    base_catalog_df['second_ls_periods'] = second_ls_periods
+    base_catalog_df['third_ls_periods'] = third_ls_periods
+    base_catalog_df['first_ls_powers'] = first_ls_powers
+    base_catalog_df['second_ls_powers'] = second_ls_powers
+    base_catalog_df['third_ls_powers'] = third_ls_powers
+    base_catalog_df['fap_95_levels'] = fap_95_levels
+    base_catalog_df['all_lomb_scargle_counts'] = all_lomb_scargle_counts
+
+    # Vizier Information # 
+    base_catalog_df['ab_values'] = ab_values 
+    base_catalog_df['mass_values'] = mass_values
+    base_catalog_df['mass_mins'] = mass_mins
+    base_catalog_df['mass_maxs'] = mass_maxs
+    base_catalog_df['radii'] = radii
+    base_catalog_df['radius_mins'] = radius_mins
+    base_catalog_df['radius_maxs'] = radius_maxs
+
+    # Simbad Information #
+    base_catalog_df['OTYPES'] = OTYPES
+    base_catalog_df['SP_TYPES'] = SP_TYPES
+    base_catalog_df['MAIN_OTYPES'] = MAIN_OTYPES
+
+    # SAVE UPDATED CATALOG # 
+    base_catalog_df.to_csv(base_catalog_df, index=False)
