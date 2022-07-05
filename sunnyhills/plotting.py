@@ -976,3 +976,23 @@ def gen_cutout(tic_id:str='',large_size:int=20,small_size:int=10,plot_dir:str='r
     large_tpf.plot(ax=ax,aperture_mask=large_tpf.pipeline_mask,mask_color='white')
     plt.savefig(plot_dir+tic_id+'.pdf')
     plt.close()
+    
+def skyplot(ra:np.array,dec:np.array,style:str='points'):
+    import matplotlib.pyplot as plt
+    import numpy as np
+    from scipy.stats import gaussian_kde
+
+    plt.figure(figsize=(8,4.2))
+    plt.subplot(111,projection='aitoff')
+    if style == 'points':
+        plt.grid(True)
+        plt.plot(ra,dec,'o',markersize=2,alpha=.95,color='#6495ED')
+    elif style == 'density':
+        plt.grid(True)
+        points = np.vstack([ra,dec])
+        point_density = gaussian_kde(points)(points)
+        plt.scatter(ra,dec,c=point_density,s=10,cmap='Blues')
+
+    plt.title('Skyplot Map')
+    plt.show()
+    plt.savefig('test.png')
