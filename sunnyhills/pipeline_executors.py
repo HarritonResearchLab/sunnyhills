@@ -528,3 +528,17 @@ def run_routine(clean_time,clean_flux,tic_id,plot_dir,tls_results,tls_model,data
                     if not os.path.exists(dir): 
                       os.mkdir(dir)
       '''
+
+def run_tls(ls_path:str='/ar1/PROJ/fjuhsd/shared/data/processed/BiWeight-w=0.5/',biweight_path:str='/ar1/PROJ/fjuhsd/shared/data/processed/LombScargle-n=2'):
+    from sunnyhills.pipeline_functions import modified_run_tls
+    import os
+    #TODO: Implement Ryan's multiprocessing so this process can be sped up
+    
+    # just using a for loop for now but will switch to multiprocessing later
+    #NOTE TO SELF DONT RUN THE WHOLE LOOP AT ONCE! TEST ON ONE INDIVIDUAL CSV BEFORE RUNNING THIS PROCESS!
+    
+    for path in os.listdir(ls_path):
+        modified_run_tls(ls_path+path)
+
+    for path in os.listdir(biweight_path):
+        modified_run_tls(path)

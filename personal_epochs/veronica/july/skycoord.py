@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
 
-test_data = pd.read_csv('/mnt/c/users/60002/Documents/Github/sunnyhills/data/current/current_key.csv')
+test_data = pd.read_csv('C:/Users/60002/Documents/GitHub/sunnyhills/data/current/current_key.csv')
 ra = test_data['GDR2_RA']
 dec = test_data['GDR2_DEC']
 
@@ -26,6 +26,6 @@ def skyplot(ra:np.array,dec:np.array,style:str='points'):
 
 
     plt.title('Skyplot Map')
-    plt.show()
+    #plt.show()
     plt.savefig('test.png')
 skyplot(np.array(ra),np.array(dec),'density')

@@ -798,8 +798,8 @@ def transit_plots(plot_dir:str,tic_id:str,time,flux,results):
     if len(results.transit_times)<3:
       for transit,depth in zip(transit_times,transit_depths): 
         try:
-          axis[col].scatter(time[in_transit], flux[in_transit], color='red', s=30, zorder=2)
-          axis[col].scatter(time[~in_transit], flux[~in_transit], s=30,zorder=2)
+          axis[col].plot(time[in_transit], flux[in_transit],'o', color='red')
+          axis[col].plot(time[~in_transit], flux[~in_transit],'o')
           axis[col].set_xlim(transit-.25,transit+.25)
           axis[col].set_ylim(depth-.035,depth+.035)
           col +=1
@@ -808,8 +808,8 @@ def transit_plots(plot_dir:str,tic_id:str,time,flux,results):
     else:
       for transit,depth in zip(transit_times,transit_depths): 
         try:
-          axis[row,col].scatter(time[in_transit], flux[in_transit], color='red', s=30, zorder=2)
-          axis[row,col].scatter(time[~in_transit], flux[~in_transit], s=30,zorder=2)
+          axis[row,col].plot(time[in_transit], flux[in_transit],'o' ,color='red')
+          axis[row,col].plot(time[~in_transit], flux[~in_transit],'o')
           axis[row,col].set_xlim(transit-.25,transit+.25)
           axis[row,col].set_ylim(depth-.035,depth+.035)
           axis[row,col].set_xlabel('Time (days)')
@@ -822,6 +822,10 @@ def transit_plots(plot_dir:str,tic_id:str,time,flux,results):
           row+=1
         else:
           col +=1
+
+    if plot_dir !=None:
+      if plot_dir[-1]!='/':
+        plot_dir+='/'
 
     plt.savefig(plot_dir+tic_id+'.pdf')
     print(plot_dir+tic_id+'.pdf')
@@ -837,12 +841,14 @@ def ls_subplots(tic_id,plot_dir,time,flux, plot_type:str='pdf'):
 
     ls = lc.to_periodogram(method='ls',minimum_frequency=1/15,maximum_frequency=1/.1)
     ls.plot(ax=ax[0])
-    lc.fold(period=ls.period_at_max_power).scatter(ax=ax[1])
+    lc.fold(period=ls.period_at_max_power).scatter(ax=ax[1],s=1)
     plt.subplots_adjust(hspace=.35)
     ax[0].set_title('Lomb Scargle Periodogram')
     ax[1].set_title('Phase Folded')
-    plt.savefig(plot_dir+tic_id+'.pdf')
-    plt.close()
+
+    if plot_dir != None:
+      if plot_dir[-1]!='/':
+        plot_dir+='/'
 
     if plot_type=='png' or plot_type == 'pdf': 
         plot_path = plot_dir + tic_id + '.'+plot_type 
