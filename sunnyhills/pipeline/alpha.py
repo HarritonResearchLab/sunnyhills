@@ -67,6 +67,7 @@ def create_base_catalog(tic_ids, out_catalog_path:str='/ar1/PROJ/fjuhsd/shared/t
             raw_path = raw_dir + tic_id + '.csv'
 
             raw_df, downloaded_sectors, sector_starts, sector_ends, last_dates = better_download(tic_id=tic_id, save_directory=raw_dir)
+            
             if raw_df is not None and downloaded_sectors is not None: 
                 completed_tic_ids.append(tic_id)
                 all_downloaded_sectors.append(downloaded_sectors) 
