@@ -28,6 +28,37 @@ dpi = 150
 plt.style.use('https://gist.githubusercontent.com/thissop/44b6f15f8f65533e3908c2d2cdf1c362/raw/fab353d758a3f7b8ed11891e27ae4492a3c1b559/science.mplstyle')
 
 #from sunnyhills.paths import DATADIR, EPOCHSDIR
+###################MOVING AVG FUNCTION#######################################################################################
+def moving_avg(clean_time, trend_flux):
+  import matplotlib.pyplot as plt
+  import numpy as np
+
+  ticker=0
+  avgclntime_list=[]
+  for i in clean_time:
+    try:
+      avgclntime_list.append(clean_time[ticker])
+      ticker+=6
+    except:
+      #how does break not just break the try loop but also the for loop?
+      break
+
+  #np.random.randint(5, size=20)
+
+  window=6
+  data_list=list(trend_flux)
+  avg_trend_flux=[]
+  for ind in range(len(data_list)-window+1):
+    avg_trend_flux.append(np.mean(data_list[ind:ind+window]))
+
+
+  xavg=avgclntime_list
+  yavg=avg_trend_flux
+  for i in range(len(yavg)-len(xavg)):
+    xavg.insert(0,np.nan)
+  return xavg, yavg
+#############################################################################################################################
+
 
 def plot_kerr21_XY(outdir, colorkey=None):
     """
@@ -369,7 +400,16 @@ def tls_validation_mosaic(tic_id:str, data, tls_model, tls_results, false_alarms
         ax2b = fig.add_subplot(gs[1, 2:-1])
         
         ax1a.scatter(clean_time[0:first_clean_break], clean_flux[0:first_clean_break], s=1)
-
+        ##############################################ryans coding environment##########################################################
+        ################################################################################################################################
+        ################################################################################################################################
+        outpt=moving_avg(clean_time[0:last_clean_break],clean_flux[0:last_clean_break])
+        x=outpt[0]
+        y=outpt[1]
+        ax1.plot(x,y,color='cornflowerblue')
+        ################################################################################################################################
+        ################################################################################################################################
+        ################################################################################################################################
         #ax1a.plot(tls_results.model_lightcurve_time[0:break_index], 
         #          tls_results.model_lightcurve_model[0:break_index], 
         #          alpha=0.5, color='red', zorder=1)
@@ -383,6 +423,16 @@ def tls_validation_mosaic(tic_id:str, data, tls_model, tls_results, false_alarms
         ax1a.set_title('TIC: '+str(tic_id).replace('_','')+' PERIOD: '+str(round(tls_results.period, 5)), size='xx-large')
         
         ax1b.scatter(clean_time[last_clean_break:], clean_flux[last_clean_break:], s=1)
+        ##############################################ryans coding enviroment###########################################################
+        ################################################################################################################################
+        ################################################################################################################################
+        outpt=moving_avg(clean_time[last_clean_break:],clean_flux[last_clean_break:])
+        x=outpt[0]
+        y=outpt[1]
+        ax1.plot(x,y,color='cornflowerblue')
+        ################################################################################################################################
+        ################################################################################################################################
+        ################################################################################################################################
         
         for left in left_transits: 
             ax1a.axvline(x=left, color='red', alpha=0.4, lw=2)
@@ -427,8 +477,9 @@ def tls_validation_mosaic(tic_id:str, data, tls_model, tls_results, false_alarms
         ax1 = fig.add_subplot(gs[0, 0:-1]) # detrended light curve
         ax2 = fig.add_subplot(gs[1, 0:-1]) # no flare with trend light curve
     
-        # detrend light curve 
+        # detrend light curve###################################### 
         ax1.scatter(clean_time, clean_flux, s=1)
+       
         ax1.plot(tls_results.model_lightcurve_time, 
                   tls_results.model_lightcurve_model, 
                   alpha=0.5, color='red', zorder=1)
@@ -438,7 +489,16 @@ def tls_validation_mosaic(tic_id:str, data, tls_model, tls_results, false_alarms
         
         ax1.set(ylabel='Detrended Flux')
         ax1.set_title('TIC: '+str(tic_id).replace('_','')+' PERIOD: '+str(round(tls_results.period, 5)), size='xx-large')
-        
+        #########################################################################################################################
+        ########################################################################################################################
+        ############################################Ryans coding env###################################################################
+        outpt=moving_avg(clean_time,clean_flux)
+        x=outpt[0]
+        y=outpt[1]
+        ax1.plot(x,y,color='cornflowerblue')
+        ##########################################################################################################################
+        ############################################################################################################################
+        #########################################################################################################################
         if true_transit_times is not None: 
             for true_transit_time in true_transit_times: 
                 ax1.axvline(x=true_transit_time, color='orange', alpha=0.4, lw=2)
