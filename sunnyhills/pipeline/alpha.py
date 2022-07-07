@@ -9,7 +9,7 @@ BiWeight-w=0.5_counts,LombScargle-n=2_counts
 # FUTURE FIX: MAKE IT SO THAT IT DOESN'T OVERWRITE PREVIOUS FILES/ENTRIES #
 # FUTURE FIX: MAKE IT APPEND TO A CSV LINE-BY-LINE MID-ITERATION # 
 
-def create_base_catalog(tic_ids, base_catalog_path:str='/ar1/PROJ/fjuhsd/shared/tessodyssey/base_catalog.csv',
+def create_base_catalog(tic_ids, out_catalog_path:str='/ar1/PROJ/fjuhsd/shared/tessodyssey/data/temp_alpha_output.csv',
                         working_dir:str='/ar1/PROJ/fjuhsd/shared/tessodyssey/'):
     
     from tqdm import tqdm 
@@ -21,9 +21,6 @@ def create_base_catalog(tic_ids, base_catalog_path:str='/ar1/PROJ/fjuhsd/shared/
     
     if working_dir[-1]!='/':
         working_dir+='/'
-
-    base_catalog_df = pd.read_csv(base_catalog_path)
-    base_ids = list(base_catalog_df['TIC_ID'])
 
     all_downloaded_sectors = [] 
     all_sector_starts = [] 
@@ -61,7 +58,8 @@ def create_base_catalog(tic_ids, base_catalog_path:str='/ar1/PROJ/fjuhsd/shared/
 
     processed_data_col_names = ['clean_time', 'clean_flux', 'trend_time', 'trend_flux', 'no_flare_raw_time', 'no_flare_raw_flux', 'raw_time', 'raw_flux']
 
-    for tic_id in tqdm(base_ids):  
+    completed_tic_ids = []
+    for tic_id in tqdm(tic_ids):  
         #try: 
         if tic_id in tic_ids:
             
@@ -69,84 +67,83 @@ def create_base_catalog(tic_ids, base_catalog_path:str='/ar1/PROJ/fjuhsd/shared/
             raw_path = raw_dir + tic_id + '.csv'
 
             raw_df, downloaded_sectors, sector_starts, sector_ends, last_dates = better_download(tic_id=tic_id, save_directory=raw_dir)
+            if raw_df is not None and downloaded_sectors is not None: 
+                completed_tic_ids.append(tic_id)
+                all_downloaded_sectors.append(downloaded_sectors) 
+                all_sector_starts.append(sector_starts)
+                all_sector_ends.append(sector_ends)
 
-            all_downloaded_sectors.append(downloaded_sectors) 
-            all_sector_starts.append(sector_starts)
-            all_sector_ends.append(sector_ends)
+                raw_time, raw_flux = (np.array(raw_df[i]) for i in ['raw_time', 'raw_flux'])
+                no_flare_mask = np.isfinite(raw_df['no_flare_raw_time'])
+                no_flare_raw_time, no_flare_raw_flux = (np.array(raw_df[i])[no_flare_mask] for i in ['no_flare_raw_time', 'no_flare_raw_flux'])
 
-            raw_time, raw_flux = (np.array(raw_df[i]) for i in ['raw_time', 'raw_flux'])
-            no_flare_mask = np.isfinite(raw_df['no_flare_raw_time'])
-            no_flare_raw_time, no_flare_raw_flux = (np.array(raw_df[i])[no_flare_mask] for i in ['no_flare_raw_time', 'no_flare_raw_flux'])
+                all_raw_counts.append(len(raw_time))
+                all_no_flare_counts.append(len(no_flare_raw_time))
 
-            all_raw_counts.append(len(raw_time))
-            all_no_flare_counts.append(len(no_flare_raw_time))
+                # 2. PREPROCESS DATA
 
-            # 2. PREPROCESS DATA
+                # 2.a Wotan Detrend
 
-            # 2.a Wotan Detrend
+                _, wotan_counts = better_preprocess(tic_id=tic_id, raw_data=raw_path, last_dates=last_dates, 
+                                                    save_directory=wotan_dir)
 
-            _, wotan_counts = better_preprocess(tic_id=tic_id, raw_data=raw_path, last_dates=last_dates, 
-                                                save_directory=wotan_dir)
+                all_wotan_counts.append(wotan_counts)
 
-            all_wotan_counts.append(wotan_counts)
+                # 2.b Lomb-Scargle on Data
+                periodogram = LombScargle(no_flare_raw_time, no_flare_raw_flux, nterms=2)
 
-            # 2.b Lomb-Scargle on Data
-            periodogram = LombScargle(no_flare_raw_time, no_flare_raw_flux, nterms=2)
+                frequencies, powers = periodogram.autopower(minimum_frequency=1/15, maximum_frequency=1/0.1, method='fastchi2')
 
-            frequencies, powers = periodogram.autopower(minimum_frequency=1/15, maximum_frequency=1/0.1, method='fastchi2')
+                sort_idx = np.argsort(powers)[::-1]
+                powers, frequencies = (i[sort_idx] for i in (powers, frequencies))
+                periods = 1/frequencies 
+                best_frequency = frequencies[0]
 
-            sort_idx = np.argsort(powers)[::-1]
-            powers, frequencies = (i[sort_idx] for i in (powers, frequencies))
-            periods = 1/frequencies 
-            best_frequency = frequencies[0]
-            fap_95_level = periodogram.false_alarm_level([0.05])
+                first_ls_periods.append(periods[0])
+                second_ls_periods.append(periods[1])
+                third_ls_periods.append(periods[2])
+                first_ls_powers.append(powers[0])
+                second_ls_powers.append(powers[1])
+                third_ls_powers.append(powers[2])
 
-            first_ls_periods.append(periods[0])
-            second_ls_periods.append(periods[1])
-            third_ls_periods.append(periods[2])
-            first_ls_powers.append(powers[0])
-            second_ls_powers.append(powers[1])
-            third_ls_powers.append(powers[2])
-            fap_95_levels.append(fap_95_level)
+                # 2.c Lomb-Scargle Detrend
 
-            # 2.c Lomb-Scargle Detrend
+                y_fit = periodogram.model(no_flare_raw_time, best_frequency)
 
-            y_fit = periodogram.model(no_flare_raw_time, best_frequency)
+                (ls_clean_time, ls_clean_flux), (_, _) = remove_flares(no_flare_raw_time, no_flare_raw_flux/y_fit)
 
-            (ls_clean_time, ls_clean_flux), (_, _) = remove_flares(no_flare_raw_time, no_flare_raw_flux/y_fit, y_fit)
+                all_lomb_scargle_counts.append(len(ls_clean_time))
 
-            all_lomb_scargle_counts.append(len(ls_clean_time))
+                ls_data_cols = [ls_clean_time, ls_clean_flux, no_flare_raw_time, y_fit, no_flare_raw_time, no_flare_raw_flux, raw_time, raw_flux]
+                ls_data_cols = [pd.Series(i) for i in ls_data_cols]
+            
+                ls_dictionary = {}
+                for i in range(len(processed_data_col_names)):
+                    ls_dictionary.update({processed_data_col_names[i]:ls_data_cols[i]})
 
-            ls_data_cols = [ls_clean_time, ls_clean_flux, no_flare_raw_time, y_fit, no_flare_raw_time, no_flare_raw_flux, raw_time, raw_flux]
-            ls_data_cols = [pd.Series(i) for i in ls_data_cols]
-        
-            ls_dictionary = {}
-            for i in range(len(processed_data_col_names)):
-                ls_dictionary.update({processed_data_col_names[i]:ls_data_cols[i]})
+                ls_out_df = pd.DataFrame(ls_dictionary)
 
-            ls_out_df = pd.DataFrame(ls_dictionary)
+                ls_data_path = LombScargle_dir+tic_id+'.csv'
+                ls_out_df.to_csv(ls_data_path, index=False)
 
-            ls_data_path = LombScargle_dir+tic_id+'.csv'
-            ls_out_df.to_csv(ls_data_path, index=False)
+                # 3. ADD CATALOG INFO 
 
-            # 3. ADD CATALOG INFO 
+                # Vizier Information # 
+                ab, mass, mass_min, mass_max, radius, radius_min, radius_max = query_tls_vizier(tic_id)
+                ab_values.append('"("'+str(ab[0])+','+str(ab[1])+')"')
+                mass_values.append(mass)
+                mass_mins.append(mass_min)
+                mass_maxs.append(mass_max)
+                radii.append(radius)
+                radius_mins.append(radius_min)
+                radius_maxs.append(radius_max) 
 
-            # Vizier Information # 
-            ab, mass, mass_min, mass_max, radius, radius_min, radius_max = query_tls_vizier(tic_id)
-            ab_values.append('"("'+str(ab[0])+','+str(ab[1])+')"')
-            mass_values.append(mass)
-            mass_mins.append(mass_min)
-            mass_maxs.append(mass_max)
-            radii.append(radius)
-            radius_mins.append(radius_min)
-            radius_maxs.append(radius_max) 
+                # Simbad Information #
+                _, simbad_results = query_simbad(tic_id)
 
-            # Simbad Information #
-            _, simbad_results = query_simbad(tic_id)
-
-            OTYPES.append(simbad_results[0])
-            SP_TYPES.append(simbad_results[1])
-            MAIN_OTYPES.append(simbad_results[2])
+                OTYPES.append(simbad_results[0])
+                SP_TYPES.append(simbad_results[1])
+                MAIN_OTYPES.append(simbad_results[2])
 
         else:  
 
@@ -182,39 +179,40 @@ def create_base_catalog(tic_ids, base_catalog_path:str='/ar1/PROJ/fjuhsd/shared/
             SP_TYPES.append(np.nan)
             MAIN_OTYPES.append(np.nan)
 
-    ## NOTE: REPLACE BELOW WITH FOR LOOP IN FUTURE! ##
-
     # Bookkeeping and Detrend Information #
-    base_catalog_df['all_downloaded_sectors'] = all_downloaded_sectors 
-    base_catalog_df['all_sector_starts'] = all_sector_starts
-    base_catalog_df['all_sector_ends'] = all_sector_ends
-    base_catalog_df['all_raw_counts'] = all_raw_counts
-    base_catalog_df['all_no_flare_counts'] = all_no_flare_counts
-    base_catalog_df['all_wotan_counts'] = all_wotan_counts
+    out_df = pd.DataFrame()
+    out_df['TIC_ID'] = tic_ids
+    out_df['downloaded_sector_nums'] = all_downloaded_sectors 
+    out_df['sector_starts'] = all_sector_starts
+    out_df['sector_ends'] = all_sector_ends
+    out_df['raw_counts'] = all_raw_counts
+    out_df['no_flare_counts'] = all_no_flare_counts
+    out_df['wotan_counts'] = all_wotan_counts
 
     # Lomb Scargle Information # 
-    base_catalog_df['first_ls_periods'] = first_ls_periods
-    base_catalog_df['second_ls_periods'] = second_ls_periods
-    base_catalog_df['third_ls_periods'] = third_ls_periods
-    base_catalog_df['first_ls_powers'] = first_ls_powers
-    base_catalog_df['second_ls_powers'] = second_ls_powers
-    base_catalog_df['third_ls_powers'] = third_ls_powers
-    base_catalog_df['fap_95_levels'] = fap_95_levels
-    base_catalog_df['all_lomb_scargle_counts'] = all_lomb_scargle_counts
+    out_df['first_ls_periods'] = first_ls_periods
+    out_df['second_ls_periods'] = second_ls_periods
+    out_df['third_ls_periods'] = third_ls_periods
+    out_df['first_ls_powers'] = first_ls_powers
+    out_df['second_ls_powers'] = second_ls_powers
+    out_df['third_ls_powers'] = third_ls_powers
+    out_df['lomb_scargle_counts'] = all_lomb_scargle_counts
 
     # Vizier Information # 
-    base_catalog_df['ab_values'] = ab_values 
-    base_catalog_df['mass_values'] = mass_values
-    base_catalog_df['mass_mins'] = mass_mins
-    base_catalog_df['mass_maxs'] = mass_maxs
-    base_catalog_df['radii'] = radii
-    base_catalog_df['radius_mins'] = radius_mins
-    base_catalog_df['radius_maxs'] = radius_maxs
+    out_df['ab_values'] = ab_values 
+    out_df['mass_value'] = mass_values
+    out_df['mass_min'] = mass_mins
+    out_df['mass_max'] = mass_maxs
+    out_df['radius'] = radii
+    out_df['radius_min'] = radius_mins
+    out_df['radius_max'] = radius_maxs
 
     # Simbad Information #
-    base_catalog_df['OTYPES'] = OTYPES
-    base_catalog_df['SP_TYPES'] = SP_TYPES
-    base_catalog_df['MAIN_OTYPES'] = MAIN_OTYPES
+    out_df['OTYPES'] = OTYPES
+    out_df['SP_TYPE'] = SP_TYPES
+    out_df['MAIN_OTYPE'] = MAIN_OTYPES
 
     # SAVE UPDATED CATALOG # 
-    base_catalog_df.to_csv(base_catalog_df, index=False)
+    out_df.to_csv(out_catalog_path, index=False)
+
+create_base_catalog(['TIC_1232360', 'TIC_43149283'])

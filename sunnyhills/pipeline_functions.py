@@ -676,81 +676,96 @@ def better_preprocess(tic_id:str, raw_data:str, last_dates:list, save_directory:
 
     import numpy as np 
     import wotan 
+    import os 
     import pandas as pd
     from sunnyhills.pipeline_functions import remove_flares
     from astropy.timeseries import LombScargle
 
-    raw_df = pd.read_csv(raw_data)
-    raw_time, raw_flux = [np.array(raw_df[i]) for i in ['raw_time', 'raw_flux']]
-    no_flare_mask = np.isfinite(raw_df['no_flare_raw_flux'])
-    no_flare_raw_time, no_flare_raw_flux = [np.array(raw_df[i])[no_flare_mask] for i in ['no_flare_raw_time', 'no_flare_raw_flux']]
-
-    clean_time = np.array([])
-    clean_flux = np.array([])
-    trend_time = np.array([])
-    trend_flux = np.array([])
-
+    data_df = None 
     clean_num_obs = 0
-
-    if method=='LombScargle' and n_terms is not None: 
-        periodogram = LombScargle(no_flare_raw_time, no_flare_raw_flux, nterms=2)
-
-        frequencies, powers = periodogram.autopower(minimum_frequency=1/15, maximum_frequency=1/0.1, method='fastchi2')
-        best_frequency = frequencies[np.argmax(powers)]
-        trend_flux = periodogram.model(no_flare_raw_time, best_frequency)
-        (clean_time, clean_flux), (_, _) = remove_flares(no_flare_raw_time, no_flare_raw_flux/trend_flux, trend_flux)
-        trend_time = no_flare_raw_time
-        clean_num_obs = len(clean_time)
-
-    else: 
-
-        # detrend by group so wotan doesn't get messed up lol 
-
-        temp_no_flare_raw_time, temp_no_flare_raw_flux = (no_flare_raw_time, no_flare_raw_flux)
-
-        for last_date in last_dates: 
-            current_mask = temp_no_flare_raw_time<=last_date 
-            current_time = temp_no_flare_raw_time[current_mask]
-            current_flux = temp_no_flare_raw_flux[current_mask]
-
-            delete_idx = np.where(temp_no_flare_raw_time<=last_date)[0]
-
-            temp_no_flare_raw_time = np.delete(temp_no_flare_raw_time, delete_idx)
-            temp_no_flare_raw_flux = np.delete(temp_no_flare_raw_flux, delete_idx)
-
-            detrended_flux_temp, trend_flux_temp = wotan.flatten(
-                current_time, current_flux, return_trend=True,
-                method=method,
-                break_tolerance=break_tolerance,
-                window_length=window_length,
-                cval=cval
-            )
-
-            (cleaned_time_temp, detrended_flux_temp, trend_flux_temp), (_, _, _) = remove_flares(current_time, detrended_flux_temp, trend_flux_temp)
-
-            clean_time = np.concatenate((clean_time, cleaned_time_temp))
-            clean_flux = np.concatenate((clean_flux, detrended_flux_temp))
-            trend_time = np.concatenate((trend_time, cleaned_time_temp))
-            trend_flux = np.concatenate((trend_flux, trend_flux_temp))
-
-            clean_num_obs += len(clean_time)
-    
-    cols = [clean_time, clean_flux, no_flare_raw_time, no_flare_raw_flux, raw_time, raw_flux]
-    cols = [pd.Series(i) for i in cols]
-
-    col_names = ['clean_time', 'clean_flux', 'trend_time', 'trend_flux', 'no_flare_raw_time', 'no_flare_raw_flux', 'raw_time', 'raw_flux']
-
-    dictionary = {}
-    for i in range(len(cols)):
-        dictionary.update({col_names[i]:cols[i]})
-
-    data_df = pd.DataFrame(dictionary)
 
     if save_directory is not None:
         if save_directory[-1]!='/': 
             save_directory += '/'
-        save_path = save_directory+tic_id+'.csv' 
-        data_df.to_csv(save_path, index=False)
+        save_path = save_directory+tic_id+'.csv'
+
+    if not os.path.exists(save_path): 
+        raw_df = pd.read_csv(raw_data)
+        raw_time, raw_flux = [np.array(raw_df[i]) for i in ['raw_time', 'raw_flux']]
+        no_flare_mask = np.isfinite(raw_df['no_flare_raw_flux'])
+        no_flare_raw_time, no_flare_raw_flux = [np.array(raw_df[i])[no_flare_mask] for i in ['no_flare_raw_time', 'no_flare_raw_flux']]
+
+        clean_time = np.array([])
+        clean_flux = np.array([])
+        trend_time = np.array([])
+        trend_flux = np.array([])
+
+        clean_num_obs = 0
+
+        if method=='LombScargle' and n_terms is not None: 
+            periodogram = LombScargle(no_flare_raw_time, no_flare_raw_flux, nterms=2)
+
+            frequencies, powers = periodogram.autopower(minimum_frequency=1/15, maximum_frequency=1/0.1, method='fastchi2')
+            best_frequency = frequencies[np.argmax(powers)]
+            trend_flux = periodogram.model(no_flare_raw_time, best_frequency)
+            (clean_time, clean_flux), (_, _) = remove_flares(no_flare_raw_time, no_flare_raw_flux/trend_flux, trend_flux)
+            trend_time = no_flare_raw_time
+            clean_num_obs = len(clean_time)
+
+        else: 
+
+            # detrend by group so wotan doesn't get messed up lol 
+
+            temp_no_flare_raw_time, temp_no_flare_raw_flux = (no_flare_raw_time, no_flare_raw_flux)
+
+            for last_date in last_dates: 
+                current_mask = temp_no_flare_raw_time<=last_date 
+                current_time = temp_no_flare_raw_time[current_mask]
+                current_flux = temp_no_flare_raw_flux[current_mask]
+
+                delete_idx = np.where(temp_no_flare_raw_time<=last_date)[0]
+
+                temp_no_flare_raw_time = np.delete(temp_no_flare_raw_time, delete_idx)
+                temp_no_flare_raw_flux = np.delete(temp_no_flare_raw_flux, delete_idx)
+
+                detrended_flux_temp, trend_flux_temp = wotan.flatten(
+                    current_time, current_flux, return_trend=True,
+                    method=method,
+                    break_tolerance=break_tolerance,
+                    window_length=window_length,
+                    cval=cval
+                )
+
+                (cleaned_time_temp, detrended_flux_temp, trend_flux_temp), (_, _, _) = remove_flares(current_time, detrended_flux_temp, trend_flux_temp)
+
+                clean_time = np.concatenate((clean_time, cleaned_time_temp))
+                clean_flux = np.concatenate((clean_flux, detrended_flux_temp))
+                trend_time = np.concatenate((trend_time, cleaned_time_temp))
+                trend_flux = np.concatenate((trend_flux, trend_flux_temp))
+
+                clean_num_obs += len(clean_time)
+        
+        cols = [clean_time, clean_flux, no_flare_raw_time, no_flare_raw_flux, raw_time, raw_flux]
+        cols = [pd.Series(i) for i in cols]
+
+        col_names = ['clean_time', 'clean_flux', 'trend_time', 'trend_flux', 'no_flare_raw_time', 'no_flare_raw_flux', 'raw_time', 'raw_flux']
+
+        dictionary = {}
+        for i in range(len(cols)):
+            dictionary.update({col_names[i]:cols[i]})
+
+        data_df = pd.DataFrame(dictionary)
+
+        if save_directory is not None:
+            if save_directory[-1]!='/': 
+                save_directory += '/'
+            save_path = save_directory+tic_id+'.csv' 
+            data_df.to_csv(save_path, index=False)
+
+    else: 
+        data_df = pd.read_csv(save_path)
+        temp = data_df.dropna()
+        clean_num_obs = len(temp['clean_time'])
 
     return data_df, clean_num_obs
 
@@ -1168,3 +1183,4 @@ def modified_run_tls(file_path:str,
             pickle.dump(tls_results, file, protocol=pickle.HIGHEST_PROTOCOL)
 
     return tls_results, tls_model 
+
