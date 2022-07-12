@@ -516,7 +516,7 @@ def download_pipeline(tic_ids:str, download_dir:str, download_log:str):
 
 # BETTER DOWNLOAD AND PREPROCESS METHDODS BELOW # 
 
-def better_download(tic_id:str, save_directory:str=None): 
+def better_download(tic_id:str, save_directory:str=None, verbose=False): 
     r'''
     Arguments
     ---------
@@ -547,8 +547,9 @@ def better_download(tic_id:str, save_directory:str=None):
 
     # get the light curve
     data_found = False
-    
+    data_df = None
     lcc = lk.search_lightcurve(tic_id.replace('_', ' ')).download_all() # FIX THIS! 
+    
     if lcc != None: 
         data_found = True 
 
@@ -559,8 +560,18 @@ def better_download(tic_id:str, save_directory:str=None):
     # take it".
 
     last_dates = []
+    downloaded_sectors = ''
+    sector_starts = ''
+    sector_ends = ''
 
     if data_found: 
+        if verbose:     
+            print('###LCC###')
+            print(lcc)
+
+            for i in lcc: 
+                print(i.meta['ORIGIN'])
+
         raw_list = [_l for _l in lcc
                 if
                 _l.meta['ORIGIN']=='NASA/Ames'
@@ -573,10 +584,6 @@ def better_download(tic_id:str, save_directory:str=None):
         ]
 
         raw_list = [_l for _l in raw_list if _l.meta['FLUX_ORIGIN']=='pdcsap_flux']
-        
-        downloaded_sectors = ''
-        sector_starts = ''
-        sector_ends = ''
 
         for lc in raw_list:
           downloaded_sectors += str(lc.sector)+'|'
@@ -616,36 +623,36 @@ def better_download(tic_id:str, save_directory:str=None):
 
                 last_dates.append(np.max(raw_time))
 
-        (no_flare_raw_time, no_flare_raw_flux), (_, _) = remove_flares(raw_time, raw_flux)
-        no_flare_raw_time, no_flare_raw_flux = remove_extreme_dips(no_flare_raw_time, no_flare_raw_flux)
+            (no_flare_raw_time, no_flare_raw_flux), (_, _) = remove_flares(raw_time, raw_flux)
+            no_flare_raw_time, no_flare_raw_flux = remove_extreme_dips(no_flare_raw_time, no_flare_raw_flux)
 
-        cols = [raw_time, raw_flux, no_flare_raw_time, no_flare_raw_flux]
-        cols = [pd.Series(i) for i in cols]
+            cols = [raw_time, raw_flux, no_flare_raw_time, no_flare_raw_flux]
+            cols = [pd.Series(i) for i in cols]
 
-        col_names = ['raw_time', 'raw_flux', 'no_flare_raw_time', 'no_flare_raw_flux']
-    
-        dictionary = {}
-        for i in range(len(cols)):
-            dictionary.update({col_names[i]:cols[i]})
-
-        data_df = pd.DataFrame(dictionary)
-
-        if save_directory is not None:
-            if save_directory[-1]!='/': 
-                save_directory += '/'
-            save_path = save_directory+tic_id+'.csv' 
-            data_df.to_csv(save_path, index=False)
-
-        if downloaded_sectors[-1] == '|': 
-            downloaded_sectors = downloaded_sectors[:-1]
-
-        if sector_starts[-1] == '|': 
-            sector_starts = sector_starts[:-1]
+            col_names = ['raw_time', 'raw_flux', 'no_flare_raw_time', 'no_flare_raw_flux']
         
-        if sector_ends[-1] == '|': 
-            sector_ends = sector_ends[:-1]
+            dictionary = {}
+            for i in range(len(cols)):
+                dictionary.update({col_names[i]:cols[i]})
 
-        return data_df, downloaded_sectors, sector_starts, sector_ends, last_dates
+            data_df = pd.DataFrame(dictionary)
+
+            if save_directory is not None:
+                if save_directory[-1]!='/': 
+                    save_directory += '/'
+                save_path = save_directory+tic_id+'.csv' 
+                data_df.to_csv(save_path, index=False)
+
+            if downloaded_sectors[-1] == '|': 
+                downloaded_sectors = downloaded_sectors[:-1]
+
+            if sector_starts[-1] == '|': 
+                sector_starts = sector_starts[:-1]
+            
+            if sector_ends[-1] == '|': 
+                sector_ends = sector_ends[:-1]
+
+    return data_df, downloaded_sectors, sector_starts, sector_ends, last_dates
 
 def better_preprocess(tic_id:str, raw_data:str, last_dates:list, save_directory:str=None,
                       method:str='biweight', window_length:float=0.5, 
@@ -785,7 +792,7 @@ def query_simbad(tic_id:str):
     results_header = ['OTYPES', 'SP_TYPE', 'Main OTYPE']
     results_line = [] 
 
-    otypes_key = pd.read_csv('./data/current/catalog_info/simbad_otypes_key.txt')
+    otypes_key = pd.read_csv('/ar1/PROJ/fjuhsd/shared/github/sunnyhills/data/current/catalog_info/simbad_otypes_key.txt')
     otypes_dict = dict(zip(otypes_key['otype'], otypes_key['new_label']))
 
     try: 
@@ -817,10 +824,10 @@ def query_simbad(tic_id:str):
             results_line.append('None') 
 
     except: 
-        pass 
+        results_line = 3*['']   
         
     customSimbad = None 
-
+        
     return results_header, results_line
 
 def query_tls_vizier(tic_id:str, radius_err_multiple:float=3, mass_err_multiple:float=3): 

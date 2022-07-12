@@ -14,6 +14,13 @@ def inject(tic_id:str, time:np.array, flux:np.array, per:float=None, rp:float=0.
     from sunnyhills.pipeline_functions import query_tls_vizier
     import multiprocessing
 
+    def dist(per, M_S): 
+        from scipy.constants import G
+        per_yr = per/365.25
+        ans = (per_yr**2)*M_S
+        ans = ans**(1/3)
+        return ans 
+
     if t0 is None:     
         percentiles = np.percentile(time, [0,5])
         t0 = random.uniform(percentiles[0], percentiles[1])
@@ -26,16 +33,18 @@ def inject(tic_id:str, time:np.array, flux:np.array, per:float=None, rp:float=0.
         rp = 0.5*R_J     
     
     if per is None: 
-        per = np.random.uniform(1,15)
+        per = np.random.uniform(0.5,15)
 
     core_count = int(core_fraction*multiprocessing.cpu_count())
+
+    dist = dist(per, mass)
 
     params = batman.TransitParams()
     params.n_threads = core_count
     params.t0 = t0                     #time of inferior conjunction
     params.per = per                      #orbital period
     params.rp = rp*(1/radius)                   #planet radius (in units of stellar radii)
-    params.a = 15.                       #semi-major axis (in units of stellar radii) --> fix this sometime!
+    params.a = dist                  #semi-major axis (in units of stellar radii) --> fix this sometime!
     params.inc = 90.                     #orbital inclination (in degrees)
     params.ecc = 0.                      #eccentricity
     params.w = 90.                       #longitude of periastron (in degrees)
@@ -51,7 +60,7 @@ def inject(tic_id:str, time:np.array, flux:np.array, per:float=None, rp:float=0.
 
     flux = flux+transit_flux
 
-    return time, flux, (per, rp, t0)
+    return time, flux, (per, rp, t0, dist)
 
 def inject_pipeline(ids:list, original_data_dir:str, new_data_dir:str, injection_key:str, rp:float=0.10045): 
     r'''

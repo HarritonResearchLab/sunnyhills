@@ -1,0 +1,152 @@
+  0%|          | 0/30322 [00:00<?, ?it/s]No data found for target "TIC 262462781".
+  0%|          | 1/30322 [00:03<33:23:02,  3.96s/it]###LCC###
+LightCurveCollection of 1 objects:
+    0: <TessLightCurve LABEL="6099439604319602560" SECTOR=11 AUTHOR=CDIPS FLUX_ORIGIN=irm1>
+Bouma&team|CDIPS|Princeton
+  0%|          | 2/30322 [00:04<17:11:26,  2.04s/it]###LCC###
+LightCurveCollection of 3 objects:
+    0: <TessLightCurve LABEL="TIC 73821920" SECTOR=43 AUTHOR=SPOC FLUX_ORIGIN=pdcsap_flux>
+    1: <TessLightCurve LABEL="TIC 73821920" SECTOR=44 AUTHOR=SPOC FLUX_ORIGIN=pdcsap_flux>
+    2: <TessLightCurve LABEL="TIC 73821920" SECTOR=45 AUTHOR=SPOC FLUX_ORIGIN=pdcsap_flux>
+NASA/Ames
+NASA/Ames
+NASA/Ames
+
+|||START_RESULT_LINE|||TIC_73821920,43|44|45,2474.1674933659933|2500.190795564708|2525.5135331623765,2498.8906759030065|2524.444042761627|2550.629880828475,48348,48221,48210,5.501503958351857,2.7405895349348155,2.721081433065333,0.001865884888548975,0.0016487632222384591,0.0015986780016463212,48212,"("0.3789,0.2128)",0.985,nan,nan,1.87126,nan,nan,None,None,None|||END_RESULT_LINE|||
+
+  0%|          | 3/30322 [00:13<44:13:08,  5.25s/it]No data found for target "TIC 7346660".
+  0%|          | 4/30322 [00:14<28:47:25,  3.42s/it]###LCC###
+LightCurveCollection of 2 objects:
+    0: <TessLightCurve LABEL="1937498784187322624" SECTOR=16 AUTHOR=CDIPS FLUX_ORIGIN=irm1>
+    1: <TessLightCurve LABEL="1937498784187322624" SECTOR=17 AUTHOR=CDIPS FLUX_ORIGIN=irm1>
+Bouma&Hartman|CDIPS|Princeton
+Bouma&Hartman|CDIPS|Princeton
+  0%|          | 5/30322 [00:14<20:18:52,  2.41s/it]###LCC###
+LightCurveCollection of 3 objects:
+    0: <TessLightCurve LABEL="TIC 203364491" SECTOR=37 AUTHOR=SPOC FLUX_ORIGIN=pdcsap_flux>
+    1: <TessLightCurve LABEL="TIC 203364491" SECTOR=37 AUTHOR=SPOC FLUX_ORIGIN=pdcsap_flux>
+    2: <TessLightCurve LABEL="TIC 203364491" SECTOR=37 AUTHOR=QLP FLUX_ORIGIN=sap_flux>
+NASA/Ames
+NASA/Ames
+MIT/QLP
+
+|||START_RESULT_LINE|||TIC_203364491,37,2307.25904396951,2332.584315649702,15536,15526,15486,1.3615227964014909,1.3769795071988187,2.7512669074471594,0.9259169771534076,0.847515946655958,0.8231241000004077,15324,"("0.1819,0.4364)",0.612607,0.5516101,0.6736039,0.630907,0.5743882,0.6874258,Infrared|Variable*|X|YSO_Candidate,M3.5,YSO_Candidate|||END_RESULT_LINE|||
+
+  0%|          | 6/30322 [00:17<19:57:02,  2.37s/it]###LCC###
+LightCurveCollection of 4 objects:
+    0: <TessLightCurve LABEL="1716855559591213824" SECTOR=14 AUTHOR=CDIPS FLUX_ORIGIN=irm1>
+    1: <TessLightCurve LABEL="1716855559591213824" SECTOR=20 AUTHOR=CDIPS FLUX_ORIGIN=irm1>
+    2: <TessLightCurve LABEL="1716855559591213824" SECTOR=21 AUTHOR=CDIPS FLUX_ORIGIN=irm1>
+    3: <TessLightCurve LABEL="1716855559591213824" SECTOR=26 AUTHOR=CDIPS FLUX_ORIGIN=irm1>
+Bouma&Hartman|CDIPS|Princeton
+Bouma&Hartman|CDIPS|Princeton
+Bouma&Hartman|CDIPS|Princeton
+Bouma&Hartman|CDIPS|Princeton
+  0%|          | 7/30322 [00:17<15:18:00,  1.82s/it]###LCC###
+LightCurveCollection of 2 objects:
+    0: <TessLightCurve LABEL="TIC 409192595" SECTOR=19 AUTHOR=QLP FLUX_ORIGIN=sap_flux>
+    1: <TessLightCurve LABEL="189388099044657920" SECTOR=19 AUTHOR=CDIPS FLUX_ORIGIN=irm1>
+MIT/QLP
+Bouma&Hartman|CDIPS|Princeton
+  0%|          | 8/30322 [00:18<11:40:57,  1.39s/it]No data found for target "TIC 180290639".
+  0%|          | 9/30322 [00:18<9:24:58,  1.12s/it] ###LCC###
+LightCurveCollection of 4 objects:
+    0: <TessLightCurve LABEL="3347282006225921920" SECTOR=6 AUTHOR=CDIPS FLUX_ORIGIN=irm1>
+    1: <TessLightCurve LABEL="TIC 91784947" SECTOR=43 AUTHOR=SPOC FLUX_ORIGIN=pdcsap_flux>
+    2: <TessLightCurve LABEL="TIC 91784947" SECTOR=44 AUTHOR=SPOC FLUX_ORIGIN=pdcsap_flux>
+    3: <TessLightCurve LABEL="TIC 91784947" SECTOR=45 AUTHOR=SPOC FLUX_ORIGIN=pdcsap_flux>
+Bouma&team|CDIPS|Princeton
+NASA/Ames
+NASA/Ames
+NASA/Ames
+
+|||START_RESULT_LINE|||TIC_91784947,43|44|45,2474.166968829702|2500.1903016205033|2525.513164830865,2498.8901789313313|2524.4436674097105|2550.6297075340717,48326,48092,48068,0.5358097509969949,0.53656177925819,0.5350598278241028,0.07062126732591704,0.05826148554731439,0.057575998533119246,48051,"("0.171,0.4514)",0.542435,0.4764311,0.6084389,0.546875,0.490556,0.603194,None,None,None|||END_RESULT_LINE|||
+
+  0%|          | 10/30322 [00:28<32:01:27,  3.80s/it]###LCC###
+LightCurveCollection of 1 objects:
+    0: <TessLightCurve LABEL="6096013624866283648" SECTOR=11 AUTHOR=CDIPS FLUX_ORIGIN=irm1>
+Bouma&team|CDIPS|Princeton
+  0%|          | 11/30322 [00:29<24:14:54,  2.88s/it]###LCC###
+LightCurveCollection of 4 objects:
+    0: <TessLightCurve LABEL="TIC 82525365" SECTOR=22 AUTHOR=SPOC FLUX_ORIGIN=pdcsap_flux>
+    1: <TessLightCurve LABEL="TIC 82525365" SECTOR=22 AUTHOR=QLP FLUX_ORIGIN=sap_flux>
+    2: <TessLightCurve LABEL="3972839289897271040" SECTOR=22 AUTHOR=CDIPS FLUX_ORIGIN=irm1>
+    3: <TessLightCurve LABEL="TIC 82525365" SECTOR=49 AUTHOR=SPOC FLUX_ORIGIN=pdcsap_flux>
+NASA/Ames
+MIT/QLP
+Bouma&Hartman|CDIPS|Princeton
+NASA/Ames
+
+|||START_RESULT_LINE|||TIC_82525365,49,2637.4784353083883,2664.320033106828,13255,13196,13192,13.324621621178165,6.644944158350667,6.294346703709378,0.02553205350816129,0.019070688872597216,0.018206931750083626,13193,"("0.1959,0.4178)",0.622845,0.5622129,0.6834771,0.644311,0.5872668999999999,0.7013551,HighPM*|Infrared,,HighPM*|||END_RESULT_LINE|||
+
+  0%|          | 12/30322 [00:34<28:23:14,  3.37s/it]###LCC###
+LightCurveCollection of 1 objects:
+    0: <TessLightCurve LABEL="3972946389201720576" SECTOR=22 AUTHOR=CDIPS FLUX_ORIGIN=irm1>
+Bouma&Hartman|CDIPS|Princeton
+  0%|          | 13/30322 [00:35<23:15:47,  2.76s/it]###LCC###
+LightCurveCollection of 2 objects:
+    0: <TessLightCurve LABEL="5519597750685689984" SECTOR=9 AUTHOR=CDIPS FLUX_ORIGIN=irm1>
+    1: <TessLightCurve LABEL="TIC 81200515" SECTOR=35 AUTHOR=QLP FLUX_ORIGIN=sap_flux>
+Bouma&team|CDIPS|Princeton
+MIT/QLP
+  0%|          | 14/30322 [00:36<19:11:29,  2.28s/it]###LCC###
+LightCurveCollection of 1 objects:
+    0: <TessLightCurve LABEL="TIC 80904774" SECTOR=35 AUTHOR=QLP FLUX_ORIGIN=sap_flux>
+MIT/QLP
+  0%|          | 15/30322 [00:37<16:04:29,  1.91s/it]No data found for target "TIC 422082903".
+  0%|          | 16/30322 [00:38<12:42:30,  1.51s/it]###LCC###
+LightCurveCollection of 1 objects:
+    0: <TessLightCurve LABEL="6010652318090533632" SECTOR=12 AUTHOR=CDIPS FLUX_ORIGIN=irm1>
+Bouma&team|CDIPS|Princeton
+  0%|          | 17/30322 [00:39<12:06:00,  1.44s/it]###LCC###
+LightCurveCollection of 3 objects:
+    0: <TessLightCurve LABEL="6074661594397232896" SECTOR=10 AUTHOR=CDIPS FLUX_ORIGIN=irm1>
+    1: <TessLightCurve LABEL="6074661594397232896" SECTOR=11 AUTHOR=CDIPS FLUX_ORIGIN=irm1>
+    2: <TessLightCurve LABEL="TIC 412129392" SECTOR=37 AUTHOR=QLP FLUX_ORIGIN=sap_flux>
+Bouma&team|CDIPS|Princeton
+Bouma&team|CDIPS|Princeton
+MIT/QLP
+  0%|          | 18/30322 [00:40<10:35:34,  1.26s/it]###LCC###
+LightCurveCollection of 7 objects:
+    0: <TessLightCurve LABEL="TIC 411676439" SECTOR=10 AUTHOR=QLP FLUX_ORIGIN=sap_flux>
+    1: <TessLightCurve LABEL="6074670424850403712" SECTOR=10 AUTHOR=CDIPS FLUX_ORIGIN=irm1>
+    2: <TessLightCurve LABEL="TIC 411676439" SECTOR=11 AUTHOR=QLP FLUX_ORIGIN=sap_flux>
+    3: <TessLightCurve LABEL="6074670424850403712" SECTOR=11 AUTHOR=CDIPS FLUX_ORIGIN=irm1>
+    4: <TessLightCurve LABEL="TIC 411676439" SECTOR=37 AUTHOR=QLP FLUX_ORIGIN=sap_flux>
+    5: <TessLightCurve LABEL="TIC 411676439" SECTOR=38 AUTHOR=SPOC FLUX_ORIGIN=pdcsap_flux>
+    6: <TessLightCurve LABEL="TIC 411676439" SECTOR=38 AUTHOR=QLP FLUX_ORIGIN=sap_flux>
+MIT/QLP
+Bouma&team|CDIPS|Princeton
+MIT/QLP
+Bouma&team|CDIPS|Princeton
+MIT/QLP
+NASA/Ames
+MIT/QLP
+  0%|          | 19/30322 [00:41<9:21:50,  1.11s/it] No data found for target "TIC 59234769".
+  0%|          | 20/30322 [00:41<8:11:25,  1.03it/s]No data found for target "TIC 160707155".
+  0%|          | 21/30322 [00:42<7:30:40,  1.12it/s]###LCC###
+LightCurveCollection of 2 objects:
+    0: <TessLightCurve LABEL="6059835539127874688" SECTOR=11 AUTHOR=CDIPS FLUX_ORIGIN=irm1>
+    1: <TessLightCurve LABEL="TIC 419582887" SECTOR=37 AUTHOR=QLP FLUX_ORIGIN=sap_flux>
+Bouma&team|CDIPS|Princeton
+MIT/QLP
+  0%|          | 22/30322 [00:43<6:45:43,  1.24it/s]###LCC###
+LightCurveCollection of 1 objects:
+    0: <TessLightCurve LABEL="TIC 290778133" SECTOR=31 AUTHOR=QLP FLUX_ORIGIN=sap_flux>
+MIT/QLP
+  0%|          | 23/30322 [00:43<5:58:57,  1.41it/s]###LCC###
+LightCurveCollection of 3 objects:
+    0: <TessLightCurve LABEL="6017602747735927040" SECTOR=12 AUTHOR=CDIPS FLUX_ORIGIN=irm1>
+    1: <TessLightCurve LABEL="Gaia DR2 6017602747735927040" SECTOR=12 AUTHOR=PATHOS FLUX_ORIGIN=psf_flux_cor>
+    2: <TessLightCurve LABEL="TIC 293101406" SECTOR=39 AUTHOR=QLP FLUX_ORIGIN=sap_flux>
+Bouma&team|CDIPS|Princeton
+  0%|          | 24/30322 [00:44<6:04:26,  1.39it/s]###LCC###
+LightCurveCollection of 1 objects:
+    0: <TessLightCurve LABEL="TIC 83244176" SECTOR=39 AUTHOR=QLP FLUX_ORIGIN=sap_flux>
+MIT/QLP
+  0%|          | 25/30322 [00:45<6:46:55,  1.24it/s]###LCC###
+LightCurveCollection of 1 objects:
+    0: <TessLightCurve LABEL="TIC 419583110" SECTOR=37 AUTHOR=QLP FLUX_ORIGIN=sap_flux>
+MIT/QLP
+  0%|          | 26/30322 [00:45<6:25:23,  1.31it/s]No data found for target "TIC 140921866".
+  0%|          | 27/30322 [00:46<6:10:36,  1.36it/s]
