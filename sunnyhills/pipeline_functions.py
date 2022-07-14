@@ -571,6 +571,7 @@ def better_download(tic_id:str, save_directory:str=None, verbose=False):
 
             for i in lcc: 
                 print(i.meta['ORIGIN'])
+                print(np.nanmedian(np.diff(i.remove_outliers().time.value))*24*60*60)
 
         raw_list = [_l for _l in lcc
                 if
