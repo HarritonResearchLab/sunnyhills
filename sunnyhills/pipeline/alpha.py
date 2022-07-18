@@ -44,6 +44,7 @@ def create_base_catalog(tic_ids,working_dir:str='/ar1/PROJ/fjuhsd/shared/tessody
     LombScargle_dir = data_dir+'processed/LombScargle-n=2/'
 
     downloaded_log = data_dir + 'temp_alpha_output.csv'
+    missing_ids_log = data_dir+'no_data_TICs.csv'
 
     # reset tic ids, log results from last run # 
     if not os.path.exists(downloaded_log):
@@ -54,146 +55,180 @@ def create_base_catalog(tic_ids,working_dir:str='/ar1/PROJ/fjuhsd/shared/tessody
 
         with open(downloaded_log, 'w') as f0: 
             f0.write(','.join(log_col_names)+'\n')
+    
+    no_data_ids = [] 
 
     if os.path.exists(piped_log):
 
-        print('piped_log exists')
-
         result_lines = []
-
+        
         with open(piped_log, 'r+') as f1: 
             for line in f1: 
                 if '|||START_RESULT_LINE|||' in line: 
                     result_lines.append(line.split('|||START_RESULT_LINE|||')[-1].split("|||END_RESULT_LINE|||")[0].strip())
-        
+                elif '|||HAS_DATA' in line:
+                    line_list = line.split(',') 
+                    if line_list[1] == 'FALSE':
+                        no_data_ids.append(line_list[2]) 
+
+                elif 'No data found for target' in line: 
+                    line_list = line.split('"')
+                    tic_id = line_list[-2].replace(' ','_')
+                    if 'TIC' in tic_id and tic_id not in no_data_ids:
+                        no_data_ids.append(tic_id) 
+
         with open(piped_log, 'w') as f1: 
             f1.truncate()
-
-        print(len(result_lines))
 
         with open(downloaded_log, 'a') as f2: 
             for line in result_lines: 
                 f2.write(line+'\n')
 
+    if os.path.exists(missing_ids_log): 
+        no_data_ids = np.concatenate((no_data_ids, list(pd.read_csv(missing_ids_log)['TIC_ID'])))
+    
+    if len(no_data_ids)>0: 
+        no_data_ids_df = pd.DataFrame(no_data_ids, columns=['TIC_ID'])
+        no_data_ids_df.to_csv(missing_ids_log, index=False)
+
     extant_tic_ids = [] 
+    set_of_lines = []
+
     if os.path.exists(downloaded_log): 
         with open(downloaded_log, 'r') as f: 
             for line in f: 
                 tic_id = line.split(',')[0]
-                if 'TIC_' in tic_id: 
-                    extant_tic_ids.append(tic_id)
-
+                if 'TIC_' in tic_id and tic_id!='TIC_ID': 
+                    if tic_id not in extant_tic_ids: 
+                        set_of_lines.append(line)
+                        extant_tic_ids.append(tic_id)
+                else: 
+                    set_of_lines.append(line)
+    
+        with open(downloaded_log, 'w') as f: 
+            for line in set_of_lines: 
+                f.write(line)
+    
     tic_ids = list(np.setdiff1d(tic_ids, extant_tic_ids))
 
-    for downloaded_tic_id in os.listdir(LombScargle_dir): 
-        if downloaded_tic_id!='.gitkeep': 
-            downloaded_tic_id = downloaded_tic_id.split('.')[0]
-            if downloaded_tic_id not in tic_ids: 
-                tic_ids.append(downloaded_tic_id)
+    downloaded_tic_ids = [i.split('.')[0] for i in os.listdir(LombScargle_dir) if i!='.gitkeep']
 
-    processed_data_col_names = ['clean_time', 'clean_flux', 'trend_time', 'trend_flux', 'no_flare_raw_time', 'no_flare_raw_flux', 'raw_time', 'raw_flux']
+    for downloaded_tic_id in downloaded_tic_ids: 
+        if downloaded_tic_id not in extant_tic_ids: 
+            tic_ids.append(downloaded_tic_id)
+
+    for tic_id in extant_tic_ids: 
+        if tic_id not in downloaded_tic_ids: 
+            tic_ids.append(tic_id)
+
+    tic_ids = np.setdiff1d(tic_ids, no_data_ids)
 
     for tic_id in tqdm(tic_ids):  
-
-        #try: 
-            
-        # 1. DOWNLOAD DATA 
-        raw_path = raw_dir + tic_id + '.csv'
-
-        #sys.stderr = open(os.devnull, "w")
-        raw_df, downloaded_sectors, sector_starts, sector_ends, last_dates = better_download(tic_id=tic_id, save_directory=raw_dir, verbose=True)
-        #sys.stderr = sys.__stderr__
         
-        if raw_df is not None: 
-            out_list = []
-            
-            out_list.append(tic_id)
-            out_list.append(downloaded_sectors) 
-            out_list.append(sector_starts)
-            out_list.append(sector_ends)
-
-            raw_time, raw_flux = (np.array(raw_df[i]) for i in ['raw_time', 'raw_flux'])
-            no_flare_mask = np.isfinite(raw_df['no_flare_raw_time'])
-            no_flare_raw_time, no_flare_raw_flux = (np.array(raw_df[i])[no_flare_mask] for i in ['no_flare_raw_time', 'no_flare_raw_flux'])
-
-            out_list.append(len(raw_time))
-            out_list.append(len(no_flare_raw_time))
-
-            # 2. PREPROCESS DATA
-
-            # 2.a Wotan Detrend
-
-            _, wotan_counts = better_preprocess(tic_id=tic_id, raw_data=raw_path, last_dates=last_dates, 
-                                                save_directory=wotan_dir, window_length=0.3)
-
-            out_list.append(wotan_counts)
-
-            # 2.b Lomb-Scargle on Data
-            periodogram = LombScargle(no_flare_raw_time, no_flare_raw_flux, nterms=2)
-
-            frequencies, powers = periodogram.autopower(minimum_frequency=1/15, maximum_frequency=1/0.1, method='fastchi2')
-
-            sort_idx = np.argsort(powers)[::-1]
-            powers, frequencies = (i[sort_idx] for i in (powers, frequencies))
-            periods = 1/frequencies 
-            best_frequency = frequencies[0]
-
-            out_list.append(periods[0])
-            out_list.append(periods[1])
-            out_list.append(periods[2])
-            out_list.append(powers[0])
-            out_list.append(powers[1])
-            out_list.append(powers[2])
-
-            # 2.c Lomb-Scargle Detrend
-
-            y_fit = periodogram.model(no_flare_raw_time, best_frequency)
-
-            (ls_clean_time, ls_clean_flux), (_, _) = remove_flares(no_flare_raw_time, no_flare_raw_flux/y_fit)
-
-            out_list.append(len(ls_clean_time))
-
-            ls_data_cols = [ls_clean_time, ls_clean_flux, no_flare_raw_time, y_fit, no_flare_raw_time, no_flare_raw_flux, raw_time, raw_flux]
-            ls_data_cols = [pd.Series(i) for i in ls_data_cols]
+        print('BEGIN:',tic_id)
         
-            ls_dictionary = {}
-            for i in range(len(processed_data_col_names)):
-                ls_dictionary.update({processed_data_col_names[i]:ls_data_cols[i]})
+        try: 
+            # 1. DOWNLOAD DATA 
+            raw_path = raw_dir + tic_id + '.csv'
 
-            ls_out_df = pd.DataFrame(ls_dictionary)
-
-            ls_data_path = LombScargle_dir+tic_id+'.csv'
-            ls_out_df.to_csv(ls_data_path, index=False)
-
-            # 3. ADD CATALOG INFO 
-
-            # Vizier Information # 
-            ab, mass, mass_min, mass_max, radius, radius_min, radius_max = query_tls_vizier(tic_id)
-            out_list.append('"("'+str(ab[0])+','+str(ab[1])+')"')
-            out_list.append(mass)
-            out_list.append(mass_min)
-            out_list.append(mass_max)
-            out_list.append(radius)
-            out_list.append(radius_min)
-            out_list.append(radius_max) 
-
-            # Simbad Information #
-            _, simbad_results = query_simbad(tic_id)
-
-            out_list.append(simbad_results[0])
-            out_list.append(simbad_results[1])
-            out_list.append(simbad_results[2])
-
-            print('\n|||START_RESULT_LINE|||'+','.join([str(i) for i in out_list])+'|||END_RESULT_LINE|||\n')
-
+            #sys.stderr = open(os.devnull, "w")
+            raw_df, downloaded_sectors, sector_starts, sector_ends, last_dates = better_download(tic_id=tic_id, save_directory=raw_dir, verbose=True)
             #sys.stderr = sys.__stderr__
-        r'''
-        except: 
-            continue 
+            
+            if raw_df is not None: 
 
-        finally: 
-            pass 
-        '''
+                print("\n|||HAS_DATA,TRUE,"+tic_id+'|||\n')
+                out_list = []
+                
+                out_list.append(tic_id)
+                out_list.append(downloaded_sectors) 
+                out_list.append(sector_starts)
+                out_list.append(sector_ends)
+
+                raw_time, raw_flux = (np.array(raw_df[i]) for i in ['raw_time', 'raw_flux'])
+                no_flare_mask = np.isfinite(raw_df['no_flare_raw_time'])
+                no_flare_raw_time, no_flare_raw_flux = (np.array(raw_df[i])[no_flare_mask] for i in ['no_flare_raw_time', 'no_flare_raw_flux'])
+
+                out_list.append(len(raw_time))
+                out_list.append(len(no_flare_raw_time))
+
+                # 2. PREPROCESS DATA
+
+                # 2.a Wotan Detrend
+
+                _, wotan_counts = better_preprocess(tic_id=tic_id, raw_data=raw_path, last_dates=last_dates, 
+                                                    save_directory=wotan_dir, window_length=0.3)
+
+                out_list.append(wotan_counts)
+
+                # 2.b Lomb-Scargle on Data
+                periodogram = LombScargle(no_flare_raw_time, no_flare_raw_flux, nterms=2)
+
+                frequencies, powers = periodogram.autopower(minimum_frequency=1/15, maximum_frequency=1/0.1, method='fastchi2')
+
+                sort_idx = np.argsort(powers)[::-1]
+                powers, frequencies = (i[sort_idx] for i in (powers, frequencies))
+                periods = 1/frequencies 
+                best_frequency = frequencies[0]
+
+                out_list.append(periods[0])
+                out_list.append(periods[1])
+                out_list.append(periods[2])
+                out_list.append(powers[0])
+                out_list.append(powers[1])
+                out_list.append(powers[2])
+
+                # 2.c Lomb-Scargle Detrend
+
+                y_fit = periodogram.model(no_flare_raw_time, best_frequency)
+
+                (ls_clean_time, ls_clean_flux), (_, _) = remove_flares(no_flare_raw_time, no_flare_raw_flux/y_fit)
+
+                out_list.append(len(ls_clean_time))
+
+                ls_data_cols = [ls_clean_time, ls_clean_flux, no_flare_raw_time, y_fit, no_flare_raw_time, no_flare_raw_flux, raw_time, raw_flux]
+                ls_data_cols = [pd.Series(i) for i in ls_data_cols]
+            
+                processed_data_col_names = ['clean_time', 'clean_flux', 'trend_time', 'trend_flux', 'no_flare_raw_time', 'no_flare_raw_flux', 'raw_time', 'raw_flux']
+                ls_dictionary = {}
+                for i in range(len(processed_data_col_names)):
+                    ls_dictionary.update({processed_data_col_names[i]:ls_data_cols[i]})
+
+                ls_out_df = pd.DataFrame(ls_dictionary)
+
+                ls_data_path = LombScargle_dir+tic_id+'.csv'
+                ls_out_df.to_csv(ls_data_path, index=False)
+
+                # 3. ADD CATALOG INFO 
+
+                # Vizier Information # 
+                ab, mass, mass_min, mass_max, radius, radius_min, radius_max = query_tls_vizier(tic_id)
+                out_list.append('"("'+str(ab[0])+','+str(ab[1])+')"')
+                out_list.append(mass)
+                out_list.append(mass_min)
+                out_list.append(mass_max)
+                out_list.append(radius)
+                out_list.append(radius_min)
+                out_list.append(radius_max) 
+
+                # Simbad Information #
+                _, simbad_results = query_simbad(tic_id)
+
+                out_list.append(simbad_results[0])
+                out_list.append(simbad_results[1])
+                out_list.append(simbad_results[2])
+
+                print('\n|||START_RESULT_LINE|||'+','.join([str(i) for i in out_list])+'|||END_RESULT_LINE|||\n')
+
+                #sys.stderr = sys.__stderr__
+        
+            else: 
+                print("\n|||HAS_DATA,FALSE,"+tic_id+',|||\n')
+            
+            
+        except Exception as e: 
+            print(e)
+            continue 
 
 import pandas as pd 
 import numpy as np
@@ -202,12 +237,10 @@ tic_ids = np.array(pd.read_csv('/ar1/PROJ/fjuhsd/shared/tessodyssey/catalog-rela
 #tic_ids = np.setdiff1d(tic_ids, np.array(pd.read_csv('/ar1/PROJ/fjuhsd/shared/tessodyssey/data/temp_alpha_output.csv')['TIC_ID']))
 tic_ids = list(tic_ids)
 
-tic_ids = list(pd.read_csv('bad_ids.txt')['TIC_ID'])
-
 #tic_ids = ['TIC_1232360','TIC_9966678']
 
-create_base_catalog(tic_ids=tic_ids, piped_log='bad_ids_log.txt') 
-# current PID: [1] 231907
+create_base_catalog(tic_ids=tic_ids, piped_log='log.txt') 
+# current PID: [5] 2398569
 #TIC_100398936
 # randomly stopped ~1000 iterations in? does it get killed for using too much memory or something? 
 

@@ -474,8 +474,7 @@ def run_routine(clean_time,clean_flux,tic_id,plot_dir,tls_results,tls_model,data
 
         return tic_id in names 
     all_false_alarms_dict = {}
-  
-                
+    
     lombscargle_dict = check_lombscargle(tic_id=tic_id, tls_results=tls_results, download_log=download_log)      
     even_odd_dict = tls_even_odd(tls_results=tls_results)
     transit_outliers_dict = transit_outliers_fap_test(tls_results=tls_results)

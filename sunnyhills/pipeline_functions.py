@@ -548,110 +548,119 @@ def better_download(tic_id:str, save_directory:str=None, verbose=False):
     # get the light curve
     data_found = False
     data_df = None
-    lcc = lk.search_lightcurve(tic_id.replace('_', ' ')).download_all() # FIX THIS! 
-    
-    if lcc != None: 
-        data_found = True 
-
-    # select only the two-minute cadence SPOC-reduced data; convert to a list.
-    # note that this conversion approach works for any LightCurveCollection
-    # returned by lightkurve -- no need to hand-pick the right ones.  the exact
-    # condition below says "if the interval is between 119 and 121 seconds,
-    # take it".
 
     last_dates = []
     downloaded_sectors = ''
     sector_starts = ''
     sector_ends = ''
 
-    if data_found: 
-        if verbose:     
-            print('###LCC###')
-            print(lcc)
+    try: 
 
-            for i in lcc: 
-                print(i.meta['ORIGIN'])
-                print(np.nanmedian(np.diff(i.remove_outliers().time.value))*24*60*60)
-
-        raw_list = [_l for _l in lcc
-                if
-                _l.meta['ORIGIN']=='NASA/Ames'
-                and
-                np.isclose(
-                    120,
-                    np.nanmedian(np.diff(_l.remove_outliers().time.value))*24*60*60,
-                    atol=1
-                )
-        ]
-
-        raw_list = [_l for _l in raw_list if _l.meta['FLUX_ORIGIN']=='pdcsap_flux']
-
-        for lc in raw_list:
-          downloaded_sectors += str(lc.sector)+'|'
-          sector_starts += str(lc.time[0])+'|'
-          sector_ends += str(lc.time[-1])+'|'
+        lcc = lk.search_lightcurve(tic_id.replace('_', ' ')).download_all() # FIX THIS! 
         
-        if len(raw_list) == 0: 
-            data_found = False 
+        if lcc != None: 
+            data_found = True 
+
+        # select only the two-minute cadence SPOC-reduced data; convert to a list.
+        # note that this conversion approach works for any LightCurveCollection
+        # returned by lightkurve -- no need to hand-pick the right ones.  the exact
+        # condition below says "if the interval is between 119 and 121 seconds,
+        # take it".
 
         if data_found: 
+            if verbose:     
+                print('###LCC###')
+                print(lcc)
+
+                for i in lcc: 
+                    
+                    if 'ORIGIN' in i.meta: 
+
+                        print(i.meta['ORIGIN']) # had to fix this smh 
+
+                    print(np.nanmedian(np.diff(i.remove_outliers().time.value))*24*60*60)
+
+            updated_raw_list = []
+            for _l in lcc: 
+                if np.isclose(120,np.nanmedian(np.diff(_l.remove_outliers().time.value))*24*60*60,atol=1):
+                    if 'ORIGIN' not in _l.meta: # had to update this because a bunch didn't have the origin keyword
+                        updated_raw_list.append(_l)
+                    else: 
+                        if _l.meta['ORIGIN']=='NASA/Ames': 
+                            updated_raw_list.append(_l)
             
-            raw_time = np.array([])
-            raw_flux = np.array([])
+            raw_list = updated_raw_list
 
-            for lc in raw_list: 
-                time = lc.time.value
-                flux = lc.flux.value
+            raw_list = [_l for _l in raw_list if _l.meta['FLUX_ORIGIN']=='pdcsap_flux']
 
-                nan_mask = np.isnan(flux)
+            if len(raw_list) > 0: 
+                data_found = True 
 
-                time = time[~nan_mask]
-                flux = np.array(flux[~nan_mask], dtype=float) 
+            if data_found: 
+                raw_time = np.array([])
+                raw_flux = np.array([])
 
-                qual = lc.quality.value
+                for lc in raw_list:
+                    downloaded_sectors += str(lc.sector)+'|'
+                    sector_starts += str(lc.time[0])+'|'
+                    sector_ends += str(lc.time[-1])+'|'
 
-                # remove non-zero quality flags
-                sel = (qual[~nan_mask] == 0)
+                    time = lc.time.value
+                    flux = lc.flux.value
 
-                time = time[sel]
-                flux = flux[sel]
+                    nan_mask = np.isnan(flux)
 
-                # normalize around 1
-                flux /= np.nanmedian(flux)
+                    time = time[~nan_mask]
+                    flux = np.array(flux[~nan_mask], dtype=float) 
 
-                raw_time = np.concatenate((raw_time, time))
-                raw_flux = np.concatenate((raw_flux, flux)) 
+                    qual = lc.quality.value
 
-                last_dates.append(np.max(raw_time))
+                    # remove non-zero quality flags
+                    sel = (qual[~nan_mask] == 0)
 
-            (no_flare_raw_time, no_flare_raw_flux), (_, _) = remove_flares(raw_time, raw_flux)
-            no_flare_raw_time, no_flare_raw_flux = remove_extreme_dips(no_flare_raw_time, no_flare_raw_flux)
+                    time = time[sel]
+                    flux = flux[sel]
 
-            cols = [raw_time, raw_flux, no_flare_raw_time, no_flare_raw_flux]
-            cols = [pd.Series(i) for i in cols]
+                    # normalize around 1
+                    flux /= np.nanmedian(flux)
 
-            col_names = ['raw_time', 'raw_flux', 'no_flare_raw_time', 'no_flare_raw_flux']
-        
-            dictionary = {}
-            for i in range(len(cols)):
-                dictionary.update({col_names[i]:cols[i]})
+                    raw_time = np.concatenate((raw_time, time))
+                    raw_flux = np.concatenate((raw_flux, flux)) 
 
-            data_df = pd.DataFrame(dictionary)
+                    last_dates.append(np.max(raw_time))
 
-            if save_directory is not None:
-                if save_directory[-1]!='/': 
-                    save_directory += '/'
-                save_path = save_directory+tic_id+'.csv' 
-                data_df.to_csv(save_path, index=False)
+                (no_flare_raw_time, no_flare_raw_flux), (_, _) = remove_flares(raw_time, raw_flux)
+                no_flare_raw_time, no_flare_raw_flux = remove_extreme_dips(no_flare_raw_time, no_flare_raw_flux)
 
-            if downloaded_sectors[-1] == '|': 
-                downloaded_sectors = downloaded_sectors[:-1]
+                cols = [raw_time, raw_flux, no_flare_raw_time, no_flare_raw_flux]
+                cols = [pd.Series(i) for i in cols]
 
-            if sector_starts[-1] == '|': 
-                sector_starts = sector_starts[:-1]
+                col_names = ['raw_time', 'raw_flux', 'no_flare_raw_time', 'no_flare_raw_flux']
             
-            if sector_ends[-1] == '|': 
-                sector_ends = sector_ends[:-1]
+                dictionary = {}
+                for i in range(len(cols)):
+                    dictionary.update({col_names[i]:cols[i]})
+
+                data_df = pd.DataFrame(dictionary)
+
+                if save_directory is not None:
+                    if save_directory[-1]!='/': 
+                        save_directory += '/'
+                    save_path = save_directory+tic_id+'.csv' 
+                    data_df.to_csv(save_path, index=False)
+
+                if downloaded_sectors[-1] == '|': 
+                    downloaded_sectors = downloaded_sectors[:-1]
+
+                if sector_starts[-1] == '|': 
+                    sector_starts = sector_starts[:-1]
+                
+                if sector_ends[-1] == '|': 
+                    sector_ends = sector_ends[:-1] 
+
+    except Exception as e: 
+        print(e)
+        pass 
 
     return data_df, downloaded_sectors, sector_starts, sector_ends, last_dates
 
@@ -735,6 +744,10 @@ def better_preprocess(tic_id:str, raw_data:str, last_dates:list, save_directory:
 
                 temp_no_flare_raw_time = np.delete(temp_no_flare_raw_time, delete_idx)
                 temp_no_flare_raw_flux = np.delete(temp_no_flare_raw_flux, delete_idx)
+
+                if len(current_time) < 1 or len(current_flux)<1:
+                    break  
+
 
                 detrended_flux_temp, trend_flux_temp = wotan.flatten(
                     current_time, current_flux, return_trend=True,
