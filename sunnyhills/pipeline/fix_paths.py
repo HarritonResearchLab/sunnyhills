@@ -1,9 +1,14 @@
-import os
-import shutil 
-from tqdm import tqdm 
+def collect_plots(): 
 
-base = '/ar1/PROJ/fjuhsd/shared/github/sunnyhills/sunnyhills/pipeline/initial/'
-for f in tqdm(os.listdir(base)): 
+    import os
+    import shutil 
+    import pandas as pd 
+    from tqdm import tqdm 
 
-    shutil.copyfile(base+f, base+f.replace(':','__').replace('_png','.png'))
-    os.remove(base+f)
+    plots_to_copy = list(pd.read_csv('/ar1/PROJ/fjuhsd/shared/github/sunnyhills/sunnyhills/pipeline/for_email/plot_names.txt')['filename'])
+    base = '/ar1/PROJ/fjuhsd/shared/github/sunnyhills/sunnyhills/pipeline/initial/'
+    new_dir = '/ar1/PROJ/fjuhsd/shared/github/sunnyhills/sunnyhills/pipeline/for_email/'
+    for plot in plots_to_copy: 
+        shutil.copyfile(base+plot, new_dir+plot.replace('SDE__SDE__SDE__','SDE__'))
+
+collect_plots()
