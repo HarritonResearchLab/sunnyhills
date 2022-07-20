@@ -5,3 +5,6 @@ all the issues I discovered when I took out the try-except structures (LOL)
 the splitting style (doesn't split by sector...splits into continuous groups in which all observations are <15 d apart)
 
 each sector is detrended individually 
+
+### potential exoplanets ### 
+
