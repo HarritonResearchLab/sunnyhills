@@ -86,8 +86,9 @@ def create_base_catalog(tic_ids,working_dir:str='/ar1/PROJ/fjuhsd/shared/tessody
 
     if os.path.exists(missing_ids_log): 
         no_data_ids = np.concatenate((no_data_ids, list(pd.read_csv(missing_ids_log)['TIC_ID'])))
-    
+        
     if len(no_data_ids)>0: 
+        no_data_ids = np.unique(no_data_ids)
         no_data_ids_df = pd.DataFrame(no_data_ids, columns=['TIC_ID'])
         no_data_ids_df.to_csv(missing_ids_log, index=False)
 
@@ -113,15 +114,20 @@ def create_base_catalog(tic_ids,working_dir:str='/ar1/PROJ/fjuhsd/shared/tessody
 
     downloaded_tic_ids = [i.split('.')[0] for i in os.listdir(LombScargle_dir) if i!='.gitkeep']
 
+    downloaded_tic_ids = np.unique(downloaded_tic_ids)
+
     for downloaded_tic_id in downloaded_tic_ids: 
         if downloaded_tic_id not in extant_tic_ids: 
             tic_ids.append(downloaded_tic_id)
+
+    extant_tic_ids = np.unique(extant_tic_ids)
 
     for tic_id in extant_tic_ids: 
         if tic_id not in downloaded_tic_ids: 
             tic_ids.append(tic_id)
 
     tic_ids = np.setdiff1d(tic_ids, no_data_ids)
+    tic_ids = np.unique(tic_ids)
 
     for tic_id in tqdm(tic_ids):  
         
@@ -240,7 +246,7 @@ tic_ids = list(tic_ids)
 #tic_ids = ['TIC_1232360','TIC_9966678']
 
 create_base_catalog(tic_ids=tic_ids, piped_log='log.txt') 
-# current PID: [5] 2398569
+# current PID: [1] 4172509
 #TIC_100398936
 # randomly stopped ~1000 iterations in? does it get killed for using too much memory or something? 
 

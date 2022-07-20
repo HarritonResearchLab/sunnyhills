@@ -206,7 +206,6 @@ def tls_alpha_routine(key:str, data_dir:str, download_log:str=None, output_log:s
             if os.path.exists(data_path):
                 data = pd.read_csv(data_path) 
                 clean_time = np.array(data['clean_time'])
-                
                 clean_flux = np.array(data['clean_flux'])
                 
                 if not check_in_dir(tic_id, dir=detrend_plot_dir):

@@ -582,21 +582,23 @@ def better_download(tic_id:str, save_directory:str=None, verbose=False):
 
             updated_raw_list = []
             for _l in lcc: 
-                if np.isclose(120,np.nanmedian(np.diff(_l.remove_outliers().time.value))*24*60*60,atol=1):
+                _l = _l.remove_outliers()
+                if np.isclose(120,np.nanmedian(np.diff(_l.time.value))*24*60*60,atol=1):
                     if 'ORIGIN' not in _l.meta: # had to update this because a bunch didn't have the origin keyword
                         updated_raw_list.append(_l)
                     else: 
                         if _l.meta['ORIGIN']=='NASA/Ames': 
                             updated_raw_list.append(_l)
-            
+
             raw_list = updated_raw_list
 
             raw_list = [_l for _l in raw_list if _l.meta['FLUX_ORIGIN']=='pdcsap_flux']
 
-            if len(raw_list) > 0: 
-                data_found = True 
+            if len(raw_list) == 0: 
+                data_found = False 
 
             if data_found: 
+                print('data found')
                 raw_time = np.array([])
                 raw_flux = np.array([])
 
@@ -863,11 +865,11 @@ def query_tls_vizier(tic_id:str, radius_err_multiple:float=3, mass_err_multiple:
 ## PERIOD SEARCH ROUTINES ##
 
 ## TLS ##
-def run_tls(tic_id:str, time:np.array, flux:np.array, 
+def run_tls(tic_id:str, time:np.array, flux:np.array, model_cache_path:str=None, results_cache_path:str=None,
             cache_dir:str='/ar1/PROJ/fjuhsd/shared/tessodyssey/routines/real/tls_beta_run/cache_dir', 
             tls_params: dict = {'min_per':0.5, 'max_per':15, 
                                 'minimum_n_transit':3, 
-                                'freq_factor':1,
+                                'freq_factor':3,
                                 'core_fraction':0.75}, show_progress_bar:bool=False, 
             verbose:bool=False, catalog_params:bool=True): 
 
@@ -891,14 +893,14 @@ def run_tls(tic_id:str, time:np.array, flux:np.array,
     from transitleastsquares.stats import intransit_stats
     import multiprocessing 
     from sunnyhills.pipeline_functions import query_tls_vizier
-    import pickle 
+    import pickle  
 
     num_cores = int(tls_params['core_fraction']*multiprocessing.cpu_count())
     tls_model = transitleastsquares(time, flux, verbose=verbose)
     
-    ab, mass, mass_min, mass_max, radius, radius_min, radius_max = query_tls_vizier(tic_id=tic_id) 
     
     if catalog_params: 
+        ab, mass, mass_min, mass_max, radius, radius_min, radius_max = query_tls_vizier(tic_id=tic_id) 
         tls_results = tls_model.power(period_min=tls_params['min_per'],period_max=tls_params['max_per'],
                               show_progress_bar=show_progress_bar, verbose=verbose, use_threads=num_cores, u=ab,
                               M_star=mass, M_star_min=mass_min, M_star_max=mass_max, R_star=radius, 
@@ -913,8 +915,15 @@ def run_tls(tic_id:str, time:np.array, flux:np.array,
         if cache_dir[-1]!='/': 
             cache_dir+='/' 
 
-        tls_model_cache_file = cache_dir+tic_id+'_tls-model.pickle'
-        tls_results_cache_file = cache_dir+tic_id+'_tls-results.pickle'
+        if model_cache_path is None: 
+            tls_model_cache_file = cache_dir+tic_id+'_tls-model.pickle'
+        else: 
+            tls_model_cache_file = model_cache_path
+
+        if results_cache_path is None: 
+            tls_results_cache_file = cache_dir+tic_id+'_tls-results.pickle'
+        else: 
+            tls_results_cache_file = results_cache_path
 
         with open(tls_model_cache_file, 'wb') as file: 
             pickle.dump(tls_model, file, protocol=pickle.HIGHEST_PROTOCOL)
@@ -1047,7 +1056,7 @@ def run_bls(time, flux,
 
     best_params = [period, t0, duration,depth]
 
-    return best_params, bls_model, in_transit,stats 
+    return best_params, bls_model, in_transit, stats 
         
 def iterative_bls_runner(time:np.array, flux:np.array,  
                      iterations: int=1, 
