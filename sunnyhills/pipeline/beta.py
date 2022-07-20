@@ -25,7 +25,7 @@ def tls_gamma_routine(tic_ids,cache_dir:str='/ar1/PROJ/fjuhsd/shared/tessodyssey
     result_lines = []
     if os.path.exists(piped_log):
         with open(piped_log, 'r') as f:
-            for line in piped_log: 
+            for line in f: 
                 if '|||START' in line: 
                     result_lines.append(line.split('|||START|||')[-1].split('|||END|||')[0])
 
