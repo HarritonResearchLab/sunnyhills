@@ -211,6 +211,7 @@ def lombscargle(time,flux,flux_err:np.array=None,min_per:float=.1,max_per:int=15
     best_period_power = 0
 
     fap_levels = None
+
     periodogram = LombScargle(time,flux,flux_err, nterms=n_terms)
     frequencies,powers = periodogram.autopower(minimum_frequency=1/max_per, maximum_frequency=1/min_per, method='fastchi2')
 

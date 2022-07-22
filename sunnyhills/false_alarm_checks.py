@@ -11,43 +11,71 @@ def tls_even_odd(tls_results):
 
     import numpy as np
 
+    sig_multiple = 1
+
     eb_flag = True 
 
     odd = tls_results.depth_mean_even 
 
-    odd = [odd[0]-3*odd[1], odd[0]+3*odd[1]] # note 99% confidence because mean +/- 3 sigma
+    odd_one = [odd[0]-odd[1], odd[0]+odd[1]] 
+    odd_three = [odd[0]-3*odd[1], odd[0]+3*odd[1]] # note 99% confidence because mean +/- 3 sigma
 
     even = tls_results.depth_mean_odd
-    even = [even[0]-3*even[1], even[0]+3*even[1]] # note 99% confidence because mean +/- 3 sigma
+    even_one = [even[0]-even[1], even[0]+even[1]] 
+    even_three = [even[0]-3*even[1], even[0]+3*even[1]] # note 99% confidence because mean +/- 3 sigma
 
-    idx = np.argsort([even[0], odd[0]])
+    idx = np.argsort([even_one[0], odd_one[0]])
+    temp = np.array([even_one, odd_one])[idx]
+    if temp[0][1]>=temp[1][0]:
+        pass
+    else: 
+        pass 
+        sig_multiple = (odd[0]-even[0])/(even[1]-odd[1])
 
-    temp = np.array([even, odd])[idx]
+    idx = np.argsort([even_three[0], odd_three[0]])
+    temp = np.array([even_three, odd_three])[idx]
 
     if temp[0][1]>=temp[1][0]: 
         eb_flag = False
 
-    even = [round(i, 3) for i in even]
-    odd = [round(i, 3) for i in odd]
+    even_three = [round(i, 3) for i in even_three]
+    odd_three = [round(i, 3) for i in odd_three]
 
-    return {'Even-Odd Flag':eb_flag, 'even':even, 'odd':odd} # save both parts of even and odd as columns in TLS results, e.g. even_low and even_high, odd_low and odd_high 
+    return {'Even-Odd Flag':eb_flag, 'even':even_three, 'odd':odd_three} # save both parts of even and odd as columns in TLS results, e.g. even_low and even_high, odd_low and odd_high 
 
-def check_lombscargle(tic_id, tls_results, alpha_catalog): 
+def check_lombscargle(tic_id, tls_results, catalog=None, on_the_fly:bool=False, raw_data_dir:str='/ar1/PROJ/fjuhsd/shared/tessodyssey/data/raw/'): 
+    r'''
+    note that this checks whether or not harmonics of tls period are within 1% of a single highest ls period (doesn't incorporate LS period harmonics or secondary/tertiary LS periods)
+    '''
 
     import pandas as pd 
     import numpy as np
+    from sunnyhills.misc import lombscargle
 
-    if isinstance(alpha_catalog, pd.DataFrame): 
-        df = alpha_catalog  
+    if catalog is not None: 
+        if isinstance(catalog, pd.DataFrame): 
+            df = catalog  
+        else: 
+            df = pd.read_csv(catalog)
+
+        index = np.where(df['TIC_ID']==tic_id)[0]
+        top_ls_period = np.array(df['top_ls_period'])[index]
+        if len(top_ls_period)>0: 
+            top_ls_period = top_ls_period[0]   
+
+    elif on_the_fly is True and raw_data_dir is not None: 
+
+        data = pd.read_csv(raw_data_dir+tic_id+'.csv').dropna()
+        time = np.array(data['no_flare_raw_time'])
+        flux = np.array(data['no_flare_raw_flux'])
+
+        top_ls_period = lombscargle(time, flux, calc_fap=False)[1][0]
+
     else: 
-        df = pd.read_csv(alpha_catalog)
-
-    index = np.where(df['TIC_ID']==tic_id)[0]
-    top_ls_period = np.array(df['top_ls_period'])[index]
-    if len(top_ls_period)>0: 
-        top_ls_period = top_ls_period[0]   
+        raise Exception('Either catalog needs to be defined, or on_the_fly needs to be true')
 
     first_alias_ls_flag = False
+    sub_alias_ls_flag = False
 
     ls_flag = False
     if 0.99<tls_results.period/top_ls_period<1.01: 

@@ -321,6 +321,7 @@ def tls_validation_mosaic(tic_id:str, data, tls_model, tls_results, false_alarms
 
     from sunnyhills.pipeline_functions import query_simbad
     from sunnyhills.misc import normalize 
+    from sunnyhills.pipeline_functions import query_tls_vizier
     
     if data is not None: 
         df = pd.read_csv(data)
@@ -400,19 +401,6 @@ def tls_validation_mosaic(tic_id:str, data, tls_model, tls_results, false_alarms
         ax2b = fig.add_subplot(gs[1, 2:-1])
         
         ax1a.scatter(clean_time[0:first_clean_break], clean_flux[0:first_clean_break], s=1)
-        ##############################################ryans coding environment##########################################################
-        ################################################################################################################################
-        ################################################################################################################################
-        #outpt=moving_avg(clean_time[0:last_clean_break],clean_flux[0:last_clean_break])
-        #x=outpt[0]
-        #y=outpt[1]
-        #ax1.plot(x,y,color='cornflowerblue')
-        ################################################################################################################################
-        ################################################################################################################################
-        ################################################################################################################################
-        #ax1a.plot(tls_results.model_lightcurve_time[0:break_index], 
-        #          tls_results.model_lightcurve_model[0:break_index], 
-        #          alpha=0.5, color='red', zorder=1)
 
         max_left = np.max(clean_time[0:first_clean_break])
         min_right = np.min(clean_time[last_clean_break:])
@@ -420,19 +408,9 @@ def tls_validation_mosaic(tic_id:str, data, tls_model, tls_results, false_alarms
         right_transits = transit_times[transit_times>=min_right]
 
         ax1a.set(ylabel='Detrended Flux')
-        ax1a.set_title('TIC: '+str(tic_id).replace('_','')+' PERIOD: '+str(round(tls_results.period, 5)), size='xx-large')
+        ax1a.set_title('TIC_ID: '+str(tic_id).replace('TIC_','')+' PERIOD: '+str(round(tls_results.period, 5)), size='xx-large')
         
         ax1b.scatter(clean_time[last_clean_break:], clean_flux[last_clean_break:], s=1)
-        ##############################################ryans coding enviroment###########################################################
-        ################################################################################################################################
-        ################################################################################################################################
-        #outpt=moving_avg(clean_time[last_clean_break:],clean_flux[last_clean_break:])
-        #x=outpt[0]
-        #y=outpt[1]
-        #ax1.plot(x,y,color='cornflowerblue')
-        ################################################################################################################################
-        ################################################################################################################################
-        ################################################################################################################################
         
         for left in left_transits: 
             ax1a.axvline(x=left, color='red', alpha=0.4, lw=2)
@@ -451,15 +429,10 @@ def tls_validation_mosaic(tic_id:str, data, tls_model, tls_results, false_alarms
                 ax1b.axvline(x=right, color='orange', alpha=0.4, lw=2)
 
 
-
-        '''
         ax1b.plot(tls_results.model_lightcurve_time[last_break:], 
                   tls_results.model_lightcurve_model[last_break:], 
                   alpha=0.5, color='red', zorder=1)
-        '''
-
-        # FIX THIS! IDK WHY I NEED TO ADD 10 TO BREAK INDEX!
-
+        
         orient_split_axes(ax1a, ax1b, clean_flux)
 
         ax2a.scatter(raw_time[0:first_raw_break], raw_flux[0:first_raw_break], s=1) 
@@ -488,17 +461,8 @@ def tls_validation_mosaic(tic_id:str, data, tls_model, tls_results, false_alarms
             ax1.axvline(x=i, color='red', alpha=0.5, lw=2)
         
         ax1.set(ylabel='Detrended Flux')
-        ax1.set_title('TIC: '+str(tic_id).replace('_','')+' PERIOD: '+str(round(tls_results.period, 5)), size='xx-large')
-        #########################################################################################################################
-        ########################################################################################################################
-        ############################################Ryans coding env###################################################################
-        #outpt=moving_avg(clean_time,clean_flux)
-        ##x=outpt[0]
-        #y=outpt[1]
-        #ax1.plot(x,y,color='cornflowerblue')
-        ##########################################################################################################################
-        ############################################################################################################################
-        #########################################################################################################################
+        ax1.set_title('TIC_ID: '+str(tic_id).replace('TIC_','')+' PERIOD: '+str(round(tls_results.period, 5)), size='xx-large')
+        
         if true_transit_times is not None: 
             for true_transit_time in true_transit_times: 
                 ax1.axvline(x=true_transit_time, color='orange', alpha=0.4, lw=2)
@@ -573,12 +537,14 @@ def tls_validation_mosaic(tic_id:str, data, tls_model, tls_results, false_alarms
     ax6.set(xlim=(np.min(tls_results.periods), np.max(tls_results.periods)), 
             xlabel='Period (days)', ylabel='SDE')
 
-    labels = ['period', 'depth', 'T0', 
-                    'SDE', 'snr', 'rp/rs', 'transit_count', 
-                    'distinct_transit_count']
+    ab, mass, mass_min, mass_max, radius, radius_min, radius_max = query_tls_vizier(tic_id=tic_id)
+
+    labels = ['period', 'depth', 'T0', 'SDE', 'snr', 'rp/rs', 'R_P', 'R_S', 'transit_count', 'distinct_transit_count']
+
+    r_p = radius*tls_results.rp_rs/0.10045
 
     values = [tls_results.period, tls_results.depth, tls_results.T0, 
-                    tls_results.SDE, tls_results.snr, tls_results.rp_rs, tls_results.transit_count, 
+                    tls_results.SDE, tls_results.snr, tls_results.rp_rs, r_p, radius, tls_results.transit_count, 
                     tls_results.distinct_transit_count]
 
     simbad_header, simbad_values = query_simbad(tic_id=tic_id)
@@ -593,6 +559,7 @@ def tls_validation_mosaic(tic_id:str, data, tls_model, tls_results, false_alarms
     
     labels.append('cluster_name')
     cluster_name='NA right now'#return_kerr_cluster(tic_id)
+    
     values.append(cluster_name)
     text_info = []
     for label, value in zip(labels, values):

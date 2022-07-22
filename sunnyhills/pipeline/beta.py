@@ -49,6 +49,8 @@ def tls_gamma_routine(tic_ids,cache_dir:str='/ar1/PROJ/fjuhsd/shared/tessodyssey
 
     tic_ids = np.setdiff1d(tic_ids, extant_tic_ids)
 
+    np.random.shuffle(tic_ids)
+
     for tic_id in tqdm(tic_ids):   
         try:  
             for detrend_folder in detrend_folders: 
@@ -110,4 +112,4 @@ with open('/ar1/PROJ/fjuhsd/shared/tessodyssey/data/temp_alpha_output.csv') as f
     for line in f: 
         tic_ids.append(line.split(',')[0])
 tls_gamma_routine(tic_ids=tic_ids)
-# Current PID: [1] 2096822
+# Current PID: [1] 3685765
