@@ -110,4 +110,4 @@ with open('/ar1/PROJ/fjuhsd/shared/tessodyssey/data/temp_alpha_output.csv') as f
     for line in f: 
         tic_ids.append(line.split(',')[0])
 tls_gamma_routine(tic_ids=tic_ids)
-# Current PID: [18] 795511
+# Current PID: [1] 2096822

@@ -558,7 +558,7 @@ def better_download(tic_id:str, save_directory:str=None, verbose=False):
 
         lcc = lk.search_lightcurve(tic_id.replace('_', ' ')).download_all() # FIX THIS! 
         
-        if lcc != None: 
+        if lcc is not None: 
             data_found = True 
 
         # select only the two-minute cadence SPOC-reduced data; convert to a list.
